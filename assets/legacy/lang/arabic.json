@@ -622,23 +622,25 @@
         "weirdroute6": "...ﻦﺘﺑﺎﻜﻟﺍ",
         "weirdroute7": "ﺰﻣﺮﻟﺍ ﻞﺧﺩﺃ",
 
-		"reset_score_question": "؟@ ﺔﻴﻨﻏﻷ ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ فﺬﺣ",
-		"skins_disclaimer": "ﺮﺤﻟﺍ رﺎﻴﺘﺧﻹﺍ ﻊﺿﻭ ﻲﻓ نﻭﺮﻬﻈﻳ ﻂﻘﻓ نﻮﻘﻓﺍﺮﻤﻟﺍﻭ ﺮﻫﺎﻈﻤﻟﺍ",
-		"freeplay_highscore": "ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ",
+	"reset_score_question": "؟@ ﺔﻴﻨﻏﻷ ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ فﺬﺣ",
+	"skins_disclaimer": "ﺮﺤﻟﺍ رﺎﻴﺘﺧﻹﺍ ﻊﺿﻭ ﻲﻓ نﻭﺮﻬﻈﻳ ﻂﻘﻓ نﻮﻘﻓﺍﺮﻤﻟﺍﻭ ﺮﻫﺎﻈﻤﻟﺍ",
+	"freeplay_highscore": "ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ",
 
-		"opt_laneUnderlayStyle": "ﺔﻴﻔﻠﺨﻟﺍ ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻣ",
-		"opt_laneUnderlayStyle_desc": ".ﺔﻴﻠﻔﺴﻟﺍ (تﺎﻘﺒﻄﻟﺍ وﺃ) ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻣ وﺃ نﺎﻜﻣ ﺮﻴﻐﻳ",
-		"opt_opponentLaneUnderlay": "ﻢﺼﺨﻟﺍ ﻢﻬﺳﻷ ﺔﻴﻠﻔﺴﻟﺍ ﺔﻘﺒﻄﻟﺍ",
-		"opt_opponentLaneUnderlay_desc": ".ﻢﺼﺨﻟﺍ ﻢﻬﺳﻷ ﺔﻴﻔﻠﺨﻟﺍ ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻳ",
+	"opt_laneUnderlayStyle": "ﺔﻴﻔﻠﺨﻟﺍ ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻣ",
+	"opt_laneUnderlayStyle_desc": ".ﺔﻴﻠﻔﺴﻟﺍ (تﺎﻘﺒﻄﻟﺍ وﺃ) ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻣ وﺃ نﺎﻜﻣ ﺮﻴﻐﻳ",
+	"opt_opponentLaneUnderlay": "ﻢﺼﺨﻟﺍ ﻢﻬﺳﻷ ﺔﻴﻠﻔﺴﻟﺍ ﺔﻘﺒﻄﻟﺍ",
+	"opt_opponentLaneUnderlay_desc": ".ﻢﺼﺨﻟﺍ ﻢﻬﺳﻷ ﺔﻴﻔﻠﺨﻟﺍ ﺔﻘﺒﻄﻟﺍ ﺮﻬﻈﻳ",
 
-		"choice_generic_yes": "ﻢﻌﻧ",
-		"choice_generic_no": "ﻻ",
+	"choice_generic_yes": "ﻢﻌﻧ",
+	"choice_generic_no": "ﻻ",
 
-		"choice_laneUnderlayStyle_a": "ﺔﺠﻴﺘﻨﻟﺍ مﺎﻣﺃ",
-		"choice_laneUnderlayStyle_b": "ﺔﺠﻴﺘﻨﻟﺍ ﻒﻠﺧ",
-		"choice_laneUnderlayStyle_c": "ءاﺩﻷﺍ ﻂﻳﺮﺷ ﻒﻠﺧ",
-		"choice_laneUnderlayStyle_d": "ﺔﻴﺷﻼﺘﻣ",
+	"choice_laneUnderlayStyle_a": "ﺔﺠﻴﺘﻨﻟﺍ مﺎﻣﺃ",
+	"choice_laneUnderlayStyle_b": "ﺔﺠﻴﺘﻨﻟﺍ ﻒﻠﺧ",
+	"choice_laneUnderlayStyle_c": "ءاﺩﻷﺍ ﻂﻳﺮﺷ ﻒﻠﺧ",
+	"choice_laneUnderlayStyle_d": "ﺔﻴﺷﻼﺘﻣ",
 
-		"reset_score": "ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ فﺬﺣ"
+	"reset_score": "ﺎﻴﻠﻌﻟﺍ ﺔﺟﺭﺪﻟﺍ فﺬﺣ",
+        "victory": "ﺮﺼﻨﻟﺍ",
+        "credits_thanks": "!ﺐﻌﻠﻟﺍ ﻰﻠﻋ اﺮﻜﺷ"
     }
 }

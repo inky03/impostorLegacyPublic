@@ -121,11 +121,12 @@ function onLoad()
 
 function onCreatePost()
 {
-	if (hasGfSkin && gf.getFlag('floating') != true && gf.getFlag('runner') != true)
+	if (gf.getFlag('floating') != true && gf.getFlag('runner') != true)
 		gfBoard.visible = true;
 	
 	if (gf.getFlag('dangerSkateboard'))
 	{
+		gfBoard.visible = false;
 		gfBoard.animation.addByPrefix('bop', 'skateboard', 24, true);
 		gfBoard.x += 110;
 		gfBoard.y -= 50;

@@ -65,8 +65,11 @@ function onLoad()
 }
 function onCreatePost()
 {
-	game.gf.scale.set(0.9, 0.9);
+	game.gf.scale.x *= 0.9;
+	game.gf.scale.y *= 0.9;
 	game.gf.color = 0xFFDDDDDD;
+	game.boyfriend.color = 0xFFDDDDDD;
+	game.dad.color = 0xFFDDDDDD;
 	pet.color = 0xFFDDDDDD;
 
 	snapCamToPos(900, 380);

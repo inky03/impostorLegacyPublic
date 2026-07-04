@@ -35,6 +35,8 @@ Current version: **1.1.1b**
 - Playable Noob49 error fixed.
 - Playable JADS has learned to speak.
 - Grey's cutscene in Triple Threat now gets forced to end on time. (Allows to skip it without being blocked by the video)
+- Girlfriend scale is set correctly in Trot Away if you had a scaled character.
+- Boyfriend and Horse in Trot Away are tinted slightly, like Girlfriend and Pet.
 
 ## 1.1.1b (june 21 2026)
 
