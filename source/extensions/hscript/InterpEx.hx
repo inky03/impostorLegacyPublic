@@ -247,6 +247,19 @@ class InterpEx extends crowplexus.hscript.Interp
 		return call(o, method, args);
 	}
 	
+	override public function get(o:Dynamic, f:String):Dynamic
+	{
+		if (o is Enum) // fixes hl too
+		{
+			var e = Type.createEnum(o, f);
+			if (e != null) return e;
+			
+			error(EInvalidAccess(f));
+		}
+		
+		return super.get(o, f);
+	}
+	
 	override public function expr(e:Expr):Dynamic
 	{
 		#if hscriptPos
