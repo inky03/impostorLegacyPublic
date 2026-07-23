@@ -819,7 +819,7 @@ class FreeplayState extends AmongUIState
 		
 		final switchToCharter:Bool = (FlxG.keys.pressed.SHIFT && ClientPrefs.inDevMode);
 		
-		if (switchToCharter) ChartEditorState._song = PlayState.SONG;
+		if (switchToCharter) ChartEditorState.song = PlayState.SONG;
 		
 		FlxG.switchState(switchToCharter ? ChartEditorState.new : PlayState.new);
 	}

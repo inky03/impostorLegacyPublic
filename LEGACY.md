@@ -39,6 +39,15 @@ WEBSITE: https://vsimpostor.com/
 # CHANGELOG
 Current version: **1.1.1b**
 
+## 1.something (? 2026)
+
+### Additions
+- New chart editor interface.
+
+### Changes
+
+### Bugfixes
+
 ## 1.1.2 (? 2026)
 
 ### Additions

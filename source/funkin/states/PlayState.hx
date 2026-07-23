@@ -2262,7 +2262,7 @@ class PlayState extends MusicBeatState
 	
 	function openChartEditor():Void
 	{
-		ChartEditorState._song = SONG;
+		ChartEditorState.song = SONG;
 		FlxG.camera.followLerp = 0;
 		
 		persistentUpdate = false;

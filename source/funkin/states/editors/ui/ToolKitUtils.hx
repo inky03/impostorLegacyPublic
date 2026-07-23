@@ -13,6 +13,7 @@ import haxe.ui.components.DropDown;
 import haxe.ui.components.OptionStepper;
 import haxe.ui.containers.dialogs.Dialog;
 import haxe.ui.notifications.NotificationData;
+import haxe.ui.containers.dialogs.MessageBox.MessageBoxType;
 
 /**
  * Utility class to assist `haxe-ui` in the Editors.
@@ -170,6 +171,28 @@ class ToolKitUtils
 		}
 	}
 	
+	public static function openPrompt(message:String, title:String = '', type:MessageBoxType = 'info', ?callback:DialogButton->Void)
+	{
+		haxe.ui.containers.dialogs.Dialogs.messageBox(message, title, type, true, (button) -> {
+			if (callback != null) callback(button);
+		});
+	}
+	
+	public static function playSfx(sfx:EditorSfx, volume:Float = 1)
+	{
+		final snd = switch (sfx)
+		{
+			default: 'ui/mouseClick';
+			case WHEEL_CLICK: 'ui/mouseMiddleClick';
+			case CONFIRM: 'ui/success';
+			case WARN: 'ui/warn';
+			case ERROR: 'ui/error';
+			case POPUP: 'ui/openPopup';
+		}
+		
+		return FlxG.sound.play(Paths.sound(snd), volume);
+	}
+	
 	static var _hitTest:Null<flixel.math.FlxPoint> = null;
 	
 	/**
@@ -203,8 +226,8 @@ class ToolKitUtils
 	{
 		// some duct tape
 		// to make using haxe ui more stable
-		
-		if (FlxG.mouse.justMoved || FlxG.mouse.justPressed || FlxG.mouse.justReleased)
+		@:privateAccess
+		if (FlxG.game._nextState == null && (FlxG.mouse.justMoved || FlxG.mouse.justPressed || FlxG.mouse.justReleased))
 		{
 			iterated.resize(0);
 			currentFocus = null;
@@ -229,7 +252,9 @@ class ToolKitUtils
 			
 			if (!component.hasComponentUnderPoint(_hitTest.x, _hitTest.y))
 			{
-				(cast component : InteractiveComponent).focus = false;
+				var component:InteractiveComponent = cast component;
+				@:privateAccess component._focus = true;
+				component.focus = false;
 				return;
 			}
 		}
@@ -255,10 +280,29 @@ class ToolKitUtils
 		@:privateAccess if (component._children != null) for (child in component._children)
 			focusIter(child);
 	}
+	
+	public static function changeSilent(component:InteractiveComponent, value:Dynamic):Dynamic
+	{
+		component.pauseEvent('change'); // thakn u data this keeps me sane
+		component.value = value;
+		component.resumeEvent('change', true);
+		
+		return value;
+	}
 }
 
 typedef DropDownItem =
 {
 	id:String,
 	text:String
+}
+
+enum abstract EditorSfx(Int)
+{
+	var CLICK;
+	var WHEEL_CLICK;
+	var CONFIRM;
+	var WARN;
+	var ERROR;
+	var POPUP;
 }
