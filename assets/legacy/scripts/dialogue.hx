@@ -120,6 +120,7 @@ public function videoCutscene(?vid:String = 'sussus-moogus', ?dAfter:Bool, ?canS
 	blackYnot.camera = camOther;
 	add(blackYnot);
 	
+	#if VIDEOS_ALLOWED
 	video = new FunkinVideoSprite();
 	
 	video.onFormat(() -> {
@@ -145,6 +146,7 @@ public function videoCutscene(?vid:String = 'sussus-moogus', ?dAfter:Bool, ?canS
 		video.delayAndStart();
 	}
 	else
+	#end
 	{
 		if (onEnd != null) onEnd();
 		onVidEnd();

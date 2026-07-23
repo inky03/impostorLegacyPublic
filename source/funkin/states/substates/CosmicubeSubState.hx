@@ -79,7 +79,7 @@ class CosmicubeSubState extends MusicBeatSubstate
 		
 		this.meta = (CosmicubeData.cosmicubeMetas.get(cosmicube) ?? CosmicubeData.fallbackMeta);
 		
-		Mods.currentModDirectory = (meta.mod.length == 0 ? null : meta.mod);
+		Mods.currentModDirectory = (meta.mod == null || meta.mod.length == 0 ? null : meta.mod);
 		
 		(overlayCamera = new FlxCamera()).bgColor = 0;
 		FlxG.cameras.add(overlayCamera, false);

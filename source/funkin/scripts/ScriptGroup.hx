@@ -12,6 +12,7 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
  * idea from friens static fyr thanks
  */
 @:nullSafety(Strict)
+@:access(funkin.scripting.ScriptConstants)
 class ScriptGroup implements IFlxDestroyable
 {
 	public var scriptShareables:Sharables = new Sharables();
@@ -80,23 +81,23 @@ class ScriptGroup implements IFlxDestroyable
 	}
 	
 	@:inheritDoc(funkin.scripts.FunkinScript.call)
-	public function call(event:String, ?args:Array<Dynamic>, ignoreStops:Bool = false, ?exclusions:Array<String>):Dynamic
+	public function call(event:String, ?args:Array<Dynamic>, ignoreStops:Bool = false, ?exclusions:Array<String>):Null<Any>
 	{
 		exclusions ??= [];
 		
-		var returnVal:Dynamic = ScriptConstants.CONTINUE_FUNC;
+		var returnVal:Null<Any> = ScriptConstants.CONTINUE_FUNC;
 		
 		for (i in members)
 		{
 			if (i == null || !i.exists(event) || exclusions.contains(i.name)) continue;
 			
-			var ret:Dynamic = i.call(event, args)?.returnValue;
+			var ret:Null<Any> = i.call(event, args)?.returnValue;
 			
 			if (ret != null)
 			{
 				if (ScriptConstants.halting(ret) && !ignoreStops) return ret;
 				
-				if (ret != ScriptConstants.CONTINUE_FUNC) returnVal = ret;
+				if (#if (target.static) !ScriptConstants.isDispatch(ret) || #end ret != ScriptConstants.CONTINUE_FUNC) returnVal = ret;
 			}
 		}
 		

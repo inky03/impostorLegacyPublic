@@ -191,15 +191,15 @@ class DiscordClient
 {
 	public static final NMV_ID:String = '1252033037680513115';
 	
-	public static var rpcId(default, set):String = '';
+	public static var rpcId:String = '';
 	
 	public static inline function changePresence(details:String = 'In the Menus', ?state:String, ?smallImageKey:String, hasStartTimestamp:Bool = false, ?endTimestamp:Float,
 		largeImageKey:String = 'icon'):Void {}
 		
 	public static function close():Void {}
 	
-	public static function init() {}
+	public static function init():Void {}
 	
-	static function set_rpcId(value:String):String return (rpcId = value);
+	public static function check():Void {}
 }
 #end

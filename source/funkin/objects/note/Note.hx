@@ -282,7 +282,7 @@ class Note extends RGBSprite implements funkin.game.modchart.IModNote
 		return noteType = value;
 	}
 	
-	public function new(strumTime:Float = 0, noteData:Int = 0, ?prevNote:Note, sustainNote:Bool = false, inEditor:Bool = false, player:Int = 0)
+	public function new(?strumTime:Float = 0, ?noteData:Int = 0, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false, ?player:Int = 0)
 	{
 		super();
 		

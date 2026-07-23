@@ -32,8 +32,16 @@ class ReflectUtil
 			var blah:Dynamic = Reflect.getProperty(instance, props[0]);
 			for (i in 1...props.length)
 			{
-				var leNum:Dynamic = props[i].substr(0, props[i].length - 1);
-				blah = blah[leNum];
+				var key:Dynamic = props[i].substr(0, props[i].length - 1);
+				if (key is String)
+				{
+					blah = blah.get(cast (key, String));
+				}
+				else
+				{
+					var index:Null<Int> = Std.parseInt(key);
+					blah = (index != null ? blah[index] : null);
+				}
 			}
 			return blah;
 		}

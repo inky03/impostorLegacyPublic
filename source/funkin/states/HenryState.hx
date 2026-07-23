@@ -14,6 +14,7 @@ import openfl.utils.Assets as OpenFlAssets;
 
 class HenryState extends MusicBeatState
 {
+	#if VIDEOS_ALLOWED
 	var video:FunkinVideoSprite;
 	
 	var freezeFrame:FlxSprite;
@@ -180,6 +181,14 @@ class HenryState extends MusicBeatState
 			i.visible = true;
 		}
 	}
+	#else
+	override function create()
+	{
+		super.create();
+		
+		startWeek();
+	}
+	#end
 	
 	function startWeek():Void
 	{

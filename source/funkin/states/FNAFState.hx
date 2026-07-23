@@ -7,7 +7,7 @@ import flixel.addons.text.FlxTypeText;
 
 import funkin.backend.FunkinShader.FunkinRuntimeShader;
 import funkin.FunkinAssets;
-import funkin.video.FunkinVideoSprite;
+#if VIDEOS_ALLOWED import funkin.video.FunkinVideoSprite; #end
 
 class FNAFState extends MusicBeatState
 {
@@ -86,7 +86,7 @@ class FNAFState extends MusicBeatState
 	var depthTween:FlxTween;
 	
 	// secrets
-	var secretVideo:FunkinVideoSprite;
+	#if VIDEOS_ALLOWED var secretVideo:FunkinVideoSprite; #end
 	var videoPlaying:Bool = false;
 	var audioPlaying:Bool = false;
 	var secretAudio:FlxSound;
@@ -777,7 +777,7 @@ class FNAFState extends MusicBeatState
 		compLoader.x = ix + (iw - compLoader.width) * 0.5;
 		compLoader.y = iy + (ih - compLoader.height) * 0.5;
 		
-		layoutVideo();
+		#if VIDEOS_ALLOWED layoutVideo(); #end
 	}
 	
 	function updateInputLayout()
@@ -967,6 +967,8 @@ class FNAFState extends MusicBeatState
 				errorMessage("Did you mean: FLIPPYFLOW?");
 			case "DK":
 				errorMessage("R.I.P");
+			
+			#if VIDEOS_ALLOWED
 			case "BROIMPOSTOR":
 				playVideo('broimpostor');
 			case "HELLSCAPE":
@@ -979,11 +981,14 @@ class FNAFState extends MusicBeatState
 			case "ZARED":
 				if (ClientPrefs.scaryZared) errorMessage("X");
 				else playFullscreenVideo('zared video');
+			#end
+			
 			default:
 				errorMessage("X");
 		}
 	}
 	
+	#if VIDEOS_ALLOWED
 	// this is just for zared
 	function playFullscreenVideo(key:String)
 	{
@@ -1182,6 +1187,7 @@ class FNAFState extends MusicBeatState
 			}
 		});
 	}
+	#end
 	
 	// code audios
 	function playAudio(key:String)

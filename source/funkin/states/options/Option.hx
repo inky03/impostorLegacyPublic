@@ -122,7 +122,7 @@ class Option
 	
 	public function setValue(value:Dynamic)
 	{
-		Reflect.setProperty(ClientPrefs, variable, value);
+		if (Reflect.hasField(ClientPrefs, variable)) Reflect.setProperty(ClientPrefs, variable, value);
 	}
 	
 	public function setChild(child:FlxText)

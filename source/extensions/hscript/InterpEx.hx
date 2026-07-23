@@ -10,14 +10,6 @@ import crowplexus.hscript.*;
 import crowplexus.hscript.Expr;
 import crowplexus.hscript.Tools;
 
-// whgy is this private
-private enum Stop
-{
-	SBreak;
-	SContinue;
-	SReturn;
-}
-
 /**
  * Modified Iris Interp for variety of improvements.
  * 
@@ -290,79 +282,5 @@ class InterpEx extends crowplexus.hscript.Interp
 			default:
 				super.expr(e);
 		}
-	}
-	
-	// overriden because Stop is private. DIE HSCRIPT DIE
-	
-	override function exprReturn(e):Dynamic
-	{
-		try
-		{
-			return expr(e);
-		}
-		catch (e:Stop)
-		{
-			switch (e)
-			{
-				case SBreak:
-					throw "Invalid break";
-				case SContinue:
-					throw "Invalid continue";
-				case SReturn:
-					var v = returnValue;
-					returnValue = null;
-					return v;
-			}
-		}
-		return null;
-	}
-	
-	override function doWhileLoop(econd, e)
-	{
-		var old = declared.length;
-		do
-		{
-			try
-			{
-				expr(e);
-			}
-			catch (err:Stop)
-			{
-				switch (err)
-				{
-					case SContinue:
-					case SBreak:
-						break;
-					case SReturn:
-						throw err;
-				}
-			}
-		}
-		while (expr(econd) == true);
-		restore(old);
-	}
-	
-	override function whileLoop(econd, e)
-	{
-		var old = declared.length;
-		while (expr(econd) == true)
-		{
-			try
-			{
-				expr(e);
-			}
-			catch (err:Stop)
-			{
-				switch (err)
-				{
-					case SContinue:
-					case SBreak:
-						break;
-					case SReturn:
-						throw err;
-				}
-			}
-		}
-		restore(old);
 	}
 }

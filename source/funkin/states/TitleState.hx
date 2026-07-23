@@ -108,7 +108,7 @@ class TitleState extends MusicBeatState
 		Conductor.bpm = 102;
 		Conductor.bpmChangeMap.resize(0);
 		
-		if (isHardcodedState() && scriptGroup.call('onStartIntro') != ScriptConstants.STOP_FUNC)
+		if (isHardcodedState() && !ScriptConstants.stopping(scriptGroup.call('onStartIntro')))
 		{
 			starBG = new FlxBackdrop(Paths.image('menu/common/starBG'));
 			starBG.alpha = 0.001;
@@ -181,7 +181,7 @@ class TitleState extends MusicBeatState
 		
 		if (!transitioning && skippedIntro)
 		{
-			if (pressedEnter && scriptGroup.call('onEnter', []) != ScriptConstants.STOP_FUNC)
+			if (pressedEnter && !ScriptConstants.stopping(scriptGroup.call('onEnter')))
 			{
 				FlxG.camera.flash(ClientPrefs.flashing ? FlxColor.WHITE : 0x4CFFFFFF, 1);
 				transitioning = true;
@@ -269,7 +269,7 @@ class TitleState extends MusicBeatState
 			scriptGroup.set('curBeat', sickBeats);
 		}
 		
-		if (!isHardcodedState() || scriptGroup.call('onBeatHit', []) == ScriptConstants.STOP_FUNC) return;
+		if (!isHardcodedState() || ScriptConstants.stopping(scriptGroup.call('onBeatHit'))) return;
 		
 		// just in case
 		if (isHardcodedState())
@@ -322,7 +322,7 @@ class TitleState extends MusicBeatState
 	
 	public function skipIntro():Void
 	{
-		if (scriptGroup.call('onSkipIntro', []) != ScriptConstants.STOP_FUNC && !skippedIntro)
+		if (!ScriptConstants.stopping(scriptGroup.call('onSkipIntro')) && !skippedIntro)
 		{
 			ngSpr?.kill();
 			textGroup?.kill();

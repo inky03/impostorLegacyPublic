@@ -227,7 +227,7 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 		set("trace", Reflect.makeVarArgs(function(x:Array<Dynamic>) {
 			var pos = this.interp != null ? this.interp.posInfos() : Iris.getDefaultPos(this.name);
 			
-			Iris.print(formatPosInfos(pos.fileName, pos.lineNumber, x), pos);
+			Iris.print(Std.string(x[0]), pos);
 		}));
 		#end
 		

@@ -108,7 +108,7 @@ class AmongUIState extends MusicBeatState
 			FlxTween.cancelTweensOf(beanIcon);
 			FlxTween.cancelTweensOf(beanText);
 			
-			if (v.length == 0)
+			if (v == null || v.length == 0)
 			{
 				FlxTween.tween(beanIcon, {x: beanIcon.x - 30, alpha: 0}, .2, {ease: FlxEase.quartIn});
 				FlxTween.tween(beanText, {x: beanText.x - 30, alpha: 0}, .2, {ease: FlxEase.quartIn});

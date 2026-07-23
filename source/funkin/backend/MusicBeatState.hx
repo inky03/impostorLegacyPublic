@@ -49,7 +49,12 @@ class MusicBeatState extends FlxUIState
 	public var scriptName:String = '';
 	public var scriptGroup:ScriptGroup = new ScriptGroup();
 	
-	inline function isHardcodedState() return (scriptGroup != null && !scriptGroup.call('customMenu') == true) || (scriptGroup == null);
+	inline function isHardcodedState()
+	{
+		final ret:Null<Any> = scriptGroup?.call('customMenu');
+		
+		return (#if (target.static) !(ret is Bool) || #end ret != true);
+	}
 	
 	public function initStateScript(?scriptName:String, callOnLoad:Bool = true):Bool
 	{

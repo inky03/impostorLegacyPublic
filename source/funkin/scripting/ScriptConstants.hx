@@ -43,13 +43,21 @@ class ScriptConstants
 	}
 	
 	// this is annoying .
-	public static inline function stopping(v:Dynamic):Bool
+	#if (target.static)
+	static inline function isDispatch(v:Null<Any>):Bool return (v is ScriptDispatch);
+	#end
+	
+	public static inline function stopping(v:Null<Any>):Bool
 	{
+		#if (target.static) if (!isDispatch(v)) return false; else #end
+		
 		return (v == Stop || v == Cancel);
 	}
 	
-	public static inline function halting(v:Dynamic):Bool
+	public static inline function halting(v:Null<Any>):Bool
 	{
+		#if (target.static) if (!isDispatch(v)) return false; else #end
+		
 		return (v == Halt || v == Cancel);
 	}
 }

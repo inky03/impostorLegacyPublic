@@ -206,8 +206,10 @@ class CosmicubeNode extends BaseNode
 			
 			if (Paths.fileExists('data/characters/$id.json')) info = CharacterParser.fetchInfo(id);
 			
-			var color:Dynamic = (meta.color ?? info?.healthbar_colour);
+			var color:Dynamic = meta.color;
+			color ??= info?.healthbar_colour;
 			color ??= info?.healthbar_colors;
+			
 			var nodeIcon:Dynamic = (meta.icon ?? info?.healthicon);
 			
 			if (color != null)
@@ -218,7 +220,7 @@ class CosmicubeNode extends BaseNode
 				}
 				else if (color is Int)
 				{
-					bg.color = color;
+					bg.color = cast color;
 				}
 			}
 			
