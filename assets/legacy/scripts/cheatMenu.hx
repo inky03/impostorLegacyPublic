@@ -1,15 +1,14 @@
 import flixel.addons.ui.FlxUIButton;
 
-public var dbGroup = new FlxSpriteGroup();
+if (!ClientPrefs.inDevMode) return;
+
+public var dbGroup:FlxSpriteGroup = new FlxSpriteGroup();
 
 function onCreatePost()
 {
-	if (!ClientPrefs.inDevMode) return;
-	// trace('well hey');
-	game.paused = false;
-	dbGroup.camera = game.camOther;
-	
 	final GAYLINE:Int = 90;
+	
+	dbGroup.camera = camOther;
 	
 	closeButton = dbGroup.add(new FlxUIButton(GAYLINE - 52 - 8, 644, 'Reset\nSong', FlxG.resetState));
 	closeButton.resize(52, 50);
@@ -34,6 +33,7 @@ function onCreatePost()
 	playbackBG.resize(440, 50);
 	playbackBG.active = false;
 	
+	#if (!hl)
 	playbackSlider = dbGroup.add(new flixel.addons.ui.FlxSlider(game, 'playbackRate', GAYLINE + 6, 644, .25, 4, 413, 16, 6, 0xff333333, 0xff333333));
 	playbackSlider.minLabel.alpha = playbackSlider.maxLabel.alpha = playbackSlider.body.alpha = .5;
 	playbackSlider.minLabel.x += 4;
@@ -42,7 +42,11 @@ function onCreatePost()
 	playbackSlider.minLabel.y = playbackSlider.maxLabel.y = playbackSlider.valueLabel.y -= 5;
 	playbackSlider.nameLabel.text = 'Playback Rate';
 	playbackSlider.nameLabel.y += 5;
-	// getBool('Low Quality Mode', ClientPrefs.lowQuality) + getBool('Flashing Lights', ClientPrefs.flashing);
+	#else
+	var text = dbGroup.add(new FlxText(GAYLINE + 6, 660, 428, 'i blame HashLink'));
+	text.alignment = FlxTextAlign.CENTER;
+	text.color = 0xff333333;
+	#end
 }
 
 var warping:Bool = false;
