@@ -69,7 +69,7 @@ var rtlFullText:String = "";
 // dialogue portraits
 var portrait:Array<FlxSprite> = [];
 
-function onCreatePost()
+function onLoad()
 {
 	final PADDING = 15;
 	skipText = new FlxText(PADDING, 0, FlxG.width - PADDING * 2, Lang.str('video_skip'));
@@ -83,7 +83,7 @@ function onVidEnd()
 {
 	hideCaption();
 	
-	video.destroy();
+	video?.destroy();
 	vidPlaying = false;
 	camGame.visible = true;
 	skipText.visible = false;
@@ -301,7 +301,8 @@ function refreshDialogue(?oldToo = false)
 function v4SpeakerShit()
 {
 	var speaker:FlxSprite = speakerAnims(curCharacter);
-	swagDialogue.sounds = [FlxG.sound.load(Paths.sound('dialogue/' + curSound), 0.6)];
+	var snd:Sound = Paths.sound('dialogue/' + curSound);
+	swagDialogue.sounds = [#if hl FlxG.sound.loadHelper(FlxG.sound.list.recycle(FlxSound).loadEmbedded(snd), .6) #else FlxG.sound.load(snd, .6) #end];
 	dropText.text = boxChar;
 	icon.changeIcon(curIcon);
 	
