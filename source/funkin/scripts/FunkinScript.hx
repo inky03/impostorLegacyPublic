@@ -108,9 +108,9 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	 * @param name 
 	 * @param additionalVars 
 	 */
-	public static function fromString(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String)
+	public static function fromString(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true)
 	{
-		return new FunkinScript(script, name, additionalVars, shareables, modFolder);
+		return new FunkinScript(script, name, additionalVars, shareables, modFolder, autoExecute);
 	}
 	
 	/**
@@ -120,13 +120,13 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	 * @param name 
 	 * @param additionalVars 
 	 */
-	public static function fromFile(file:String, ?name:String, ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String)
+	public static function fromFile(file:String, ?name:String, ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true)
 	{
 		name ??= file;
 		
 		modFolder ??= Paths.getModFolder(file, 'scripts');
 		
-		return new FunkinScript(FunkinAssets.getContent(file), name, additionalVars, shareables, modFolder);
+		return new FunkinScript(FunkinAssets.getContent(file), name, additionalVars, shareables, modFolder, autoExecute);
 	}
 	
 	/**
@@ -136,7 +136,7 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	
 	public var modFolder:Null<String>;
 	
-	public function new(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String)
+	public function new(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true)
 	{
 		super(script, {name: name, autoRun: false, autoPreset: false}, shareables);
 		
@@ -152,13 +152,23 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 				set(key, additionalVars.get(obj));
 		}
 		
-		tryExecute();
+		if (autoExecute) tryExecute();
+	}
+	
+	public inline function addParent(parent:Dynamic):Dynamic
+	{
+		return (cast interp : InterpEx).addParent(parent);
+	}
+	
+	public inline function removeParent(parent:Dynamic):Dynamic
+	{
+		return (cast interp : InterpEx).removeParent(parent);
 	}
 	
 	/**
 	 * safer parsing
 	 */
-	inline function tryExecute()
+	public inline function tryExecute()
 	{
 		var ret:Dynamic = null;
 		try
@@ -176,44 +186,43 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	// kept for notescript stuff
 	public function executeFunc(func:String, ?parameters:Array<Dynamic>, ?theObject:Any, ?extraVars:Map<String, Dynamic>):Dynamic
 	{
-		extraVars ??= [];
+		if (!exists(func)) return null;
 		
-		if (exists(func))
+		var daFunc = get(func);
+		// if (!Reflect.isFunction(daFunc)) return null; Well unsafety is ok
+		
+		var returnVal:Dynamic = null;
+		var defaultShit:Map<String, Dynamic> = [];
+		
+		if (theObject != null)
 		{
-			var daFunc = get(func);
-			if (Reflect.isFunction(daFunc))
-			{
-				var returnVal:Dynamic = null;
-				var defaultShit:Map<String, Dynamic> = [];
-				
-				if (theObject != null) extraVars.set("this", theObject);
-				
-				for (key in extraVars.keys())
-				{
-					defaultShit.set(key, get(key));
-					set(key, extraVars.get(key));
-				}
-				
-				try
-				{
-					returnVal = Reflect.callMethod(theObject, daFunc, parameters ?? []);
-				}
-				catch (e:haxe.Exception)
-				{
-					#if sys
-					Sys.println(e.message);
-					#end
-				}
-				
-				for (key in defaultShit.keys())
-				{
-					set(key, defaultShit.get(key));
-				}
-				
-				return returnVal;
-			}
+			extraVars ??= [];
+			extraVars.set("this", theObject);
 		}
-		return null;
+		
+		if (extraVars != null)
+		{
+			for (key => val in extraVars)
+				defaultShit.set(key, val);
+		}
+		
+		try
+		{
+			returnVal = Reflect.callMethod(theObject, daFunc, parameters ?? []);
+		}
+		#if hscriptPos
+		catch (e:crowplexus.hscript.Expr.Error) {
+			Iris.error(crowplexus.hscript.Printer.errorToString(e, false), this.interp.posInfos());
+		}
+		#end
+		catch (e:haxe.Exception) {
+			Iris.error(Std.string(e), Reflect.isFunction(daFunc) ? interp.posInfos() : Iris.getDefaultPos(this.name));
+		}
+		
+		for (key => val in defaultShit)
+			set(key, val);
+		
+		return returnVal;
 	}
 	
 	@:inheritDoc
@@ -325,12 +334,17 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 		set("ClientPrefs", funkin.data.ClientPrefs);
 		set("Lang", funkin.data.Lang);
 		set("GameFlags", funkin.data.GameFlags);
-		set("CoolUtil", funkin.utils.CoolUtil);
-		set('WindowUtil', funkin.utils.WindowUtil);
 		
-		set("StageData", funkin.data.StageData);
 		set("PlayState", PlayState);
+		set("StageData", funkin.data.StageData);
 		set('FunkinSound', funkin.audio.FunkinSound);
+		
+		// utils
+		set('MathUtil', funkin.utils.MathUtil);
+		set("CoolUtil", funkin.utils.CoolUtil);
+		set('CameraUtil', funkin.utils.CameraUtil);
+		set('WindowUtil', funkin.utils.WindowUtil);
+		set('ProgressionUtil', funkin.utils.ProgressionUtil);
 		
 		// custom
 		set('FlxColor', funkin.scripts.ScriptClasses.ScriptedFlxColor);

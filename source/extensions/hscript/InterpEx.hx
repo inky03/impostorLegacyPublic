@@ -47,13 +47,53 @@ class InterpEx extends crowplexus.hscript.Interp
 		return v;
 	}
 	
-	public var parentFields:Array<String> = [];
+	public var parentFields:haxe.ds.ObjectMap<Dynamic, Array<String>> = new haxe.ds.ObjectMap();
+	public var parents:Array<Dynamic> = [];
 	public var parent(default, set):Dynamic;
 	
 	function set_parent(value:Dynamic)
 	{
-		parent = value;
-		parentFields = value != null ? Type.getInstanceFields(Type.getClass(value)) : [];
+		parents.resize(0);
+		parents.push(value);
+		
+		updateParentFields();
+		
+		return parent;
+	}
+	
+	function updateParentFields():Void
+	{
+		for (parent in parents)
+		{
+			if (!parentFields.exists(parent))
+				parentFields.set(parent, Type.getInstanceFields(Type.getClass(parent)));
+		}
+		
+		for (parent in parentFields.keys())
+		{
+			if (!parents.contains(parent))
+				parentFields.remove(parent);
+		}
+	}
+	
+	public function addParent(parent:Dynamic):Dynamic
+	{
+		if (!parents.contains(parent))
+		{
+			parents.insert(0, parent);
+			
+			updateParentFields();
+		}
+		
+		return parent;
+	}
+	
+	public function removeParent(parent:Dynamic):Dynamic
+	{
+		parents.remove(parent);
+		
+		updateParentFields();
+		
 		return parent;
 	}
 	
@@ -66,46 +106,49 @@ class InterpEx extends crowplexus.hscript.Interp
 		switch (e.e)
 		{
 			case EIdent(id):
-				var l = locals.get(id);
-				var v:Dynamic = (locals.exists(id) ? l.r : resolve(id));
+				final v:Dynamic = resolve(id);
 				
-				function setTo(a) {
-					if (locals.exists(id))
-					{
-						if (l.const != true) l.r = a else error(ECustom("Cannot reassign final, for constant expression -> " + id));
-						
-						return;
-					}
-					
-					if (variables.exists(id))
-					{
-						setVar(id, a);
-					}
-					else if (parentFields?.contains(id))
-					{
-						Reflect.setProperty(parent, id, a);
-					}
-					else if (sharedFields?.exists(id))
-					{
-						sharedFields.set(id, a);
-					}
-				}
+				if (prefix) return setTo(id, v + delta);
 				
-				if (prefix)
-				{
-					v += delta;
-					setTo(v);
-				}
-				else
-				{
-					setTo(v + delta);
-				}
+				setTo(id, v + delta);
 				
 				return v;
 			
 			default:
 				return super.increment(e, prefix, delta);
 		}
+	}
+	
+	function setTo(id:String, v:Dynamic):Dynamic
+	{
+		if (locals.exists(id))
+		{
+			var l = locals.get(id);
+			
+			if (l.const != true) l.r = v;
+			else warn(ECustom('Cannot reassign final, for constant expression -> $id'));
+		}
+		else
+		{
+			if (variables.exists(id))
+			{
+				setVar(id, v);
+				return v;
+			}
+			
+			for (parent => fields in parentFields)
+			{
+				if (fields.contains(id) || fields.contains('set_$id'))
+				{
+					Reflect.setProperty(parent, id, v);
+					return v;
+				}
+			}
+			
+			if (sharedFields != null && sharedFields.exists(id)) sharedFields.set(id, v);
+		}
+		
+		return v;
 	}
 	
 	override function resolve(id:String):Dynamic
@@ -116,7 +159,10 @@ class InterpEx extends crowplexus.hscript.Interp
 				
 		if (imports.exists(id)) return imports.get(id);
 		
-		if (parentFields.contains(id) || parentFields.contains('get_$id')) return Reflect.getProperty(parent, id);
+		for (parent => fields in parentFields)
+		{
+			if (fields.contains(id) || fields.contains('get_$id')) return Reflect.getProperty(parent, id);
+		}
 		
 		if (sharedFields?.exists(id)) return sharedFields.get(id);
 		
@@ -131,28 +177,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		switch (Tools.expr(e1))
 		{
 			case EIdent(id):
-				var l = locals.get(id);
-				v = fop(expr(e1), expr(e2));
-				if (l == null)
-				{
-					if (parentFields.contains(id) || parentFields.contains('set_$id'))
-					{
-						Reflect.setProperty(parent, id, v);
-					}
-					else if (sharedFields?.exists(id))
-					{
-						sharedFields.set(id, v);
-					}
-					else
-					{
-						setVar(id, v);
-					}
-				}
-				else
-				{
-					if (l.const != true) l.r = v;
-					else warn(ECustom("Cannot reassign final, for constant expression -> " + id));
-				}
+				return setTo(id, fop(expr(e1), expr(e2)));
 			case EField(e, f, s):
 				var obj = expr(e);
 				if (obj == null) if (!s) error(EInvalidAccess(f));
@@ -184,27 +209,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		switch (Tools.expr(e1))
 		{
 			case EIdent(id):
-				var l = locals.get(id);
-				if (l == null)
-				{
-					if (!variables.exists(id) && (parentFields.contains(id) || parentFields.contains('set_$id')))
-					{
-						Reflect.setProperty(parent, id, v);
-					}
-					else if (!variables.exists(id) && sharedFields != null && sharedFields.exists(id))
-					{
-						sharedFields.set(id, v);
-					}
-					else
-					{
-						setVar(id, v);
-					}
-				}
-				else
-				{
-					if (l.const != true) l.r = v;
-					else warn(ECustom("Cannot reassign final, for constant expression -> " + id));
-				}
+				return setTo(id, v);
 			case EField(e, f, s):
 				var e = expr(e);
 				if (e == null) if (!s) error(EInvalidAccess(f));
