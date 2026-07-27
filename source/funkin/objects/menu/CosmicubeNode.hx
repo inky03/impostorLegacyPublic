@@ -351,7 +351,7 @@ class CosmicubeNode extends BaseNode
 		
 		if (connector != null) connector.color = (unlocked ? FlxColor.WHITE : (available ? 0xff06c864 : 0xff4a4a4a));
 		
-		if (initialized) curScript?.executeFunc('onRefresh', [], this);
+		if (initialized || canInit) curScript?.executeFunc('onRefresh', [], this);
 		
 		if (canInit) initialized = true;
 	}
