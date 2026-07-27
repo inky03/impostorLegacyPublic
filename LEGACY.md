@@ -39,6 +39,19 @@ WEBSITE: https://vsimpostor.com/
 # CHANGELOG
 Current version: **1.1.1b**
 
+## Modding (? 2026)
+
+### Additions
+- Cosmicube nodes can now have scripts.
+	- Custom item requirements can now be scripted.
+
+### Changes
+- Cosmicube node image loading now only happens when on screen.
+	- Entering the menu should now be less memory intensive.
+
+### Removals
+- Removed `"updogSave"` cosmicube item requirement (obsolete).
+
 ## 1.1.2 (? 2026)
 
 ### Additions

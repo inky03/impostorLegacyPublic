@@ -194,6 +194,8 @@ class CosmicubeSubState extends MusicBeatSubstate
 	
 	public function closeTween():Void
 	{
+		if (ScriptConstants.stopping(scriptGroup.call('onClose', []))) return;
+		
 		lockMovement = true;
 		
 		FlxG.sound.play(Paths.sound('cancelMenu'), .5);
@@ -208,6 +210,8 @@ class CosmicubeSubState extends MusicBeatSubstate
 		FlxTween.tween(overlayCamera, {alpha: 0}, .25, {ease: FlxEase.sineIn});
 		FlxTween.tween(cubeCamera, {alpha: 0, y: cubeCamera.y + 120}, .25, {ease: FlxEase.sineIn, onComplete: function(_) close()});
 		FlxTween.tween(awardCamera, {alpha: 0}, .25, {ease: FlxEase.sineIn});
+		
+		scriptGroup.call('onClosePost', []);
 	}
 	
 	public function initCosmicube(id:String):Void
@@ -269,12 +273,10 @@ class CosmicubeSubState extends MusicBeatSubstate
 	
 	public override function update(elapsed:Float):Void
 	{
-		super.update(elapsed);
-		
-		FlxG.mouse.getViewPosition(cubeCamera, mousePos);
-		
 		if (!lockMovement)
 		{
+			FlxG.mouse.getViewPosition(cubeCamera, mousePos);
+			
 			if (controls.UI_LEFT_P) move(WEST);
 			if (controls.UI_RIGHT_P) move(EAST);
 			if (controls.UI_DOWN_P) move(SOUTH);
@@ -358,6 +360,8 @@ class CosmicubeSubState extends MusicBeatSubstate
 				
 			cubeCamera.zoom = MathUtil.fpsLerp(cubeCamera.zoom, 1, lerpVal);
 		}
+		
+		super.update(elapsed);
 	}
 	
 	override function closeSubState()
@@ -400,10 +404,14 @@ class CosmicubeSubState extends MusicBeatSubstate
 	{
 		FlxG.sound.play(Paths.sound(node == null ? 'panelDisappear' : 'cosmicubePop'), .9);
 		
+		if (ScriptConstants.stopping(scriptGroup.call('onSelectNode', [node, lastSelectedNode]))) return;
+		
 		if (lastSelectedNode != null)
 		{
 			lastSelectedNode.selected = false;
 			lastSelectedNode.refresh();
+			
+			lastSelectedNode.curScript?.executeFunc('onDeselect', [], lastSelectedNode);
 		}
 		
 		if (node != null)
@@ -416,11 +424,19 @@ class CosmicubeSubState extends MusicBeatSubstate
 		
 		selectedNode = node;
 		updateInfo();
+		
+		node?.curScript?.executeFunc('onSelect', [], node);
 	}
 	
 	public function equipNode(node:CosmicubeNode):Void
 	{
 		if (node.meta == null) return;
+		
+		if (
+			ScriptConstants.stopping(scriptGroup.call('onEquipNode', [node])) ||
+			ScriptConstants.stopping(node.curScript?.executeFunc('onEquip', [], node))
+		)
+			return;
 		
 		var pulseColor:FlxColor = FlxColor.WHITE;
 		var reload:Bool = false;
@@ -472,6 +488,9 @@ class CosmicubeSubState extends MusicBeatSubstate
 			});
 			updateInfo();
 		}
+		
+		scriptGroup.call('onEquipNodePost', [node]);
+		node.curScript?.executeFunc('onEquipPost', [], node);
 	}
 	
 	function checkCosmiCollectorAward():Void
@@ -520,22 +539,18 @@ class CosmicubeSubState extends MusicBeatSubstate
 	
 	public function getClickedNode(parent:CosmicubeNode):CosmicubeNode
 	{
-		var clickedNode:CosmicubeNode = null;
+		if (parent == null || !parent.alive) return null;
 		
-		if (parent.parent == null && FlxG.mouse.overlaps(parent.bg, cubeCamera)) return parent;
+		if (FlxG.mouse.overlaps(parent.bg, cubeCamera)) return parent;
 		
-		for (n in parent.attachedNodes)
+		for (node in parent.attachedNodes)
 		{
-			if (n == null) continue;
-			var node:CosmicubeNode = cast n;
-			if (node.bg == null || !node.bg.visible || !node.bg.active) continue;
+			var clickedNode:CosmicubeNode = getClickedNode(cast node);
 			
-			if (FlxG.mouse.overlaps(node.bg, cubeCamera)) return node;
-			
-			clickedNode ??= getClickedNode(node);
+			if (clickedNode != null) return clickedNode;
 		}
 		
-		return clickedNode;
+		return null;
 	}
 	
 	public inline function isEquipped(node:CosmicubeNode):Bool

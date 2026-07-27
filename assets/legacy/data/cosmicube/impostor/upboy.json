@@ -5,7 +5,7 @@
 	
 	"title": "UPDOG BF",
 
-    "requirement": "updogSave",
+    "requirement": "scripted",
 	
 	"node": {
 		"direction": "east",

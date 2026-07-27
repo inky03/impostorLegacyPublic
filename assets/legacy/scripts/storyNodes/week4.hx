@@ -13,9 +13,7 @@ var tuffness:Float = 0;
 
 function onLoad():Void {
 	if (finale)
-		this.meta = WeekData.weeksLoaded.get('week4Finale');
-	
-	meta = this.meta;
+		meta = WeekData.weeksLoaded.get('week4Finale');
 }
 
 function onCreatePost():Void {

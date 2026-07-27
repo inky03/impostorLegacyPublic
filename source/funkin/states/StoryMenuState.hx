@@ -243,7 +243,7 @@ class StoryMenuState extends AmongUIState
 	{
 		var node:StoryNode = cast cruiser.followingNode;
 		
-		if (node.curScript?.executeFunc('onAccept', [], node) == ScriptConstants.STOP_FUNC) return;
+		if (ScriptConstants.stopping(node.curScript?.executeFunc('onAccept', [], node))) return;
 		
 		if (node?.meta != null)
 		{

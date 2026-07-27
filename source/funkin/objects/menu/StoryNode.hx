@@ -44,19 +44,20 @@ class StoryNode extends BaseNode {
 		var scriptPath:String = FunkinScript.getPath('scripts/storyNodes/$id');
 		
 		if (FunkinAssets.exists(scriptPath)) {
-			curScript = FunkinScript.fromFile(scriptPath);
+			curScript = FunkinScript.fromFile(scriptPath, false);
 			
-			curScript.set('StoryMenuState', StoryMenuState);
-			curScript.set('ProgressionUtil', ProgressionUtil);
-			
-			curScript.set('this', this);
-			curScript.set('meta', meta);
-			curScript.set('center', center);
-			curScript.set('connector', connector);
-			curScript.set('hoverDots', hoverDots);
-			
-			curScript.executeFunc('onLoad', [], this);
-			curScript.executeFunc('onCreate', [], this);
+			if (curScript.__garbage)
+			{
+				curScript = null;
+			}
+			else
+			{
+				curScript.set('StoryMenuState', StoryMenuState);
+				curScript.addParent(this);
+				
+				curScript.tryExecute();
+				curScript.executeFunc('onLoad', [], this);
+			}
 		}
 		
 		unlocked = isUnlocked();

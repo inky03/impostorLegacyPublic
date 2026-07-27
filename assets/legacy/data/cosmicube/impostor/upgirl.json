@@ -4,7 +4,7 @@
 	"completionExcluded": true,
 	
 	"title": "UPDOG GF",
-    "requirement": "updogSave",
+    "requirement": "scripted",
 	
 	"node": {
 		"direction": "east",

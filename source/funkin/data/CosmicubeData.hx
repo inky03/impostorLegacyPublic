@@ -38,7 +38,6 @@ enum ShopRequirement
 	SONG(song:String, ?accuracy:Float, ?rank:String);
 	COMPLETION(percent:Float);
 	GLOBAL_COMPLETION(percent:Float);
-	UPDOG_SAVE;
 	SCRIPTED;
 	NONE;
 }

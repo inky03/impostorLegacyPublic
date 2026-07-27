@@ -4,15 +4,13 @@ import funkin.data.CosmicubeData;
 import funkin.data.CharacterData;
 import funkin.objects.HealthIcon;
 import funkin.objects.menu.BaseNode;
-
-using StringTools;
-
-#if sys
-import sys.FileSystem;
-#end
+import funkin.scripts.FunkinScript;
+import flixel.math.FlxRect;
 
 class CosmicubeNode extends BaseNode
 {
+	public var curScript:FunkinScript;
+	
 	public var unlocked:Bool = false;
 	
 	public var requirement:ShopRequirement = NONE;
@@ -30,12 +28,18 @@ class CosmicubeNode extends BaseNode
 	public var meta:ShopItemData;
 	public var info:CharacterInfo = null;
 	
+	var initialized:Bool = false;
+	var drawRange:Float = 70;
+	var _hitTest:FlxRect;
+	
 	public function new(x:Float = 0, y:Float = 0, id:String = '', ?data:ShopItemData)
 	{
 		super(x, y, id);
 		this.meta = data;
 		this.nodeDistance = 250;
 		this.connectorClass = CosmicubeNodeConnector;
+		
+		_hitTest = FlxRect.get();
 		
 		bg = new FlxSprite();
 		bg.frames = Paths.getSparrowAtlas('menu/cosmicube/node');
@@ -49,13 +53,13 @@ class CosmicubeNode extends BaseNode
 		overlay.frames = Paths.getSparrowAtlas('menu/cosmicube/node');
 		overlay.animation.addByPrefix('main', 'overlay');
 		
-		priceTag = new FlxText(0, 0, bg.width, 'IDK', 36);
+		priceTag = new FlxText(0, 0, bg.width, '', 36);
 		priceTag.setFormat(Paths.font('ariblk.ttf'), 36, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		priceTag.borderSize = 3;
 		
 		setup();
 		
-		for (obj in [bg, white, portrait, icon, overlay, priceTag])
+		for (obj in [bg, white, overlay, priceTag])
 		{
 			if (obj == null) continue;
 			
@@ -64,6 +68,27 @@ class CosmicubeNode extends BaseNode
 			obj.y -= Math.round(obj.height * .5);
 			obj.x -= Math.round(obj.width * .5);
 			add(obj);
+		}
+		
+		bg.active = white.active = overlay.active = false;
+		
+		var scriptPath:String = FunkinScript.getPath('scripts/cosmicubeNodes/$id');
+		
+		if (FunkinAssets.exists(scriptPath)) {
+			curScript = FunkinScript.fromFile(scriptPath, false);
+			
+			if (curScript.__garbage)
+			{
+				curScript = null;
+			}
+			else
+			{
+				curScript.set('CosmicubeData', CosmicubeData);
+				curScript.addParent(this);
+				
+				curScript.tryExecute();
+				curScript.executeFunc('onLoad', [], this);
+			}
 		}
 	}
 	
@@ -76,7 +101,7 @@ class CosmicubeNode extends BaseNode
 			unlocked = ClientPrefs.cosmicubeUnlocks.contains(id);
 			
 			priceTag.y = 58;
-			priceTag.text = Std.string(price = meta.price);
+			price = meta.price;
 			
 			requirement =
 				{
@@ -110,9 +135,6 @@ class CosmicubeNode extends BaseNode
 							{
 								case 'scripted':
 									SCRIPTED;
-									
-								case 'updog', 'updogsave', 'updog_save':
-									UPDOG_SAVE;
 									
 								default:
 									if (meta.song != null)
@@ -182,9 +204,6 @@ class CosmicubeNode extends BaseNode
 									NONE;
 								}
 								
-							case 'updog', 'updogsave', 'updog_save':
-								UPDOG_SAVE;
-								
 							case 'scripted':
 								SCRIPTED;
 								
@@ -203,37 +222,6 @@ class CosmicubeNode extends BaseNode
 				}
 				
 			bg.color = FlxColor.RED;
-			
-			if (Paths.fileExists('data/characters/$id.json')) info = CharacterParser.fetchInfo(id);
-			
-			var color:Dynamic = meta.color;
-			color ??= info?.healthbar_colour;
-			color ??= info?.healthbar_colors;
-			
-			var nodeIcon:Dynamic = (meta.icon ?? info?.healthicon);
-			
-			if (color != null)
-			{
-				if (color is Array)
-				{
-					bg.color = FlxColor.fromRGB(color[0], color[1], color[2]);
-				}
-				else if (color is Int)
-				{
-					bg.color = cast color;
-				}
-			}
-			
-			if (icon != null)
-			{
-				icon = new HealthIcon(nodeIcon);
-				icon.setPosition(-60, -60);
-			}
-			
-			overlay.color = bg.color;
-			
-			portrait = new FlxSprite().loadGraphic(Paths.image('menu/cosmicube/items/$id'));
-			portrait.antialiasing = ClientPrefs.globalAntialiasing;
 		}
 		else
 		{
@@ -241,13 +229,15 @@ class CosmicubeNode extends BaseNode
 			bg.visible = false;
 			overlay.visible = false;
 		}
-		
-		refresh();
 	}
 	
 	public function requirementIsComplete():Bool
 	{
 		if (ClientPrefs.forceUnlockReq) return true;
+		
+		var result:Dynamic = curScript?.executeFunc('requirementIsComplete', [], this);
+		
+		if (result != null) return (result is Bool && result == true);
 		
 		return switch (requirement)
 		{
@@ -281,11 +271,7 @@ class CosmicubeNode extends BaseNode
 			case GLOBAL_COMPLETION(percent):
 				ProgressionUtil.calculateCompletion().percent >= percent;
 				
-			case UPDOG_SAVE:
-				hasUpdogSaveData();
-				
 			case SCRIPTED:
-				// ill do that later
 				true;
 				
 			default:
@@ -305,13 +291,6 @@ class CosmicubeNode extends BaseNode
 		return parsed;
 	}
 	
-	inline function hasUpdogSaveData():Bool
-	{
-		final appDataPath = Sys.getEnv("AppData");
-		if (appDataPath == null || appDataPath.length == 0) return false;
-		return FileSystem.isDirectory('$appDataPath/UpdogTeam');
-	}
-	
 	public inline function canProgress():Bool
 	{
 		return (parent == null ? true : cast(parent, CosmicubeNode).unlocked);
@@ -324,10 +303,14 @@ class CosmicubeNode extends BaseNode
 	
 	public inline function isSuperSecret():Bool
 	{
-		return (requirement == UPDOG_SAVE && !requirementIsComplete());
+		var result:Dynamic = curScript?.executeFunc('isSuperSecret', [], this);
+		
+		if (result != null) return (result is Bool && result == true);
+		
+		return false;
 	}
 	
-	public function refresh():Void
+	public function refresh(canInit:Bool = false):Void
 	{
 		if (isSuperSecret())
 		{
@@ -355,7 +338,10 @@ class CosmicubeNode extends BaseNode
 		
 		priceTag.visible = (revealed && !unlocked);
 		
+		if (canInit && !initialized) initNode();
+		
 		if (portrait != null) portrait.color = (revealed ? FlxColor.WHITE : FlxColor.BLACK);
+		
 		if (icon != null)
 		{
 			icon.visible = revealed;
@@ -364,11 +350,103 @@ class CosmicubeNode extends BaseNode
 		}
 		
 		if (connector != null) connector.color = (unlocked ? FlxColor.WHITE : (available ? 0xff06c864 : 0xff4a4a4a));
+		
+		if (initialized) curScript?.executeFunc('onRefresh', [], this);
+		
+		if (canInit) initialized = true;
+	}
+	
+	@:access(funkin.objects.HealthIcon)
+	function initNode():Void
+	{
+		if (meta == null) return;
+		
+		if (Paths.fileExists('data/characters/$id.json')) info = CharacterParser.fetchInfo(id);
+		
+		var color:Dynamic = meta.color;
+		color ??= info?.healthbar_colour;
+		color ??= info?.healthbar_colors;
+		
+		if (color != null)
+		{
+			if (color is Array)
+			{
+				bg.color = FlxColor.fromRGB(color[0], color[1], color[2]);
+			}
+			else if (color is Int)
+			{
+				bg.color = cast color;
+			}
+		}
+		
+		overlay.color = bg.color;
+		
+		priceTag.text = Std.string(price);
+		
+		portrait = new FlxSprite();
+		portrait.loadGraphic(Paths.image('menu/cosmicube/items/$id'));
+		portrait.y -= Math.round(portrait.height * .5);
+		portrait.x -= Math.round(portrait.width * .5);
+		portrait.active = false;
+		
+		insert(members.indexOf(overlay), portrait);
+		
+		var nodeIcon:Dynamic = (meta.icon ?? info?.healthicon);
+		
+		if (nodeIcon != null)
+		{
+			icon ??= new HealthIcon();
+			icon.updateOffset = false;
+			icon.changeIcon(nodeIcon);
+			icon.scale.set(.75, .75);
+			icon.updateHitbox();
+			icon.active = false;
+			
+			icon.setPosition(-70 - Math.round(icon.width * .5), -70 - Math.round(icon.height * .5));
+			
+			add(icon);
+		}
 	}
 	
 	public override function onAttach(parent:BaseNode):Void
 	{
 		refresh();
+	}
+	
+	public override function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+		
+		curScript?.executeFunc('onUpdate', [elapsed], this);
+		curScript?.executeFunc('onUpdatePost', [elapsed], this); // sure why not
+	}
+	
+	@:access(flixel.FlxCamera)
+	public override function draw():Void
+	{
+		if (initialized) return super.draw();
+		
+		for (camera in getCamerasLegacy())
+		{
+			if (!camera.visible || !camera.exists || !camera.containsRect(_hitTest.set(
+				bg.x - drawRange - camera.scroll.x * scrollFactor.x,
+				bg.y - drawRange - camera.scroll.y * scrollFactor.y,
+				bg.width + drawRange * 2,
+				bg.height + drawRange * 2
+			))) continue;
+			
+			refresh(true);
+		}
+	}
+	
+	public override function destroy():Void
+	{
+		_hitTest.put();
+		
+		curScript?.executeFunc('onDestroy', [], this);
+		curScript?.destroy();
+		
+		super.destroy();
 	}
 }
 

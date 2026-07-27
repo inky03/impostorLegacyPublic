@@ -341,4 +341,12 @@ class ProgressionUtil
 	{
 		return (ProgressionUtil.allImpostorSongs.count(s -> ProgressionUtil.songMeetsRank(s, 'S')) >= 5);
 	}
+	
+	public static function hasAppData(folder:String = 'UpdogTeam'):Bool
+	{
+		final appDataPath = Sys.getEnv('AppData');
+		if (appDataPath == null || appDataPath.length == 0) return false;
+		
+		return FileSystem.isDirectory('$appDataPath/$folder');
+	}
 }
