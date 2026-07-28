@@ -64,8 +64,6 @@ class DebugTextPlugin extends FlxTypedGroup<DebugText>
 		instance.remove(text, true);
 		instance.insert(0, text);
 		
-		instance.camera = CameraUtil.lastCamera;
-		
 		posText();
 	}
 	
@@ -130,6 +128,8 @@ class DebugText extends FlxText
 	
 	override function draw()
 	{
+		camera = CameraUtil.lastCamera;
+		
 		if (_dirty)
 		{
 			final traceCounter = traceCount > 1 ? '[' + '$traceCount' + ']' + ' - ' : '';
