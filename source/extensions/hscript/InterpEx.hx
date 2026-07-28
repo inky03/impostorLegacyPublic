@@ -119,7 +119,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		}
 	}
 	
-	function setTo(id:String, v:Dynamic):Dynamic
+	function setTo(id:String, v:Dynamic, canDefine:Bool = false):Dynamic
 	{
 		if (locals.exists(id))
 		{
@@ -148,6 +148,7 @@ class InterpEx extends crowplexus.hscript.Interp
 			if (sharedFields != null && sharedFields.exists(id)) sharedFields.set(id, v);
 		}
 		
+		if (canDefine) setVar(id, v);
 		return v;
 	}
 	
@@ -209,7 +210,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		switch (Tools.expr(e1))
 		{
 			case EIdent(id):
-				return setTo(id, v);
+				return setTo(id, v, true);
 			case EField(e, f, s):
 				var e = expr(e);
 				if (e == null) if (!s) error(EInvalidAccess(f));
