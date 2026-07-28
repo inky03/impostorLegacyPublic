@@ -928,7 +928,8 @@ class CosmeticsSubstate extends MusicBeatSubstate
 		{
 			var info = (Paths.fileExists('data/characters/$id.json', LOOSE) ? CharacterParser.fetchInfo(id) : null);
 			
-			var color:Dynamic = (data.color ?? info?.healthbar_colour);
+			var color:Dynamic = data.color;
+			color ??= info?.healthbar_colour;
 			color ??= info?.healthbar_colors;
 			
 			if (Std.isOfType(color, Array))
