@@ -298,7 +298,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		if (v is Array) return (v : Array<Dynamic>).iterator();
 		
 		var iter:Dynamic = v.iterator;
-		v = (iter != null ? (iter : haxe.Constraints.Function)() : v);
+		v = (iter != null ? #if hl Reflect.callMethod(v, iter, []) #else (iter : haxe.Constraints.Function)() #end : v);
 		
 		if (v.hasNext == null || v.next == null)
 			error(EInvalidIterator(v));
@@ -318,7 +318,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		}
 		
 		var iter:Dynamic = v.keyValueIterator;
-		v = (iter != null ? (iter : haxe.Constraints.Function)() : v);
+		v = (iter != null ? #if hl Reflect.callMethod(v, iter, []) #else (iter : haxe.Constraints.Function)() #end : v);
 		
 		if (v.hasNext == null || v.next == null)
 			error(EInvalidIterator(v));
