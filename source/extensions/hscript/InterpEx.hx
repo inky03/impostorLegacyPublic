@@ -33,20 +33,6 @@ class InterpEx extends crowplexus.hscript.Interp
 		showPosOnLog = false;
 	}
 	
-	override function makeIterator(v:Dynamic):Iterator<Dynamic>
-	{
-		#if ((flash && !flash9) || (php && !php7 && haxe_ver < '4.0.0'))
-		if (v.iterator != null) v = v.iterator();
-		#else
-		// DATA CHANGE //does a null check because this crashes on debug build
-		if (v.iterator != null) try
-			v = v.iterator()
-		catch (e:Dynamic) {};
-		#end
-		if (v.hasNext == null || v.next == null) error(EInvalidIterator(v));
-		return v;
-	}
-	
 	public var parentFields:haxe.ds.ObjectMap<Dynamic, Array<String>> = new haxe.ds.ObjectMap();
 	public var parents:Array<Dynamic> = [];
 	public var parent(default, set):Dynamic;
@@ -297,9 +283,116 @@ class InterpEx extends crowplexus.hscript.Interp
 				{
 					expr(e);
 				}
+			
+			case EFor(i, v, it, e):
+				forLoop(i, v, it, e);
+				return null;
 				
 			default:
 				super.expr(e);
 		}
+	}
+	
+	override function makeIterator(v:Dynamic):Iterator<Dynamic>
+	{
+		if (v is Array) return (v : Array<Dynamic>).iterator();
+		
+		var iter:Dynamic = v.iterator;
+		v = (iter != null ? (iter : haxe.Constraints.Function)() : v);
+		
+		if (v.hasNext == null || v.next == null)
+			error(EInvalidIterator(v));
+		
+		return v;
+	}
+	
+	function makeKeyValueIterator(v:Dynamic):KeyValueIterator<Dynamic, Dynamic>
+	{
+		if ((v is haxe.ds.IntMap) || (v is haxe.ds.StringMap) || (v is haxe.ds.ObjectMap) || (v is haxe.ds.EnumValueMap))
+		{
+			return (v : haxe.Constraints.IMap<Dynamic, Dynamic>).keyValueIterator();
+		}
+		else if (v is Array)
+		{
+			return (v : Array<Dynamic>).keyValueIterator();
+		}
+		
+		var iter:Dynamic = v.keyValueIterator;
+		v = (iter != null ? (iter : haxe.Constraints.Function)() : v);
+		
+		if (v.hasNext == null || v.next == null)
+			error(EInvalidIterator(v));
+		
+		return v;
+	}
+	
+	override function forLoop(n, v, it:Dynamic, e):Void
+	{
+		final old = declared.length;
+		final ef = expr.bind(e);
+		
+		declared.push({ n : n, old : locals.get(n) });
+		
+		if (v == null)
+		{
+			var it = makeIterator(expr(it));
+			var next:Void -> Dynamic = it.next, hasNext:Void -> Bool = it.hasNext;
+			
+			while (hasNext())
+			{
+				locals.set(n, { r: next(), const: false });
+				
+				if (!loopRun(ef)) break;
+			}
+		}
+		else // keyvalue
+		{
+			declared.push({ n : v, old : locals.get(v) });
+			
+			var it = makeKeyValueIterator(expr(it));
+			var next:Void -> Dynamic = it.next, hasNext:Void -> Bool = it.hasNext;
+			
+			while (hasNext())
+			{
+				var r:Dynamic = next();
+				
+				if (r.key == null) error(ECustom('$v has no field key'));
+				if (r.value == null) error(ECustom('$v has no field value'));
+				
+				locals.set(n, { r: r.key, const: false });
+				locals.set(v, { r: r.value, const: false });
+				
+				if (!loopRun(ef)) break;
+			}
+		}
+		
+		restore(old);
+	}
+	
+	inline function loopRun(f:Void -> Void)
+	{
+		var cont:Bool = true;
+		
+		try
+		{
+			f();
+		}
+		catch (err:Any)
+		{
+			switch (Type.typeof(err))
+			{
+				case ValueType.TEnum(_): // just cuase someone wouldnt make the enum PUBLIC DIE
+					switch (Type.enumConstructor(err)) {
+						case 'SContinue':
+						case 'SBreak': cont = false;
+						default: throw err;
+					}
+					
+				default:
+					throw err;
+			}
+		}
+		
+		return cont;
 	}
 }
