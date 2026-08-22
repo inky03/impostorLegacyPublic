@@ -38,6 +38,12 @@ class DiscordClient
 	 * use `changePresence` to change the displayed presence
 	 */
 	public static final discordPresence:DiscordRichPresence = DiscordRichPresence.create();
+
+	/**
+	 * The string value of the currently connected discord user.
+	 * Only used for gags in individual mods, it serves no real purpose.
+	 */
+	public static var username:String = 'Unknown';
 	
 	/**
 	 * Initiates the discord thread and hooks to `rpcId`
@@ -113,7 +119,11 @@ class DiscordClient
 	 */
 	public static function close():Void
 	{
-		if (initiated) Discord.Shutdown();
+		if (initiated) 
+		{
+			Discord.Shutdown();
+			Logger.log('user [$username] has disconnected.', NOTICE);
+		}
 		initiated = false;
 	}
 	
@@ -124,10 +134,9 @@ class DiscordClient
 	{
 		final user:String = cast request[0].username;
 		final discriminator:String = cast request[0].discriminator;
-		
-		var discordUser = discriminator != '0' ? '[$user#$discriminator]' : '[$user]';
-		
-		Logger.log('Successfully connect to user $discordUser', NOTICE);
+
+		username = discriminator != '0' ? '$user#$discriminator' : '$user';
+		Logger.log('Successfully connected to user [$username]', NOTICE);
 		
 		changePresence();
 	}
