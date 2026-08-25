@@ -239,9 +239,10 @@ class InterpEx extends crowplexus.hscript.Interp
 		return call(o, method, args);
 	}
 	
+	#if (hl)
 	override public function get(o:Dynamic, f:String):Dynamic
 	{
-		if (o is Enum) // fixes hl too
+		if (o is Enum)
 		{
 			var e = Type.createEnum(o, f);
 			if (e != null) return e;
@@ -251,6 +252,7 @@ class InterpEx extends crowplexus.hscript.Interp
 		
 		return super.get(o, f);
 	}
+	#end
 	
 	override public function expr(e:Expr):Dynamic
 	{
