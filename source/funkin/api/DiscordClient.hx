@@ -39,10 +39,6 @@ class DiscordClient
 	 */
 	public static final discordPresence:DiscordRichPresence = DiscordRichPresence.create();
 
-	/**
-	 * The string value of the currently connected discord user.
-	 * Only used for gags in individual mods, it serves no real purpose.
-	 */
 	public static var username:String = 'Unknown';
 	
 	/**
@@ -112,6 +108,7 @@ class DiscordClient
 	static function onDisconnect(errorCode:Int, message:cpp.ConstCharStar):Void
 	{
 		Logger.log('Discord Disconnected. [$errorCode: ${(cast message : String)}]');
+		username = null;
 	}
 	
 	/**
@@ -123,6 +120,7 @@ class DiscordClient
 		{
 			Discord.Shutdown();
 			Logger.log('user [$username] has disconnected.', NOTICE);
+			username = null;
 		}
 		initiated = false;
 	}
