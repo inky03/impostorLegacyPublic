@@ -217,7 +217,7 @@
 	"dance_every": 2,
 	"gameover_intial_sound": null,
 	"flags": {
-		"turbulenceOffset": [0, 30],
+		"turbulenceOffset": [220, -120],
 		"finaleHealthBarColor": [
 			"0xFF67FF65",
 			"0xFFE3FF7E",

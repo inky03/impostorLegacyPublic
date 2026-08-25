@@ -90,7 +90,7 @@ function onCreatePost()
 
 function evil():Void
 { // stupid bf claw stuff
-	var controller = (boyfriend.animateAtlas?.animation ?? boyfriend.animation);
+	var controller = boyfriend.animation;
 	
 	var idleOffset = (boyfriend.animOffsets.get('idle') ?? boyfriend.animOffsets.get('danceLeft') ?? [0, 0]).copy();
 	for (offset in boyfriend.animOffsets)
@@ -103,14 +103,14 @@ function evil():Void
 	boyfriend.setPosition(claw.x, claw.y);
 	boyfriend.updateHitbox();
 	
-	if (boyfriend.animateAtlas != null)
+	if (boyfriend.isAnimate)
 	{
-		var curFrames = boyfriend.animateAtlas.animation.curAnim.frames;
-		var wholeBounds = boyfriend.animateAtlas.timeline.getWholeBounds();
-		var idleBounds = boyfriend.animateAtlas.timeline.getBounds(curFrames[curFrames.length - 1]);
+		var curFrames = boyfriend.animation.curAnim.frames;
+		var wholeBounds = boyfriend.timeline.getWholeBounds();
+		var idleBounds = boyfriend.timeline.getBounds(curFrames[curFrames.length - 1]);
 		
-		boyfriend.animateAtlas.setSize(idleBounds.width, idleBounds.height);
-		boyfriend.animateAtlas.origin.set((idleBounds.x - wholeBounds.x) + (idleBounds.width * .5), (idleBounds.y - wholeBounds.y) + (idleBounds.height * .5));
+		boyfriend.setSize(idleBounds.width, idleBounds.height);
+		boyfriend.origin.set((idleBounds.x - wholeBounds.x) + (idleBounds.width * .5), (idleBounds.y - wholeBounds.y) + (idleBounds.height * .5));
 		
 		boyfriend.x -= (idleBounds.x - wholeBounds.x);
 		boyfriend.y -= (idleBounds.y - wholeBounds.y - idleBounds.width * .5 * boyfriend.scale.x + idleBounds.height * .5 / boyfriend.scale.x);
@@ -127,7 +127,7 @@ function evil():Void
 			offset[0] = Math.max(offset[1] * .5, 0);
 			offset[1] = Math.max(offset[0] * .5, 0);
 			
-			if (boyfriend.animateAtlas.timeline.name != anim.timeline.name) continue;
+			if (boyfriend.timeline.name != anim.timeline.name) continue;
 			
 			offset[0] += Math.max((poseBounds.x - idleBounds.x) * .5, 0);
 			offset[1] += Math.max((idleBounds.y - poseBounds.y) * .5, 0);
