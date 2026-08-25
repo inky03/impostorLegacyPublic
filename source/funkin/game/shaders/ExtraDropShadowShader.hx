@@ -1,23 +1,84 @@
 package funkin.game.shaders;
 
+/**
+ * Based on FNF's `DropShadowShader`, with more features and support for multiple lighting layers!
+ * This shader is used for more complex shading effects (ex. skins on Lights Down, Reactor, Defeat, etc).
+ * 
+ * A 4 x 5 color matrix (refer to OpenFL's [ColorMatrixFilter](https://api.openfl.org/openfl/filters/ColorMatrixFilter.html) for reference)
+ * is used to transform color for shading and lighting layers, which allows to do, for example, saturation changes and hue rotation!
+ * 
+ * You can mess with color matrix here: https://kazzkiq.github.io/svg-color-filter/. Note offsets (the last row of the matrix) must be multiplied by 255 when working with this shader.
+*/
+@:access(animate.internal.filters.AdjustColorFilter)
 class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 {
+	/**
+	 * Whether anti-aliasing should be applied or not, used to smooth out any hard edges the brightness thresholding creates, regardless of `roughness`.
+	 * Defaults to true, but won't do any effect until changing `antialiasStages`.
+	 */
 	public var antialiasing(get, set):Bool;
-	public var operation(default, set):LayerOperation = REPLACE;
-	public var hollowColorMatrix(get, set):Array<Float>;
-	public var colorMatrix(get, set):Array<Float>;
-	public var layers:Array<ExtraDropShadowLayer>;
-	public var thresholdMode(get, set):ThreshMode;
+	/**
+	 * The amount of anti-alias samples per-pixel.
+	 * Defaults to 0, which removes any smoothing.
+	 */
 	public var antialiasStages(get, set):Float;
-	public var roughness(get, set):Float;
+	
+	/**
+	 * The mode to apply on the color transforms of every layer.
+	 */
+	public var operation(default, set):LayerOperation = REPLACE;
+	/**
+	 * The color matrix to apply on all colors outside of the brightness `threshold`, which can be modified to apply effects on stuff such as outlines.
+	 */
+	public var hollowColorMatrix(get, set):Array<Float>;
+	/**
+	 * The initial color matrix to apply on all colors within the brightness `threshold`, used for shading.
+	 */
+	public var colorMatrix(get, set):Array<Float>;
+	/**
+	 * An array with all lighting layers being applied to this drop shadow effect.
+	 * A maximum of 6 layers can be used at a time.
+	 */
+	public var layers:Array<ExtraDropShadowLayer>;
+	/**
+	 * The mode to use to measure color against this drop shadow's threshold.
+	 */
+	public var thresholdMode(get, set):ThreshMode;
+	/**
+	 * The brightness threshold for `colorMatrix` to be applied instead of `hollowColorMatrix`.
+	 * Defaults to 0, which always applies the `colorMatrix`.
+	 * 
+	 * This threshold isn't exact and may be additionally controlled with `roughness`.
+	 */
 	public var threshold(get, set):Float;
+	/**
+	 * Controls the roughness of the brightness threshold, used to smooth out any hard edges the brightness thresholding creates.
+	 * Defaults to 1, but can be increased to make the threshold transition sharper.
+	 */
+	public var roughness(get, set):Float;
+	/**
+	 * How much of this drop shadow effect's `colorMatrix` can get applied at maximum.
+	 */
 	public var strength(get, set):Float;
 	
+	/**
+	 * The sprite this drop shadow effect is attached to.
+	 * Note that setting this will automatically set the respective sprite's shader.
+	 */
 	public var attachedSprite(default, set):FlxSprite = null;
 	var __attachedSpriteHook:String -> Int -> Int -> Void;
 	
+	/**
+	 * The number of lighting layers that are currently active in this drop shadow effect.
+	 */
 	public var activeLayers(get, never):Int;
 	
+	/**
+	 * Copies another drop shadow effect into this drop shadow effect.
+	 * 
+	 * @param	from	The drop shadow effect to copy from.
+	 * @return	This `ExtraDropShadowShader` instance (useful for chaining)
+	 */
 	public function copyFrom(from:ExtraDropShadowShader):ExtraDropShadowShader
 	{
 		for (i => layer in layers) layer.copyFrom(from.layers[i]);
@@ -42,27 +103,69 @@ class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 		
 		return this;
 	}
+	/**
+	 * Sets this drop shadow effect's `colorMatrix`.
+	 * 
+	 * @param	matrix	The color matrix.
+	 * @return	This `ExtraDropShadowShader` instance (useful for chaining)
+	 */
 	public function setColorMatrix(matrix:Array<Float>):ExtraDropShadowShader
 	{
 		colorMatrix = matrix;
 		
 		return this;
 	}
+	/**
+	 * Sets this drop shadow effect's `colorMatrix` by Adobe Animate/Flash's Adjust Color calculation.
+	 * 
+	 * @param	brightness	The Adjust Color brightness.
+	 * @param	hue			The Adjust Color hue.
+	 * @param	contrast	The Adjust Color contrast.
+	 * @param	saturation	The Adjust Color saturation.
+	 * @return	This `ExtraDropShadowShader` instance (useful for chaining)
+	 */
 	public function setAdjustColor(brightness:Float = 0, hue:Float = 0, contrast:Float = 0, saturation:Float = 0):ExtraDropShadowShader
 	{
-		return setColorMatrix(@:privateAccess animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
+		return setColorMatrix(animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
 	}
+	/**
+	 * Sets this drop shadow effect's `hollowColorMatrix`.
+	 * 
+	 * @param	matrix	The color matrix.
+	 * @return	This `ExtraDropShadowShader` instance (useful for chaining)
+	 */
 	public function setHollowColorMatrix(matrix:Array<Float>):ExtraDropShadowShader
 	{
 		hollowColorMatrix = matrix;
 		
 		return this;
 	}
+	/**
+	 * Sets this drop shadow effect's `hollowColorMatrix` by Adobe Animate/Flash's Adjust Color calculation.
+	 * 
+	 * @param	brightness	The Adjust Color brightness.
+	 * @param	hue			The Adjust Color hue.
+	 * @param	contrast	The Adjust Color contrast.
+	 * @param	saturation	The Adjust Color saturation.
+	 * @return	This `ExtraDropShadowShader` instance (useful for chaining)
+	 */
 	public function setHollowAdjustColor(brightness:Float = 0, hue:Float = 0, contrast:Float = 0, saturation:Float = 0):ExtraDropShadowShader
 	{
-		return setHollowColorMatrix(@:privateAccess animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
+		return setHollowColorMatrix(animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
 	}
 	
+	/**
+	 * Adds a new layer to this drop shadow effect.
+	 * If the drop shadow effect already reached the maximum amount of layers `null` will be returned.
+	 * 
+	 * @param	colorMatrix	The color matrix to use for the layer.
+	 * @param	angle		The angle to use for the layer.
+	 * @param	distance	The distance to use for the layer.
+	 * @param	threshold	The threshold to use for the layer.
+	 * @param	strength	The strength to use for the layer.
+	 * @param	roughness	The threshold roughness to use for the layer.
+	 * @return	The new `ExtraDropShadowLayer` that was added (useful for chaining)
+	 */
 	public function addLayer(colorMatrix:Array<Float>, angle:Float = 0, distance:Float = 20, threshold:Float = .01, strength:Float = 1, roughness:Float = 1):ExtraDropShadowLayer
 	{
 		var rimlight:ExtraDropShadowLayer = getFreeLayer();
@@ -76,12 +179,18 @@ class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 		return rimlight.setColorMatrix(colorMatrix).setAttributes(angle, distance, threshold, strength, roughness);
 	}
 	
+	/**
+	 * Updates the drop shadow shader's frame information (used internally)
+	 */
 	public function updateFrameInfo(frame:Null<flixel.graphics.frames.FlxFrame>):Void
 	{
 		if (frame == null) return;
 		
-		frameBounds.value = [frame.uv.left, frame.uv.top, frame.uv.right, frame.uv.bottom];
-		angOffset.value = [frame.angle * flixel.math.FlxAngle.TO_RAD];
+		frameBounds.value[0] = frame.uv.left;
+		frameBounds.value[1] = frame.uv.top;
+		frameBounds.value[2] = frame.uv.right;
+		frameBounds.value[3] = frame.uv.bottom;
+		angOffset.value[0] = (frame.angle * flixel.math.FlxAngle.TO_RAD);
 	}
 	
 	function getFreeLayer():Null<ExtraDropShadowLayer>
@@ -258,6 +367,9 @@ class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 		// written by emi3
 	')
 	
+	/**
+	 * Creates a new `ExtraDropShadowShader`.
+	 */
 	public function new()
 	{
 		super();
@@ -269,9 +381,18 @@ class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 			antialiasing = attachedSprite.antialiasing;
 			scale.value[0] = attachedSprite.scale.x;
 			scale.value[1] = attachedSprite.scale.y;
+			
+			if (attachedSprite is animate.FlxAnimate && cast(attachedSprite, animate.FlxAnimate).isAnimate) {
+				for (i in 0 ... 4) frameBounds.value[i] = 0;
+				
+				return;
+			}
+			
 			updateFrameInfo(attachedSprite.frame);
 		}
 		
+		angOffset.value = [0];
+		frameBounds.value = [0, 0, 0, 0];
 		shadowMultipliers.value = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 		shadowOffsets.value = [0, 0, 0, 0];
 		hollowMultipliers.value = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
@@ -354,21 +475,57 @@ class ExtraDropShadowShader extends flixel.system.FlxAssets.FlxShader
 }
 
 // puppy 's first private class >w<Ok sorry
+/**
+ * Represents a lighting layer in the `ExtraDropShadowShader`
+ */
+@:access(animate.internal.filters.AdjustColorFilter)
 private class ExtraDropShadowLayer
 {
+	/**
+	 * Whether this lighting layer is active or not.
+	 */
 	public var active(get, set):Bool;
 	
+	/**
+	 * This lighting layer's angle.
+	 */
 	public var angle(get, set):Float;
+	/**
+	 * This lighting layer's distance.
+	 */
 	public var distance(get, set):Float;
+	/**
+	 * This lighting layer's brightness threshold, which can be adjusted to make lighting not leak into outlines.
+	 * This threshold isn't exact and may be additionally controlled with `roughness`.
+	 */
 	public var threshold(get, set):Float;
-	public var strength(get, set):Float;
+	/**
+	 * Controls the roughness of the brightness threshold, used to smooth out any hard edges the brightness thresholding creates.
+	 * Defaults to 1, but can be increased to make the threshold transition sharper.
+	 */
 	public var roughness(get, set):Float;
+	/**
+	 * How much of this lighting layer's `colorMatrix` can get applied at maximum.
+	 */
+	public var strength(get, set):Float;
 	
+	/**
+	 * This lighting layer's color matrix.
+	 */
 	public var colorMatrix(get, set):Array<Float>;
+	/**
+	 * This lighting layer's color multipliers.
+	 */
 	public var multipliers:Array<Float>;
+	/**
+	 * This lighting layer's color offsets.
+	 */
 	public var offsets:Array<Float>;
 	var data:Array<Float>;
 	
+	/**
+	 * Creates a new `ExtraDropShadowShader`
+	 */
 	public function new(multipliers:Array<Float>, offsets:Array<Float>, data:Array<Float>)
 	{
 		this.multipliers = multipliers;
@@ -376,6 +533,12 @@ private class ExtraDropShadowLayer
 		this.data = data;
 	}
 	
+	/**
+	 * Copies another lighting layer into this lighting layer.
+	 * 
+	 * @param	from	The lighting layer to copy from.
+	 * @return	This `ExtraDropShadowLayer` instance (useful for chaining)
+	 */
 	public function copyFrom(from:ExtraDropShadowLayer):ExtraDropShadowLayer
 	{
 		for (i in 0 ... 16) multipliers[i] = from.multipliers[i];
@@ -383,6 +546,17 @@ private class ExtraDropShadowLayer
 		
 		return setAttributes(from.angle, from.distance, from.threshold, from.strength, from.roughness);
 	}
+	/**
+	 * Sets this lighting layer's attributes.
+	 * 
+	 * @param	colorMatrix	The color matrix to use.
+	 * @param	angle		The angle to use.
+	 * @param	distance	The distance to use.
+	 * @param	threshold	The threshold to use.
+	 * @param	strength	The strength to use.
+	 * @param	roughness	The threshold roughness to use.
+	 * @return	This `ExtraDropShadowLayer` instance (useful for chaining)
+	 */
 	public inline function setAttributes(angle:Float = 0, distance:Float = 20, threshold:Float = .01, strength:Float = 1, roughness:Float = 1):ExtraDropShadowLayer
 	{
 		this.angle = angle;
@@ -393,15 +567,30 @@ private class ExtraDropShadowLayer
 		
 		return this;
 	}
+	/**
+	 * Sets this lighting layer's `colorMatrix`.
+	 * 
+	 * @param	matrix	The color matrix.
+	 * @return	This `ExtraDropShadowLayer` instance (useful for chaining)
+	 */
 	public function setColorMatrix(matrix:Array<Float>):ExtraDropShadowLayer
 	{
 		colorMatrix = matrix;
 		
 		return this;
 	}
+	/**
+	 * Sets this lighting layer's `colorMatrix` by Adobe Animate/Flash's Adjust Color calculation.
+	 * 
+	 * @param	brightness	The Adjust Color brightness.
+	 * @param	hue			The Adjust Color hue.
+	 * @param	contrast	The Adjust Color contrast.
+	 * @param	saturation	The Adjust Color saturation.
+	 * @return	This `ExtraDropShadowLayer` instance (useful for chaining)
+	 */
 	public function setAdjustColor(brightness:Float = 0, hue:Float = 0, contrast:Float = 0, saturation:Float = 0):ExtraDropShadowLayer
 	{
-		return setColorMatrix(@:privateAccess animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
+		return setColorMatrix(animate.internal.filters.AdjustColorFilter.getColorMatrix(brightness, hue, contrast, saturation));
 	}
 	
 	inline function get_active():Bool return (strength > 0);
@@ -439,17 +628,48 @@ private class ExtraDropShadowLayer
 	}
 }
 
+/**
+ * The mode to use when applying color on every layer of the extra drop shadow
+ */
 enum abstract LayerOperation(String) to String
 {
+	/**
+	 * Performs the color transform on the original texture's color, essentially overwriting the color from the last layer
+	 */
+	var OVERWRITE = 'replace';
+	/**
+	 * Same as `OVERWRITE`
+	 */
 	var REPLACE = 'replace';
+	
+	/**
+	 * Performs the color transform on the last layer's color, essentially stacking color transformations
+	 */
 	var STACK = 'stack';
 }
 
+/**
+ * The mode to use to measure color against the extra drop shadow threshold
+ */
 enum abstract ThreshMode(String) to String
 {
+	/**
+	 * Uses luminance (perceived color brightness).
+	 * Might be more viable for smoothing
+	 */
 	var LUMINANCE = 'luminance';
+	/**
+	 * Same as `LUMINANCE`
+	 */
 	var LUMINOSITY = 'luminance';
 	
+	/**
+	 * Uses value (maximum of RGB channels).
+	 * Might be more viable when working with dark sprites
+	 */
 	var VALUE = 'value';
+	/**
+	 * Same as `VALUE`
+	 */
 	var BRIGHTNESS = 'value';
 }
