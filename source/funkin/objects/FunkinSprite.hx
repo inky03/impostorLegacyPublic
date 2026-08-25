@@ -71,6 +71,14 @@ class FunkinSprite extends FlxAnimate
 	public var canPlayAnimations:Bool = true;
 	
 	/**
+	 * Texture atlas instance of this sprite, or null if it's not a texture atlas.
+	 */
+	@:deprecated('animateAtlas is deprecated. Use this FunkinSprite directly instead.')
+	public var animateAtlas(get, never):Null<FunkinSprite>;
+	
+	inline function get_animateAtlas():Null<FunkinSprite> return (library != null ? this : null);
+	
+	/**
 	 * Loads frames onto the sprite
 	 * 
 	 * It can load multiple sparrow, packer, and texture atlases simultaneously.

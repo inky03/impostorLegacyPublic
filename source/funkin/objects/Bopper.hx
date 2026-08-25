@@ -21,18 +21,6 @@ class Bopper extends FunkinSprite
 	public final onAnimationLoop = new FlxTypedSignal<(animName:String) -> Void>();
 	
 	/**
-	 * Texture atlas instance. Initiated through `loadAtlas`.
-	 */
-	@:deprecated("animateAtlas is deprecated. Use this Bopper directly instead.")
-	public var animateAtlas(get, never):Null<FlxAnimate>;
-	
-	function get_animateAtlas():Null<FlxAnimate>
-	{
-		if (library != null) return this;
-		return null;
-	}
-	
-	/**
 	 * danceEveryNumBeats multiplier
 	 */
 	public var danceSpeed:Int = 1;
