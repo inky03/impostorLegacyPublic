@@ -205,12 +205,42 @@
 				0,
 				0
 			],
-			"flipY": false,
 			"loop": false,
 			"fps": 24,
-			"anim": "scared",
-			"flipX": false,
+			"anim": "yellowReaction",
 			"indices": [],
+			"name": "hey"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"indices": [
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "yellowReaction-loop",
 			"name": "hey"
 		},
 		{

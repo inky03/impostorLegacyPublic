@@ -7,7 +7,7 @@
 	"description": "You don't seem to understand.",
 	"song": "triple-threat",
 	"requirement": "A",
-	
+	"icon": null,
 	
 	"node": {
 		"direction": "south",

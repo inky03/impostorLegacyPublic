@@ -2,86 +2,15 @@
 	"pausePortrait": "",
 	"animations": [
 		{
-			"offsets": [
-				11,
-				1
-			],
-			"loop": true,
-			"fps": 24,
-			"anim": "idle-loop",
-			"indices": [
-				10,
-				11,
-				12,
-				13
-			],
-			"name": "BF idle dance"
-		},
-		{
 			"loop": false,
-			"offsets": [
-				11,
-				1
-			],
-			"anim": "idle",
-			"fps": 24,
-			"name": "BF idle dance",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				15,
-				10
-			],
-			"anim": "singLEFTmiss",
-			"fps": 24,
-			"name": "BF NOTE LEFT MISS",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				1,
-				-32
-			],
-			"anim": "singDOWNmiss",
-			"fps": 24,
-			"name": "BF NOTE DOWN MISS",
-			"indices": []
-		},
-		{
-			"loop": false,
+			"flipY": false,
 			"offsets": [
 				-2,
-				73
+				65
 			],
-			"anim": "singUPmiss",
+			"anim": "hey",
 			"fps": 24,
-			"name": "BF NOTE UP MISS",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-27,
-				13
-			],
-			"anim": "singRIGHTmiss",
-			"fps": 24,
-			"name": "BF NOTE RIGHT MISS",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"flipY": false,
-			"offsets": [
-				1,
-				73
-			],
-			"anim": "singUP",
-			"fps": 24,
-			"name": "BF NOTE UP",
+			"name": "Blow-Hey",
 			"indices": [],
 			"flipX": false
 		},
@@ -89,150 +18,233 @@
 			"loop": false,
 			"flipY": false,
 			"offsets": [
-				-40,
-				9
-			],
-			"anim": "singRIGHT",
-			"fps": 24,
-			"name": "BF NOTE RIGHT",
-			"indices": [],
-			"flipX": false
-		},
-		{
-			"loop": false,
-			"flipY": false,
-			"offsets": [
-				1,
-				-44
-			],
-			"anim": "singDOWN",
-			"fps": 24,
-			"name": "BF NOTE DOWN",
-			"indices": [],
-			"flipX": false
-		},
-		{
-			"loop": false,
-			"flipY": false,
-			"offsets": [
-				15,
-				9
+				-3,
+				64
 			],
 			"anim": "singLEFT",
 			"fps": 24,
-			"name": "BF NOTE LEFT",
+			"name": "Blow-Left",
+			"indices": [],
+			"flipX": false
+		},
+		{
+			"loop": false,
+			"flipY": false,
+			"offsets": [
+				-14,
+				63
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "Blow-Down",
+			"indices": [],
+			"flipX": false
+		},
+		{
+			"loop": false,
+			"flipY": false,
+			"offsets": [
+				-2,
+				64
+			],
+			"anim": "singUP",
+			"fps": 24,
+			"name": "Blow-Up",
+			"indices": [],
+			"flipX": false
+		},
+		{
+			"loop": false,
+			"flipY": false,
+			"offsets": [
+				-2,
+				64
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "Blow-Right",
 			"indices": [],
 			"flipX": false
 		},
 		{
 			"offsets": [
-				8,
-				9
+				-2,
+				65
 			],
 			"flipY": false,
-			"loop": false,
-			"fps": 24,
-			"anim": "hey",
-			"flipX": false,
-			"indices": [],
-			"name": "BF HEY!!"
-		},
-		{
 			"loop": true,
-			"flipY": false,
-			"offsets": [
-				8,
-				9
-			],
-			"anim": "hey-loop",
 			"fps": 24,
-			"name": "BF HEY!!",
+			"anim": "hey-loop",
+			"flipX": false,
 			"indices": [
 				22,
 				23,
 				24,
 				25
 			],
+			"name": "Blow-Hey"
+		},
+		{
+			"loop": false,
+			"flipY": false,
+			"offsets": [
+				-2,
+				65
+			],
+			"anim": "idle",
+			"fps": 24,
+			"name": "Blow-Idle",
+			"indices": [],
 			"flipX": false
 		},
 		{
 			"offsets": [
-				1,
-				-44
+				-2,
+				65
 			],
 			"indices": [
-				2,
+				10,
+				11,
+				12,
+				13
+			],
+			"fps": 24,
+			"flipX": false,
+			"flipY": false,
+			"anim": "idle-loop",
+			"loop": true,
+			"name": "Blow-Idle"
+		},
+		{
+			"offsets": [
+				-14,
+				63
+			],
+			"indices": [
 				3,
 				4,
-				5
+				5,
+				6
 			],
 			"fps": 24,
 			"flipX": false,
 			"flipY": false,
 			"anim": "singDOWN-loop",
 			"loop": true,
-			"name": "BF NOTE DOWN"
+			"name": "Blow-Down"
 		},
 		{
 			"offsets": [
-				15,
-				9
+				-3,
+				64
 			],
 			"indices": [
-				2,
-				3,
 				4,
-				5
+				5,
+				6,
+				7
 			],
 			"fps": 24,
 			"flipX": false,
 			"flipY": false,
 			"anim": "singLEFT-loop",
 			"loop": true,
-			"name": "BF NOTE LEFT"
+			"name": "Blow-Left"
 		},
 		{
 			"offsets": [
-				-40,
-				9
+				-2,
+				64
 			],
 			"indices": [
-				2,
 				3,
 				4,
-				5
+				5,
+				6
 			],
 			"fps": 24,
 			"flipX": false,
 			"flipY": false,
 			"anim": "singRIGHT-loop",
 			"loop": true,
-			"name": "BF NOTE RIGHT"
+			"name": "Blow-Right"
 		},
 		{
 			"offsets": [
-				1,
-				73
+				-2,
+				64
 			],
 			"indices": [
-				2,
 				3,
 				4,
-				5
+				5,
+				6
 			],
 			"fps": 24,
 			"flipX": false,
 			"flipY": false,
 			"anim": "singUP-loop",
 			"loop": true,
-			"name": "BF NOTE UP"
+			"name": "Blow-Up"
+		},
+		{
+			"offsets": [
+				-21,
+				63
+			],
+			"indices": [],
+			"fps": 24,
+			"flipX": false,
+			"flipY": false,
+			"anim": "singUPmiss",
+			"loop": false,
+			"name": "BF NOTE UP MISS"
+		},
+		{
+			"offsets": [
+				-46,
+				7
+			],
+			"indices": [],
+			"fps": 24,
+			"flipX": false,
+			"flipY": false,
+			"anim": "singRIGHTmiss",
+			"loop": false,
+			"name": "BF NOTE RIGHT MISS"
+		},
+		{
+			"offsets": [
+				-14,
+				63
+			],
+			"indices": [],
+			"fps": 24,
+			"flipX": false,
+			"flipY": false,
+			"anim": "singDOWNmiss",
+			"loop": false,
+			"name": "Down Miss"
+		},
+		{
+			"offsets": [
+				-3,
+				64
+			],
+			"indices": [],
+			"fps": 24,
+			"flipX": false,
+			"flipY": false,
+			"anim": "singLEFTmiss",
+			"loop": false,
+			"name": "Left Miss"
 		}
 	],
 	"no_antialiasing": false,
 	"image": "characters/bf/bfpolus",
 	"position": [
-		5,
-		340
+		-12,
+		332
 	],
 	"dance_every": 2,
 	"gameover_intial_sound": null,

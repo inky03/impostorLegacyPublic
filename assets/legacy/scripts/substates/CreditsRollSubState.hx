@@ -227,7 +227,7 @@ function onLoad():Void
 {
 	// This will probably be reworked to have custom modded credits in the future.
 	// Nigga typing like serious Samuel im crying. But yea
-	if (Paths.fileExists('securitydlc/meta.json', null, true))
+	if (Paths.fileExists('securitydlc/meta.json', null, PathsTestMode.LOOSE))
 	{
 		hasDLC = true;
 		
@@ -417,11 +417,13 @@ function onLoad():Void
 	
 	if (hasDLC)
 	{
+		final oldMod:Null<String> = Mods.currentModDirectory;
+		
 		Mods.currentModDirectory = 'securitydlc'; // its geniuse
 		
 		queueRollImage(496, 'dlc');
 		
-		Mods.currentModDirectory = null;
+		Mods.currentModDirectory = oldMod;
 	}
 		
 	modManager.queueFuncOnce(528 * 4, function(_) {

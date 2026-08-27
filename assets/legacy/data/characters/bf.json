@@ -134,7 +134,14 @@
 			"fps": 24,
 			"anim": "scared",
 			"flipX": false,
-			"indices": [],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			],
 			"name": "Scared"
 		},
 		{
@@ -144,7 +151,7 @@
 				-2,
 				64
 			],
-			"anim": "idle-scared",
+			"anim": "scared-loop",
 			"fps": 24,
 			"name": "Scared",
 			"indices": [
@@ -181,7 +188,8 @@
     "flags": {
         "variants": {
         	"falling": "bf-fall",
-			"dark": "bf-dark"
+			"dark": "bf-dark",
+			"windy": "bf-windy"
         }
     },
 	"_editor_isPlayer": true

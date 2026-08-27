@@ -107,8 +107,8 @@
         "greypet_hint": "Sbloccato ricevendo un voto pari o migliore di A in 49.",
         "greypet_desc": "Un giorno, figliolo. Un giorno.",
         "goldennug_name": "Crocchetta d'Oro",
-        "_hint": "Porca troia.",
-        "_desc": "Perchè?", //the pet costs 42000 beans
+        "goldennug_hint": "Porca troia.",
+        "goldennug_desc": "Perchè?", //the pet costs 42000 beans
         "tinyhenry_name": "Henry Stickmin",
         "tinyhenry_hint": "Il criminale che fugge in un Lampo.", //reference to Flash games
         "tinyhenry_desc": "Non FALLIRE!",

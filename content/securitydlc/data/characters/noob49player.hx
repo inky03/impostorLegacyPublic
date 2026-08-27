@@ -2,29 +2,16 @@ function onCreatePost()
 {
 	var petScale:FlxPoint = new flixel.math.FlxBasePoint(pet.scale.x, pet.scale.y);
 	
-	if (hasPet)
-	{
-		pet.loadPet('greypet');
-	}
-	else
-	{
-		iconP1.changeIcon('noob49alone');
-	}
+	if (hasPet) pet.loadPet('greypet');
 	
-	if (stage.getFlag('pixel')) {
-		if (hasGfSkin)
-		{
-			pet.scale.set(petScale.x, petScale.y);
-			pet.updateHitbox();
-		}
-		else
-		{
-			iconP1.changeIcon('noob49alone');
-		}
-	}
-
-	if (stage.getFlag('pixel')){
-		boyfriend.setPosition(600,-180);
+	if (stage.curStage == 'skeldpixel')
+	{
+		// i guess bro
+		parent.x -= 63;
+		parent.y -= 46;
+		
+		pet.scale.set(1, 1);
+		repositionSpeakerHologram();
 	}
 
 	if (curSong == 'Identity Crisis')
@@ -39,14 +26,11 @@ function onCreatePost()
 		if (FlxG.random.bool()) // 50%/50% easter egg
 		{
 			changeCharacter('minigreyopscary', 1);
-			pet.alpha = 0.001;
 			dad.x = 900;
 			dad.y = 680;
 		}
-		else
-		{
-			pet.alpha = 0.001;
-		}
+		
+		pet.kill();
 	}
 	if (curSong == 'Danger' && hasPet)
 	{
@@ -54,8 +38,7 @@ function onCreatePost()
 	}
 	if (curSong == 'Triple Threat' || curSong == 'Turbulence' || gf?.curCharacter == "triplespeaker")
 	{
-		pet.alpha = 0.001;
-		iconP1.changeIcon('noob49alone');
+		pet.kill();
 	}
 	if (curSong == 'Pinkwave' || curSong == 'Heartbeat')
 	{
@@ -65,4 +48,6 @@ function onCreatePost()
 	{
 		gray.alpha = 0.001;
 	}
+	
+	if (!pet.alive) iconP1.changeIcon('noob49alone');
 }

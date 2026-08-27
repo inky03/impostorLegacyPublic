@@ -53,6 +53,7 @@
 	<set name="BUILD_DIR" value="${BUILD_DIR}-tracy" if="FEATURE_DEBUG_TRACY"/>
 
 	<assets path="LEGACY.md" rename="CHANGELOG.md"/>
+	<assets path="content/mods-go-here.txt"/>
 	
 	<section unless="ASSET_REDIRECT">
 		<log info="INCLUDING ASSETS!!" />

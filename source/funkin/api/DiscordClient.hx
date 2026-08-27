@@ -38,6 +38,8 @@ class DiscordClient
 	 * use `changePresence` to change the displayed presence
 	 */
 	public static final discordPresence:DiscordRichPresence = DiscordRichPresence.create();
+
+	public static var username:String = 'Unknown';
 	
 	/**
 	 * Initiates the discord thread and hooks to `rpcId`
@@ -106,6 +108,7 @@ class DiscordClient
 	static function onDisconnect(errorCode:Int, message:cpp.ConstCharStar):Void
 	{
 		Logger.log('Discord Disconnected. [$errorCode: ${(cast message : String)}]');
+		username = null;
 	}
 	
 	/**
@@ -113,7 +116,12 @@ class DiscordClient
 	 */
 	public static function close():Void
 	{
-		if (initiated) Discord.Shutdown();
+		if (initiated) 
+		{
+			Discord.Shutdown();
+			Logger.log('user [$username] has disconnected.', NOTICE);
+			username = null;
+		}
 		initiated = false;
 	}
 	
@@ -124,10 +132,9 @@ class DiscordClient
 	{
 		final user:String = cast request[0].username;
 		final discriminator:String = cast request[0].discriminator;
-		
-		var discordUser = discriminator != '0' ? '[$user#$discriminator]' : '[$user]';
-		
-		Logger.log('Successfully connect to user $discordUser', NOTICE);
+
+		username = discriminator != '0' ? '$user#$discriminator' : '$user';
+		Logger.log('Successfully connected to user [$username]', NOTICE);
 		
 		changePresence();
 	}

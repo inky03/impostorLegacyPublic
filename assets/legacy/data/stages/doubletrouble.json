@@ -6,5 +6,8 @@
 	"boyfriend": [2250, 750],
 	"girlfriend": [1600, 775],
 	"opponent": [950, 750],
-	"pet": [2690, 1570]
+	"pet": [2690, 1570],
+	"flags": {
+		"windy": true
+	}
 }

@@ -2,8 +2,10 @@ import funkin.states.substates.PauseSubState;
 
 var tablet:FunkinSprite;
 var medbay:FunkinSprite;
-var hologramShader;
-var screenShader;
+
+var hologramShader:FunkinRuntimeShader;
+var screenShader:FunkinRuntimeShader;
+var petScreenShader:FunkinRuntimeShader;
 
 function onLoad()
 {
@@ -59,7 +61,37 @@ function onCreatePost()
 		hologramShader.setFloat('phase', 0);
 		
 		add(medbay);
+	}
+	
+	if (gf.getFlag('isPixel') != true)
+	{
+		screenShader = newShader('stages/screen');
+		petScreenShader = newShader('stages/screen');
 		
+		add(tablet);
+	}
+	
+	repositionPlayerHologram();
+	repositionSpeakerHologram();
+	
+	for (character in [boyfriend, dad, gf])
+	{
+		character.setPosition(Math.round(character.x), Math.round(character.y));
+		
+		if (character.legacyOffset)
+		{
+			character.origin.set(Math.round(character.origin.x), Math.round(character.origin.y)); // fuck you ! fuck you ! fuck y
+			character.offset.set(Math.round(character.offset.x / 6) * 6, Math.round(character.offset.y / 6) * 6);
+		}
+	}
+	
+	PauseSubState.songName = 'tomongusPause';
+}
+
+public function repositionPlayerHologram():Void
+{
+	if (boyfriend.getFlag('isPixel') != true)
+	{
 		var idleOffset = (boyfriend.animOffsets.get('idle') ?? boyfriend.animOffsets.get('danceLeft') ?? [0, 0]).copy();
 		pixelateOffsets(boyfriend, idleOffset, .75);
 		
@@ -75,26 +107,28 @@ function onCreatePost()
 		
 		hologramShader.setFloat('block', 6 / boyfriend.scale.x);
 	}
-	
+}
+
+public function repositionSpeakerHologram():Void
+{
 	if (gf.getFlag('isPixel') != true)
 	{
-		var gfRatio:Float = Math.min(290 / gf.frameWidth, 240 / gf.frameHeight);
-		var hasPet:Bool = (pet != null && pet.curPet != '');
-		
-		screenShader = newShader('stages/screen');
-		screenShader.setFloat('block', 4 / gfRatio);
-		
-		add(tablet);
+		final gfRatio:Float = Math.min(290 / gf.frameWidth, 240 / gf.frameHeight);
 		
 		var idleOffset = (gf.animOffsets.get('idle') ?? gf.animOffsets.get('danceLeft') ?? [0, 0]).copy();
 		pixelateOffsets(gf, idleOffset, gfRatio);
+		
+		screenShader.setFloat('block', 6 / gfRatio);
 		
 		gf.shader = screenShader;
 		gf.useRenderTexture = true;
 		gf.scale.set(gfRatio, gfRatio);
 		gf.legacyOffset = false;
 		gf.updateHitbox();
-		gf.setPosition(Math.round((tablet.x + (tablet.width - 120 - gf.width) * .5) / 6) * 6, Math.round((tablet.y + (tablet.height - 12 - gf.height) * .5) / 6) * 6);
+		gf.setPosition(
+			Math.round((tablet.x + (tablet.width - 120 - gf.width) * .5) / 6) * 6,
+			Math.round((tablet.y + (tablet.height - 12 - gf.height) * .5) / 6) * 6
+		);
 		
 		gf.playAnim(gf.getAnimName(), true);
 		
@@ -109,15 +143,20 @@ function onCreatePost()
 		
 		if (pet.getFlag('isPixel') != true)
 		{
-			var petXOffset:Float = -50;
-			var petShader = newShader('stages/screen');
-			petShader.setFloat('block', 4 / gfRatio);
-			pet.shader = petShader;
+			var idleOffset = (pet.animOffsets.get('idle') ?? pet.animOffsets.get('danceLeft') ?? [0, 0]).copy();
+			pixelateOffsets(pet, idleOffset, pet.scale.y * gfRatio);
+			
+			petScreenShader.setFloat('block', 6 / pet.scale.y / gfRatio);
+			
+			pet.shader = petScreenShader;
 			pet.useRenderTexture = true;
 			pet.antialiasing = false;
-			pet.scale.set(gfRatio, gfRatio);
+			pet.scale.set(pet.scale.x * gfRatio, pet.scale.y * gfRatio);
 			pet.updateHitbox();
-			pet.setPosition(Math.round((gf.x + gf.width + petXOffset) * 6) / 6, Math.round((gf.y + gf.height - pet.height) * 6) / 6);
+			pet.setPosition(
+				Math.round(Math.min(gf.x + gf.width - 20, tablet.x + tablet.width - 460 - pet.width) / 6) * 6,
+				Math.round((gf.y + gf.height - pet.height + 4) / 6) * 6
+			);
 			pet.zIndex = gf.zIndex + 3;
 		}
 	}
@@ -125,19 +164,6 @@ function onCreatePost()
 	{
 		pet.kill();
 	}
-	
-	for (character in [boyfriend, dad, gf])
-	{
-		character.setPosition(Math.round(character.x), Math.round(character.y));
-		
-		if (character.legacyOffset)
-		{
-			character.origin.set(Math.round(character.origin.x), Math.round(character.origin.y)); // fuck you ! fuck you ! fuck y
-			character.offset.set(Math.round(character.offset.x / 6) * 6, Math.round(character.offset.y / 6) * 6);
-		}
-	}
-	
-	PauseSubState.songName = 'tomongusPause';
 }
 
 function pixelateOffsets(character:Character, idleOffset:Array<Float>, targetScale:Float)

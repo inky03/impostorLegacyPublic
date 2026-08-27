@@ -37,7 +37,7 @@ WEBSITE: https://vsimpostor.com/
 - Lithuanian
 
 # CHANGELOG
-Current version: **1.1.1b**
+Current version: **1.1.2**
 
 ## Modding (? 2026)
 
@@ -52,7 +52,28 @@ Current version: **1.1.1b**
 ### Removals
 - Removed `"updogSave"` cosmicube item requirement (obsolete).
 
-## 1.1.2 (? 2026)
+## 1.1.2b (? 2026)
+
+### Additions
+- Chef BF given a Monotone variant.
+
+### Bugfixes
+- Fixed a game breaking issue when opening the Credits during a modded song.
+- Fixed current beat being inaccurate in some cases.
+- Readded icons in Cosmicubes.
+- Fixed application title.
+- Fixed skateboard not appearing on Danger.
+- Fixed loop points for some characters.
+- Pets should be better positioned and scaled in the Cafeteria stage.
+- Polus BF's jacket clipping fixed.
+- Esculent's duped icon is removed.
+- Fixed Maroon's stage BF position.
+
+### Changes
+- Some more characters have been turned into atlases.
+- Regular BF has been given a windy variant.
+
+## 1.1.2 (july 23 2026)
 
 ### Additions
 - Who now has captions.
@@ -78,6 +99,7 @@ Current version: **1.1.1b**
 - Black's Defeat sprite was re-exported to fix effects.
 - White's halo effect was fixed.
 - Fixed some variables not working correctly in Hscript.
+- Fixed Greatest Plan intro when Camera Zoom on Beat is disabled.
 - Pets are correctly scaled in Pip Towers stage.
 - Playable Green's scared animation is fixed.
 - Dark BF's down pose plays correctly.
@@ -95,6 +117,7 @@ Current version: **1.1.1b**
 - FINALE stage was simplified for Low Quality mode.
 - Girlfriend's sprite in Danger was updated for consistency.
 - Pink's Pretender sprite changed for consistency.
+- Updated note coloring.
 
 ## 1.1.1b (june 21 2026)
   

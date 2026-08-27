@@ -1,4 +1,4 @@
-<p align="center"> <b>CURRENT RELEASE:</b> 1.1.1b  <b>Read the <a href="LEGACY.md">changelog</a> here!</b> </p>
+<p align="center"> <b>CURRENT RELEASE:</b> 1.1.2  <b>Read the <a href="LEGACY.md">changelog</a> here!</b> </p>
 
 <h3> <!-- im jsut doing bulls hit help me -->
 	<p align="center">

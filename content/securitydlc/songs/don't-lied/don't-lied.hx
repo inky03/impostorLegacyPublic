@@ -212,6 +212,7 @@ function onEvent(name, v1, v2)
             guy2.alpha = 0.001;
             guy3.alpha = 0.001;
 			fakeIcon.kill();
+			playHUD.healthBar.setColors(FlxColor.BLACK, 0xffe0e0e0);
 			playHUD.healthBar.bg.setColorTransform(0, 0, 0, 1, 224, 224, 224);
 			light.alpha = 0.001;
 			

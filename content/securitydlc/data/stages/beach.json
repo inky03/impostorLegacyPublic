@@ -8,6 +8,7 @@
 	"opponent": [0, 260],
 	"secondopp": [-60, 210],
 	"flags":{
-		"weird": true
+		"weird": true,
+		"windy": true
 	}
 }

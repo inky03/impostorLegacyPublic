@@ -37,17 +37,23 @@ function onEvent(name, v1, v2)
 	{
 		case 'p1':
 			camSpecialThing([130, 450], [130, 450], 1.3);
+			
 		case 'bf':
 			playHUD.iconP1.changeIcon('henry');
 			playHUD.iconP2.changeIcon(mom.healthIcon);
 			playHUD.healthBar.setColors(mom.healthColour, 0xFFbdd7d8);
 			if (hasColor) playHUD.scoreTxt.color = boyfriend.healthColour;
-		// healthBar.createColoredEmptyBar(0xFF31b0d1);
+			// healthBar.createColoredEmptyBar(0xFF31b0d1);
+		
 		case 'charles':
 			playHUD.iconP2.changeIcon('charles');
 			playHUD.healthBar.setColors(0xFFff3333, 0xFFbdd7d8);
 			if (hasColor) playHUD.scoreTxt.color = dad.healthColour;
-		// healthBar.createColoredEmptyBar(0xFFff3333);
+			// healthBar.createColoredEmptyBar(0xFFff3333);
+		
+		case 'zoom':
+			camGame.zoom += .2;
+		
 		case 'enter':
 			FlxTween.tween(dad, {x: -380}, 4, {ease: FlxEase.expoOut});
 			pauseOverwrite = 'charles';

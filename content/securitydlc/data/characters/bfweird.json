@@ -123,13 +123,41 @@
 		},
 		{
 			"offsets": [
-				0,0
+				0,
+				0
 			],
+			"flipY": false,
 			"loop": false,
 			"fps": 24,
 			"anim": "scared",
-			"indices": [],
+			"flipX": false,
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			],
 			"name": "scared"
+		},
+		{
+			"loop": true,
+			"flipY": false,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "scared-loop",
+			"fps": 24,
+			"name": "scared",
+			"indices": [
+				6,
+				7,
+				8,
+				9
+			],
+			"flipX": false
 		}
 	],
 	"no_antialiasing": false,
@@ -143,7 +171,8 @@
 	"flags": {
 		"variants": {
 			"dark": "bf-dark",
-			"stabbed": "bfweird-stabbed"
+			"stabbed": "bfweird-stabbed",
+			"windy": "bfweird-windy"
 		}
 	},
 	"scalableOffsets": false,

@@ -124,6 +124,28 @@
 			"flipX": false
 		},
 		{
+			"loop": true,
+			"flipY": false,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "sad-loop",
+			"fps": 24,
+			"name": "gfSad",
+			"indices": [
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24
+			],
+			"flipX": false
+		},
+		{
 			"offsets": [
 				0,
 				0

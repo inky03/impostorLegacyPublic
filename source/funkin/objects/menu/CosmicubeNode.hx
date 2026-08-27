@@ -92,6 +92,7 @@ class CosmicubeNode extends BaseNode
 		}
 	}
 	
+	@:access(funkin.objects.HealthIcon)
 	public function setup():Void
 	{
 		if (meta != null)
