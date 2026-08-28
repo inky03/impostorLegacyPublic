@@ -409,8 +409,8 @@ function onEvent(eventName, value1, value2)
 			if (_intensity2 == 0)
 			{
 				camTwist = false;
-				FlxTween.tween(camHUD, {angle: 0}, 1, {ease: FlxEase.sineInOut});
-				FlxTween.tween(camGame, {angle: 0}, 1, {ease: FlxEase.sineInOut});
+				FlxTween.tween(camHUD, {scrollAngle: 0}, 1, {ease: FlxEase.sineInOut});
+				FlxTween.tween(camGame, {scrollAngle: 0}, 1, {ease: FlxEase.sineInOut});
 			}
 			
 		case 'Alter Camera Bop':
@@ -453,11 +453,11 @@ function onBeatHit()
 		{
 			twistShit = -twistAmount;
 		}
-		camHUD.angle = twistShit * camTwistIntensity2;
-		camGame.angle = twistShit * camTwistIntensity2;
-		FlxTween.tween(camHUD, {angle: twistShit * camTwistIntensity}, Conductor.stepCrotchet * 0.002, {ease: FlxEase.circOut});
+		camHUD.scrollAngle = twistShit * camTwistIntensity2;
+		camGame.scrollAngle = twistShit * camTwistIntensity2;
+		FlxTween.tween(camHUD, {scrollAngle: twistShit * camTwistIntensity}, Conductor.stepCrotchet * 0.002, {ease: FlxEase.circOut});
 		FlxTween.tween(camHUD, {x: -twistShit * camTwistIntensity}, Conductor.crochet * 0.001, {ease: FlxEase.linear});
-		FlxTween.tween(camGame, {angle: twistShit * camTwistIntensity}, Conductor.stepCrotchet * 0.002, {ease: FlxEase.circOut});
+		FlxTween.tween(camGame, {scrollAngle: twistShit * camTwistIntensity}, Conductor.stepCrotchet * 0.002, {ease: FlxEase.circOut});
 		FlxTween.tween(camGame, {x: -twistShit * camTwistIntensity}, Conductor.crochet * 0.001, {ease: FlxEase.linear});
 	}
 }
