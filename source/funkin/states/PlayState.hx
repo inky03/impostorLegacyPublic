@@ -1399,14 +1399,16 @@ class PlayState extends MusicBeatState
 	/**
 	 * makes an event note (internal)
 	 */
-	inline function makeEv(time:Float, ev:String, v1:String, v2:String)
+	inline function makeEv(time:Float, ev:String, v1:String, v2:String, v3:String, v4:String)
 	{
 		final ev:EventNote =
 			{
 				strumTime: time + ClientPrefs.noteOffset,
 				event: ev,
 				value1: v1,
-				value2: v2
+				value2: v2,
+				value3: v3,
+				value4: v4
 			};
 		return ev;
 	}
@@ -1434,7 +1436,7 @@ class PlayState extends MusicBeatState
 			{
 				for (i in 0...event[1].length)
 				{
-					events.push(makeEv(event[0], event[1][i][0], event[1][i][1], event[1][i][2]));
+					events.push(makeEv(event[0], event[1][i][0], event[1][i][1], event[1][i][2], event[1][i][3], event[1][i][4]));
 				}
 			}
 		}
@@ -1442,7 +1444,7 @@ class PlayState extends MusicBeatState
 		for (event in SONG.events) // Event Notes
 		{
 			for (i in 0...event[1].length)
-				events.push(makeEv(event[0], event[1][i][0], event[1][i][1], event[1][i][2]));
+				events.push(makeEv(event[0], event[1][i][0], event[1][i][1], event[1][i][2], event[1][i][3], event[1][i][4]));
 		}
 		
 		return (_parsedEvents = events);
@@ -1597,7 +1599,9 @@ class PlayState extends MusicBeatState
 							strumTime: daStrumTime + ClientPrefs.noteOffset,
 							event: songNotes[2],
 							value1: songNotes[3],
-							value2: songNotes[4]
+							value2: songNotes[4],
+							value3: songNotes[5],
+							value4: songNotes[6]
 						});
 						
 					continue;
@@ -1788,7 +1792,7 @@ class PlayState extends MusicBeatState
 	
 	function eventNoteEarlyTrigger(event:EventNote):Float
 	{
-		var returnValue:Dynamic = scripts.call('eventEarlyTrigger', [event.event, event.value1, event.value2]);
+		var returnValue:Dynamic = scripts.call('eventEarlyTrigger', [event.event, event.value1, event.value2, event.value3, event.value4]);
 		if (returnValue != ScriptConstants.CONTINUE_FUNC) return returnValue;
 		
 		returnValue = callEventScript(event.event, 'offsetStrumTime', [event]);
@@ -2344,8 +2348,10 @@ class PlayState extends MusicBeatState
 			
 			final value1:String = eventNotes[0].value1 ?? '';
 			final value2:String = eventNotes[0].value2 ?? '';
+			final value3:String = eventNotes[0].value3 ?? '';
+			final value4:String = eventNotes[0].value4 ?? '';
 			
-			triggerEventNote(eventNotes[0].event, value1, value2);
+			triggerEventNote(eventNotes[0].event, value1, value2, value3, value4);
 			eventNotes.shift();
 		}
 	}
@@ -2381,7 +2387,7 @@ class PlayState extends MusicBeatState
 		callHUDFunc(hud -> hud.onCharacterChange());
 	}
 	
-	public function triggerEventNote(eventName:String, value1:String, value2:String):Void
+	public function triggerEventNote(eventName:String, value1:String, value2:String, value3:String, value4:String):Void
 	{
 		switch (eventName)
 		{
@@ -2715,9 +2721,9 @@ class PlayState extends MusicBeatState
 				}
 		}
 		
-		scripts.call('onEvent', [eventName, value1, value2]);
+		scripts.call('onEvent', [eventName, value1, value2, value3, value4]);
 		
-		callEventScript(eventName, 'onTrigger', [value1, value2]);
+		callEventScript(eventName, 'onTrigger', [value1, value2, value3, value4]);
 	}
 	
 	function moveCameraSection():Void
@@ -3368,14 +3374,14 @@ class PlayState extends MusicBeatState
 		{
 			if (curBeat % timeBeat == 0)
 			{
-				triggerEventNote('Add Camera Zoom', '' + gameZ, '' + hudZ);
+				triggerEventNote('Add Camera Zoom', '' + gameZ, '' + hudZ, '', '');
 				totalBeat -= 1;
 				
 				if (shakeTime) triggerEventNote('Screen Shake', (((1 / (Conductor.bpm / 60)) / 2) * timeBeat)
 					+ ', '
 					+ gameShake, (((1 / (Conductor.bpm / 60)) / 2) * timeBeat)
 					+ ', '
-					+ hudShake);
+					+ hudShake, '', '');
 			}
 		}
 		
