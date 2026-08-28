@@ -3227,7 +3227,7 @@ class ChartEditorState extends MusicBeatState
 			value1InputText.text = note[1][curEventSelected][1];
 			value2InputText.text = note[1][curEventSelected][2];
 			value3InputText.text = note[1][curEventSelected][3];
-			value4InputText.text = note[1][curEventSelected][3];
+			value4InputText.text = note[1][curEventSelected][4];
 		}
 		strumTimeInputText.text = '' + note[0];
 	}
@@ -3574,7 +3574,7 @@ class ChartEditorState extends MusicBeatState
 			var text3 = value3InputText.text;
 			var text4 = value4InputText.text;
 			
-			newNote = [noteStrum, [[event, text1, text2, text3]]];
+			newNote = [noteStrum, [[event, text1, text2, text3, text4]]];
 			_song.events.push(newNote);
 			
 			if (!FlxG.keys.pressed.SHIFT || curSelectedNotes.length == 0) curEventSelected = 0;
