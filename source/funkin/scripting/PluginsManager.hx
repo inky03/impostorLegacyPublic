@@ -78,7 +78,7 @@ class PluginsManager
 		
 		if (script == null) return null;
 		
-		return script.call(func, args).returnValue;
+		return script.call(func, args);
 	}
 	
 	static function onStateSwitchPost():Void

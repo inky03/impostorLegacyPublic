@@ -78,7 +78,7 @@
 	<haxelib name="flixel-addons"/>
 	<haxelib name="flixel-ui" version="2.6.4"/>
 
-	<haxelib name="hscript-iris"/>
+	<haxelib name="hscript-insanity"/>
 
 	<haxelib name="flixel-animate"/>
 	<haxelib name="moonchart"/>
@@ -118,10 +118,7 @@
 	<!--Needed for haxeui-->
 	<haxedef name="haxeui_dont_impose_base_class"/>
 	<haxedef name="haxeui_focus_out_on_click"/>
-
-	<!--Needed for better error reporting with hscript-->
-	<define name="hscriptPos"/>
-
+	
 	<!--Tracy profiler stuff-->
 	<section if="FEATURE_DEBUG_TRACY">
 		<haxedef name="HXCPP_TELEMETRY"/>

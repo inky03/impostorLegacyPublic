@@ -91,7 +91,7 @@ class ScriptGroup implements IFlxDestroyable
 		{
 			if (i == null || !i.exists(event) || exclusions.contains(i.name)) continue;
 			
-			var ret:Null<Any> = i.call(event, args)?.returnValue;
+			var ret:Null<Any> = i.call(event, args);
 			
 			if (ret != null)
 			{

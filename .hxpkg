@@ -26,9 +26,9 @@
                 "version": "2.6.0"
             },
             {
-                "name": "hscript-iris",
-                "link": "https://github.com/pisayesiwsi/hscript-iris",
-                "branch": "62d828b5f9100867bb30becd5c9fa251b138ba1a"
+                "name": "hscript-insanity",
+                "link": "https://github.com/inky03/hscript-insanity",
+                "branch": "4312a3fb92fa076a9e5c3d5d57ea7da6f170fdbd"
             },
             {
                 "name": "hxcpp-debug-server",

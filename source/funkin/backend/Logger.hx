@@ -1,7 +1,5 @@
 package funkin.backend;
 
-import crowplexus.iris.ErrorSeverity;
-
 import haxe.PosInfos;
 
 using funkin.backend.Logger.Ansi;
@@ -24,17 +22,6 @@ enum abstract Severity(Int) to Int
 			case ERROR: '[ERROR] ';
 			case NOTICE: '[NOTICE] ';
 		}
-	}
-	
-	public static function fromIris(severity:ErrorSeverity):Severity
-	{
-		return switch (severity)
-		{
-			default: PRINT;
-			case ErrorSeverity.WARN: WARN;
-			case ErrorSeverity.ERROR | ErrorSeverity.FATAL: ERROR;
-			case ErrorSeverity.NONE: PRINT;
-		};
 	}
 }
 

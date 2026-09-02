@@ -1,22 +1,16 @@
 package funkin.scripts;
 
 import extensions.hscript.Sharables;
-import extensions.hscript.IrisEx;
-
-import crowplexus.iris.Iris;
-import crowplexus.iris.ErrorSeverity;
-
 import extensions.hscript.InterpEx;
+
+import insanity.Config;
 
 import funkin.backend.plugins.DebugTextPlugin;
 import funkin.objects.*;
 import funkin.objects.note.*;
 
-using crowplexus.iris.utils.Ansi;
-
-@:access(crowplexus.iris.Iris)
 @:access(funkin.states.PlayState)
-class FunkinScript extends IrisEx implements IFlxDestroyable
+class FunkinScript extends insanity.Script implements IFlxDestroyable
 {
 	/**
 	 * List of all accepted hscript extensions
@@ -51,55 +45,12 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 		return false;
 	}
 	
-	static inline function formatPosInfos(fileName:String = 'hscript', lineNumber:Int = 0, x:String = '', prefix:String = '')
-	{
-		var prefix = '[$prefix$fileName:$lineNumber]';
-		
-		final modPath:String = Paths.mods(Mods.currentModDirectory + '/');
-		if (fileName.startsWith(modPath)) prefix = prefix.replace(modPath, '');
-		#if ASSET_REDIRECT else if (fileName.startsWith(Paths.trail)) prefix = prefix.replace(Paths.trail, ''); #end
-		
-		return '$prefix - $x';
-	}
-	
 	/**
 	 * Initiates the debugging backend of Iris
 	 */
 	public static function init()
 	{
-		Iris.logLevel = (level, x, ?pos) -> {
-			pos ??= Iris.getDefaultPos();
-			
-			final prefix:String = ErrorSeverityTools.getPrefix(level);
-			final prefixEmpty:Bool = (prefix == '');
-			
-			var out = formatPosInfos(pos.fileName, pos.lineNumber, x, prefixEmpty ? '' : '$prefix:');
-			
-			if (!prefixEmpty)
-			{
-				out = out.fg(ErrorSeverityTools.getColor(level)).reset();
-				if (level == FATAL) out = out.attr(INTENSITY_BOLD);
-			}
-			
-			#if sys Sys.println #else trace #end (out.stripColor());
-		}
-		
-		function log(x:String, ?pos:haxe.PosInfos, level:ErrorSeverity)
-		{
-			final prefix:String = ErrorSeverityTools.getPrefix(level);
-			
-			DebugTextPlugin.addText(formatPosInfos(pos.fileName, pos.lineNumber, x, prefix == '' ? '' : '$prefix:'), Logger.getHexColourFromSeverity(Severity.fromIris(level)));
-			
-			Iris.logLevel(level, x, pos);
-		}
-		
-		Iris.warn = log.bind(_, _, WARN);
-		
-		Iris.error = log.bind(_, _, ERROR);
-		
-		Iris.fatal = log.bind(_, _, FATAL);
-		
-		Iris.print = log.bind(_, _, NONE);
+		Config.interpClass = InterpEx;
 	}
 	
 	/**
@@ -136,15 +87,22 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	
 	public var modFolder:Null<String>;
 	
-	public function new(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true)
+	public function new(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true, ?env:insanity.Environment)
 	{
-		super(script, {name: name, autoRun: false, autoPreset: false}, shareables);
+		super('', name, env); // evil
 		
-		(cast interp : InterpEx).parent = FlxG.state;
+		parser = new extensions.hscript.ParserEx();
+		parser.allowTypes = parser.allowJSON = parser.allowMetadata = true;
+		
+		this.name = name;
+		this.parse(script);
+		
+		final interpEx:InterpEx = cast interp;
+		interpEx.sharedFields = shareables;
+		interpEx.setParent(FlxG.state);
+		interpEx.argumentOverflow = true;
 		
 		this.modFolder = modFolder;
-		
-		preset();
 		
 		if (additionalVars != null)
 		{
@@ -152,7 +110,7 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 				set(key, additionalVars.get(obj));
 		}
 		
-		if (autoExecute) tryExecute();
+		if (autoExecute) start();
 	}
 	
 	public inline function addParent(parent:Dynamic):Dynamic
@@ -165,22 +123,11 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 		return (cast interp : InterpEx).removeParent(parent);
 	}
 	
-	/**
-	 * safer parsing
-	 */
-	public inline function tryExecute()
-	{
-		var ret:Dynamic = null;
-		try
-		{
-			ret = execute();
-		}
-		catch (e)
-		{
-			__garbage = true;
-			Logger.log('[${name}]: PARSING ERROR: $e', ERROR, true);
-		}
-		return ret;
+	public override dynamic function onParsingError(exception:haxe.Exception):Void {
+		log('$exception', null, ERROR);
+	}
+	public override dynamic function onProgramError(exception:haxe.Exception):Void {
+		log('$exception', interp.posInfos(), ERROR);
 	}
 	
 	// kept for notescript stuff
@@ -206,18 +153,7 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 				defaultShit.set(key, val);
 		}
 		
-		try
-		{
-			returnVal = Reflect.callMethod(theObject, daFunc, parameters ?? []);
-		}
-		#if hscriptPos
-		catch (e:crowplexus.hscript.Expr.Error) {
-			Iris.error(crowplexus.hscript.Printer.errorToString(e, false), this.interp.posInfos());
-		}
-		#end
-		catch (e:haxe.Exception) {
-			Iris.error(Std.string(e), Reflect.isFunction(daFunc) ? interp.posInfos() : Iris.getDefaultPos(this.name));
-		}
+		returnVal = call(daFunc, parameters ?? []);
 		
 		for (key => val in defaultShit)
 			set(key, val);
@@ -226,21 +162,9 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 	}
 	
 	@:inheritDoc
-	override function preset()
+	override function setDefaults()
 	{
-		super.preset();
-		
-		#if hl
-		set('Math', hl.HLFixes.HLMath);
-		set('Std', hl.HLFixes.HLStd);
-		set("trace", Reflect.makeVarArgs(function(x:Array<Dynamic>) {
-			var pos = this.interp != null ? this.interp.posInfos() : Iris.getDefaultPos(this.name);
-			
-			Iris.print(Std.string(x[0]), pos);
-		}));
-		#end
-		
-		for (k => v in funkin.data.Defines.defines) parser.preprocesorValues.set(k, v);
+		super.setDefaults();
 		
 		set("StringTools", StringTools);
 		set("Date", Date);
@@ -266,7 +190,6 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 		set('Function_Stop', funkin.scripting.ScriptConstants.STOP_FUNC);
 		set('Function_Continue', funkin.scripting.ScriptConstants.CONTINUE_FUNC);
 		set('version', Main.NMV_VERSION.trim());
-		set('Defines', funkin.data.Defines);
 		
 		// set flixel related stuff
 		set("FlxG", flixel.FlxG);
@@ -419,21 +342,68 @@ class FunkinScript extends IrisEx implements IFlxDestroyable
 			set("inPlaystate", false);
 		}
 		
-		set("newShader", (?fragFile:String, ?vertFile:String) -> {
-			var fragPath = fragFile != null ? Paths.fragment(fragFile) : null;
-			var vertPath = vertFile != null ? Paths.vertex(vertFile) : null;
-			
-			if (fragPath != null)
-			{
-				if (FunkinAssets.exists(fragPath)) fragPath = FunkinAssets.getContent(fragPath);
-			}
-			
-			if (vertPath != null)
-			{
-				if (FunkinAssets.exists(vertPath)) vertPath = FunkinAssets.getContent(vertPath);
-			}
-			
-			return new funkin.backend.FunkinShader.FunkinRuntimeShader(fragPath, vertPath);
-		});
+		set("newShader", newShader);
+	}
+	
+	public static function log(x:Dynamic, pos:haxe.PosInfos, severity:Severity = PRINT) { // hey its me severity
+		Logger.log(Std.string(x), severity, true, pos);
+	}
+	
+	override function call(funcToRun:String, ?args:Array<Dynamic>):Any {
+		if (funcToRun == null || interp == null) return null;
+		
+		if (!exists(funcToRun)) {
+			log('No function named $funcToRun', interp.posInfos(), ERROR);
+			return null;
+		}
+		
+		try {
+			return Reflect.callMethod(interp, get(funcToRun), args ?? []);
+		} catch (e:haxe.Exception) {
+			trace(e.details());
+			log(e, interp.posInfos(), ERROR);
+		}
+		
+		return null;
+	}
+	
+	static function newShader(?fragFile:String, ?vertFile:String) {
+		var fragPath = fragFile != null ? Paths.fragment(fragFile) : null;
+		var vertPath = vertFile != null ? Paths.vertex(vertFile) : null;
+		
+		if (fragPath != null)
+		{
+			if (FunkinAssets.exists(fragPath)) fragPath = FunkinAssets.getContent(fragPath);
+		}
+		
+		if (vertPath != null)
+		{
+			if (FunkinAssets.exists(vertPath)) vertPath = FunkinAssets.getContent(vertPath);
+		}
+		
+		return new funkin.backend.FunkinShader.FunkinRuntimeShader(fragPath, vertPath);
+	}
+	
+	public function destroy():Void
+	{
+		program = null;
+		interp = null;
+		parser = null;
+	}
+	
+	// compattttt
+	public function tryExecute():Void {
+		start();
+	}
+	
+	public function get(field:String):Dynamic {
+		return variables.get(field);
+	}
+	public function set(field:String, v:Dynamic):Dynamic {
+		variables.set(field, v);
+		return v;
+	}
+	public function exists(field:String):Bool {
+		return variables.exists(field);
 	}
 }
