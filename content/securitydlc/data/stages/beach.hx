@@ -1,14 +1,15 @@
 import animate.internal.filters.AdjustColorFilter;
 import funkin.utils.MathUtil;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.effects.particles.FlxEmitterMode;
+
 var choice:Int = FlxG.random.int(0, 3);
 
 var ext = 'stages/dlc/beach/';
 public var maroon:Character;
 public var grey:Character;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
-import flixel.effects.particles.FlxEmitterMode;
 
 public var loBlack:FlxBGSprite;
 public var focusblack:FlxBGSprite;

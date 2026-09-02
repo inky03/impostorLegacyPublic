@@ -1,9 +1,10 @@
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+
 var ext = 'stages/dlc/security/'; //directory of the stage images folder
 public var tawny:FlxSprite;
 public var deadtawny:FlxSprite;
 public var greypet:FlxSprite; //made for song events in mind (songs/49/49.hx)
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 
 function onLoad()
 {

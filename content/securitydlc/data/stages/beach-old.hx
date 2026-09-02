@@ -1,8 +1,9 @@
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+
 var ext = 'stages/dlc/beach/';
 public var maroon:Character;
 public var grey:Character;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 var rimlight;
 
 function onLoad()
