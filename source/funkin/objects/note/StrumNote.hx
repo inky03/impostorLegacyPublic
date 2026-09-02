@@ -10,12 +10,11 @@ import funkin.game.shaders.RGBShader;
 import funkin.states.*;
 import funkin.data.*;
 
-class StrumNote extends RGBSprite implements funkin.game.modchart.IModNote
+class StrumNote extends funkin.game.modchart.ModchartNote
 {
 	public var intThing:Int = 0;
 	
 	public var resetAnim:Float = 0;
-	public var noteData:Int = 0;
 	public var direction:Float = 90;
 	public var downScroll:Bool = false;
 	public var sustainReduce:Bool = true;

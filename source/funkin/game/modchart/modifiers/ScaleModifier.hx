@@ -13,9 +13,14 @@ class ScaleModifier extends NoteModifier
 		return a + (b - a) * c;
 	}
 	
-	inline function getScale(prefix:String, sprite:Dynamic, scale:FlxPoint, data:Int, player:Int):FlxPoint
+	inline function getScale(prefix:String, sprite:FunkinSprite, scale:FlxPoint, data:Int, player:Int):FlxPoint
 	{
-		final isSus:Bool = ((sprite is Note) && sprite.isSustainNote && !sprite.isSustainEnd);
+		var isSus:Bool = false;
+		
+		if (sprite is Note) {
+			final note:Note = cast sprite;
+			isSus = (note.isSustainNote && !note.isSustainEnd);
+		}
 		
 		final squish = lerp(1, 2, getSubmodValue("squish", player) + getSubmodValue('squish${data}', player));
 		final stretch = lerp(1, .5, getSubmodValue("stretch", player) + getSubmodValue('stretch${data}', player));
@@ -46,7 +51,7 @@ class ScaleModifier extends NoteModifier
 		return scale;
 	}
 	
-	function getObjectScale(obj:IModNote, prefix:String, player:Int):FlxPoint
+	function getObjectScale(obj:ModchartNote, prefix:String, player:Int):FlxPoint
 	{
 		if (getSubmodValue('${prefix}ScaleX', player) > 0 || getSubmodValue('${prefix}ScaleY', player) > 0)
 		{

@@ -134,4 +134,14 @@ class MathUtil
 		if (min == null) min = 0;
 		return [for (i in min...max) i];
 	}
+	
+	/**
+	 * A faster, but less accurate version of `Math.tan()`.   Probably
+	 * @param	rad 	The angle in radians.
+	 * @return	The approximated tangent of `rad`
+	 */
+	public static inline function fastTan(rad:Float) // thanks schmoovin
+	{
+		return (FlxMath.fastSin(rad) / FlxMath.fastCos(rad));
+	}
 }

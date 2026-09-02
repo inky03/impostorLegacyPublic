@@ -31,45 +31,47 @@ class EventTimeline
 		}
 	}
 	
-	public function update(step:Float)
+	inline function updateSchedule(schedule:Array<BaseEvent>, step:Float):Void
+	{
+		var i:Int = 0;
+		
+		while (i < schedule.length)
+		{
+			final event:BaseEvent = schedule[i];
+			
+			if (event.finished)
+			{
+				schedule.remove(event);
+				continue;
+			}
+			
+			if (event.ignoreExecution)
+			{
+				i ++;
+				continue;
+			}
+			
+			if (step >= event.executionStep)
+			{
+				event.run(step);
+				
+				if (event.finished)
+				{
+					schedule.remove(event);
+				}
+				else i ++;
+			}
+			else break;
+		}
+	}
+	
+	public inline function update(step:Float)
 	{
 		for (modName in modEvents.keys())
 		{
-			var garbage:Array<ModEvent> = [];
-			var schedule = modEvents.get(modName);
-			for (event in schedule)
-			{
-				if (event.finished) garbage.push(event);
-				
-				if (event.ignoreExecution || event.finished) continue;
-				
-				if (step >= event.executionStep)
-				{
-					event.run(step);
-				}
-				else break;
-				
-				if (event.finished) garbage.push(event);
-			}
-			
-			for (trash in garbage)
-				schedule.remove(trash);
+			updateSchedule(cast modEvents.get(modName), step);
 		}
 		
-		var garbage:Array<BaseEvent> = [];
-		for (event in events)
-		{
-			if (event.finished) garbage.push(event);
-			
-			if (event.ignoreExecution || event.finished) continue;
-			
-			if (step >= event.executionStep) event.run(step);
-			else break;
-			
-			if (event.finished) garbage.push(event);
-		}
-		
-		for (trash in garbage)
-			events.remove(trash);
+		updateSchedule(events, step);
 	}
 }

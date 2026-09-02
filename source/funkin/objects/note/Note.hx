@@ -105,7 +105,7 @@ abstract NoteSharedTailState(Array<Dynamic>) to Array<Dynamic>
 }
 
 @:allow(funkin.states.PlayState)
-class Note extends RGBSprite implements funkin.game.modchart.IModNote
+class Note extends funkin.game.modchart.ModchartNote
 {
 	public static var defaultNotes = ['No Animation', 'GF Sing', ''];
 	
@@ -135,7 +135,6 @@ class Note extends RGBSprite implements funkin.game.modchart.IModNote
 	public var strumTime:Float = 0;
 	
 	public var mustPress:Bool = false;
-	public var noteData:Int = 0;
 	public var hitPriority:Int = 1;
 	public var canBeHit(get, never):Bool;
 	public var tooLate:Bool = false;

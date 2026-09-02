@@ -291,10 +291,11 @@ class ModManager implements IFlxDestroyable
 		{
 			for (name in activeMods[player])
 			{
-				if (exclusions != null && exclusions.contains(name)) continue; // because some modifiers may want the path without reverse, for example. (which is actually more common than you'd think!)
+				if (!obj.active || exclusions?.contains(name)) continue; // because some modifiers may want the path without reverse, for example. (which is actually more common than you'd think!)
+				
 				var mod:Modifier = notemodRegister.get(name);
 				if (mod == null) continue;
-				if (!obj.active) continue;
+				
 				pos = mod.getPos(time, diff, tDiff, beat, pos, data, player, obj);
 			}
 		}
