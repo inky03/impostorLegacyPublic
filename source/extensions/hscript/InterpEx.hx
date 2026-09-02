@@ -1,6 +1,7 @@
 package extensions.hscript;
 
 import insanity.backend.Expr;
+import insanity.backend.Exception;
 
 /**
  * Modified Iris Interp for variety of improvements.
@@ -86,6 +87,17 @@ class InterpEx extends insanity.backend.Interp
 	
 	override function setVar(name:String, v:Dynamic):Dynamic
 	{
+		if (insanity.backend.types.Abstract.AbstractTools.isAbstract(v))
+			v = v.__a;
+		
+		if (sharedFields?.exists(name))
+		{
+			sharedFields.set(name, v);
+			return v;
+		}
+		
+		if (imports.exists(name) || variables.exists(name)) return super.setVar(name, v);
+		
 		for (parent => fields in parentFields)
 		{
 			if (fields.exists(name) || fields.exists('set_$name'))
@@ -95,13 +107,14 @@ class InterpEx extends insanity.backend.Interp
 			}
 		}
 		
-		if (sharedFields?.exists(name))
-		{
-			sharedFields.set(name, v);
+		if (stack.length <= 1 || defineGlobals) {
+			variables.set(name, v);
 			return v;
 		}
 		
-		return super.setVar(name, v);
+		error(EUnknownVariable(name));
+		
+		return v;
 	}
 	
 	override function resolve(id:String):Dynamic
@@ -117,14 +130,14 @@ class InterpEx extends insanity.backend.Interp
 	}
 	
 	override function isResolvable(id:String):Bool {
-		if (imports.exists(id) || variables.exists(id)) return true;
+		if (imports.exists(id) || variables.exists(id) || sharedFields?.exists(id)) return true;
 		
 		for (parent => fields in parentFields)
 		{
 			if (fields.exists(id) || fields.exists('get_$id')) return true;
 		}
 		
-		return (sharedFields != null && sharedFields.exists(id));
+		return false;
 	}
 	
 	#if (hl)
@@ -151,12 +164,12 @@ class InterpEx extends insanity.backend.Interp
 				{
 					switch (e.e)
 					{
-						case EFunction(_, _, field) if (stack.length == 0):
+						case EFunction(_, _, field) if (stack.length <= 1):
 							final r = expr(e, t, void, mapCompr);
 							sharedFields.set(field, r);
 							r;
 							
-						case EVar(field, _, e) if (stack.length == 0):
+						case EVar(field, _, e) if (stack.length <= 1):
 							final r = (e != null ? expr(e, t, void, mapCompr) : null);
 							sharedFields.set(field, r);
 							r;
