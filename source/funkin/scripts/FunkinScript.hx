@@ -51,6 +51,48 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	public static function init()
 	{
 		Config.interpClass = InterpEx;
+		
+		for (cls in [
+			// so many classes... please hlep me
+			
+			'StringTools', 'Date', 'Sys', 'Type',
+			'haxe.ds.StringMap', 'haxe.ds.IntMap', 'haxe.ds.ObjectMap',
+			'Main', 'openfl.Lib', 'lime.utils.Assets',
+			
+			'flixel.FlxG', 'flixel.FlxSprite', 'flixel.FlxCamera',
+			'flixel.group.FlxGroup.FlxTypedGroup', 'flixel.group.FlxSpriteGroup',
+			'flixel.math.FlxMath', 'flixel.util.FlxTimer', 'flixel.tweens.FlxTween', 'flixel.tweens.FlxEase',
+			'flixel.sound.FlxSound', 'flixel.text.FlxText', 'flixel.effects.FlxFlicker', 'flixel.util.FlxSpriteUtil', 'flixel.ui.FlxBar',
+			'flixel.addons.display.FlxBackdrop', 'flixel.addons.display.FlxTiledSprite',
+			'flixel.effects.particles.FlxParticle', 'flixel.effects.particles.FlxEmitter',
+			'animate.FlxAnimate', 'animate.FlxAnimateFrames', 'animate.internal.elements.FlxSpriteElement',
+			
+			'funkin.objects.FunkinSprite',
+			
+			'funkin.Paths', 'funkin.backend.MusicBeatState', 'funkin.backend.Conductor', 'funkin.data.ClientPrefs', 'funkin.data.Lang', 'funkin.input.Controls',
+			'funkin.states.PlayState', 'funkin.states.substates.GameOverSubstate', 'funkin.data.StageData', 'funkin.data.GameFlags', 'funkin.audio.FunkinSound',
+			
+			'funkin.scripts.FunkinScript',
+			
+			#if VIDEOS_ALLOWED
+			'funkin.video.FunkinVideoSprite'
+			#end
+		])
+		{
+			Config.globalImports.set(cls, INormal);
+		}
+		
+		for (pack in ['funkin.utils', 'funkin.game.modchart', 'funkin.game.modchart.events', 'funkin.objects', 'funkin.objects.note', 'funkin.scripting'])
+		{
+			Config.globalImports.set(pack, IAll);
+		}
+		
+		Config.globalImports.set('openfl.utils.Assets', IAsName('OpenFlAssets')); // lpwkey why is the one with the alias and not lime's
+		Config.globalImports.set('funkin.scripts.ScriptClasses.ScriptedFlxRandom', IAsName('Random'));
+		Config.globalImports.set('funkin.backend.FunkinShader.FunkinRuntimeShader', IAsName('FlxRuntimeShader'));
+		
+		for (f in ['Cancel', 'Halt', 'Stop', 'Continue']) // work around for NOW because its messed up  !?!?!??!?!?!?
+			Config.globalVariables.set('Function_$f', insanity.backend.Expr.Mirror.MProperty(funkin.scripting.ScriptConstants, '${f.toUpperCase()}_FUNC'));
 	}
 	
 	/**
@@ -166,68 +208,24 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	{
 		super.setDefaults();
 		
-		set("StringTools", StringTools);
-		set("Date", Date);
-		set("Sys", Sys);
+		var setImport = interp.imports.set;
 		
-		set("Type", Type);
 		set("script", this);
-		set("Dynamic", Dynamic);
 		set('modFolder', modFolder);
 		
-		set('StringMap', haxe.ds.StringMap);
-		set('IntMap', haxe.ds.IntMap);
-		set('ObjectMap', haxe.ds.ObjectMap);
-		
-		set("Main", Main);
-		set("Lib", openfl.Lib);
-		set("Assets", lime.utils.Assets);
-		set("OpenFlAssets", openfl.utils.Assets);
-		
 		set('curBpm', Conductor.bpm);
-		set('Function_Cancel', funkin.scripting.ScriptConstants.CANCEL_FUNC);
-		set('Function_Halt', funkin.scripting.ScriptConstants.HALT_FUNC);
-		set('Function_Stop', funkin.scripting.ScriptConstants.STOP_FUNC);
-		set('Function_Continue', funkin.scripting.ScriptConstants.CONTINUE_FUNC);
 		set('version', Main.NMV_VERSION.trim());
 		
-		// set flixel related stuff
-		set("FlxG", flixel.FlxG);
-		set("FlxSprite", flixel.FlxSprite);
-		set("FunkinSprite", funkin.objects.FunkinSprite);
-		set("FlxTypedGroup", flixel.group.FlxGroup.FlxTypedGroup);
-		set("FlxSpriteGroup", flixel.group.FlxSpriteGroup);
-		set("FlxCamera", flixel.FlxCamera);
-		set("FlxMath", flixel.math.FlxMath);
-		set("FlxTimer", flixel.util.FlxTimer);
-		set("FlxTween", flixel.tweens.FlxTween);
-		set("FlxEase", flixel.tweens.FlxEase);
-		set("FlxSound", flixel.sound.FlxSound);
-		set('FlxText', flixel.text.FlxText);
-		set("FlxRuntimeShader", funkin.backend.FunkinShader.FunkinRuntimeShader);
-		set("FlxFlicker", flixel.effects.FlxFlicker);
-		set('FlxSpriteUtil', flixel.util.FlxSpriteUtil);
-		set("FlxBackdrop", flixel.addons.display.FlxBackdrop);
-		set("FlxTiledSprite", flixel.addons.display.FlxTiledSprite);
-		set('FlxPoint', flixel.math.FlxPoint.FlxBasePoint);
-		set('FlxParticle', flixel.effects.particles.FlxParticle);
-		set('FlxEmitter', flixel.effects.particles.FlxEmitter);
+		// abstracts  (these will be removed but its ok)
+		setImport('FlxPoint', flixel.math.FlxPoint.FlxBasePoint);
+		setImport("FlxTextAlign", funkin.utils.MacroUtil.buildAbstract(flixel.text.FlxText.FlxTextAlign));
+		setImport('FlxAxes', funkin.utils.MacroUtil.buildAbstract(flixel.util.FlxAxes));
+		setImport("FlxKey", funkin.utils.MacroUtil.buildAbstract(flixel.input.keyboard.FlxKey));
+		setImport('BlendMode', funkin.utils.MacroUtil.buildAbstract(openfl.display.BlendMode));
 		
-		set('FlxCameraFollowStyle', flixel.FlxCamera.FlxCameraFollowStyle);
-		set("FlxTextBorderStyle", flixel.text.FlxText.FlxTextBorderStyle);
-		set("FlxBarFillDirection", flixel.ui.FlxBar.FlxBarFillDirection);
-		
-		set("FlxAnimate", animate.FlxAnimate);
-		set("FlxAnimateFrames", animate.FlxAnimateFrames);
-		set("FlxSpriteElement", animate.internal.elements.FlxSpriteElement);
-		
-		set('Controls', funkin.input.Controls);
-		
-		// abstracts
-		set("FlxTextAlign", funkin.utils.MacroUtil.buildAbstract(flixel.text.FlxText.FlxTextAlign));
-		set('FlxAxes', funkin.utils.MacroUtil.buildAbstract(flixel.util.FlxAxes));
-		set("FlxKey", funkin.utils.MacroUtil.buildAbstract(flixel.input.keyboard.FlxKey));
-		set('BlendMode', funkin.utils.MacroUtil.buildAbstract(openfl.display.BlendMode));
+		// custom
+		setImport('FlxColor', funkin.scripts.ScriptClasses.ScriptedFlxColor);
+		setImport('Random', funkin.scripts.ScriptClasses.ScriptedFlxRandom);
 		
 		set("keyToString", (key:Int) -> {
 			return flixel.input.keyboard.FlxKey.toStringMap.get(key);
@@ -236,72 +234,9 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 			return flixel.input.keyboard.FlxKey.fromStringMap.get(str);
 		});
 		
-		// modchart related
-		set("ModManager", funkin.game.modchart.ModManager);
-		set("SubModifier", funkin.game.modchart.SubModifier);
-		set("NoteModifier", funkin.game.modchart.NoteModifier);
-		set("ScriptedModifier", funkin.game.modchart.ScriptedModifier);
-		set("EventTimeline", funkin.game.modchart.EventTimeline);
-		set("Modifier", funkin.game.modchart.Modifier);
-		set("StepCallbackEvent", funkin.game.modchart.events.StepCallbackEvent);
-		set("CallbackEvent", funkin.game.modchart.events.CallbackEvent);
-		set("ModEvent", funkin.game.modchart.events.ModEvent);
-		set("EaseEvent", funkin.game.modchart.events.EaseEvent);
-		set("SetEvent", funkin.game.modchart.events.SetEvent);
-		
-		// FNF-specific things
-		set("Paths", Paths);
-		set("PathsTestMode", PathsTestMode);
-		set("MusicBeatState", funkin.backend.MusicBeatState);
-		set("Conductor", funkin.backend.Conductor);
-		set("ClientPrefs", funkin.data.ClientPrefs);
-		set("Lang", funkin.data.Lang);
-		set("GameFlags", funkin.data.GameFlags);
-		
-		set("PlayState", PlayState);
-		set("StageData", funkin.data.StageData);
-		set('FunkinSound', funkin.audio.FunkinSound);
-		
-		// utils
-		set('MathUtil', funkin.utils.MathUtil);
-		set("CoolUtil", funkin.utils.CoolUtil);
-		set('CameraUtil', funkin.utils.CameraUtil);
-		set('WindowUtil', funkin.utils.WindowUtil);
-		set('ProgressionUtil', funkin.utils.ProgressionUtil);
-		
-		// custom
-		set('FlxColor', funkin.scripts.ScriptClasses.ScriptedFlxColor);
-		set('Random', funkin.scripts.ScriptClasses.ScriptedFlxRandom);
-		
-		// script
-		set("FunkinScript", FunkinScript);
-		set('ScriptConstants', funkin.scripting.ScriptConstants);
-		
 		// for compat
-		set('HScriptState', funkin.scripting.ScriptedState);
-		set('HScriptSubstate', funkin.scripting.ScriptedSubstate);
-		
-		set('ScriptedState', funkin.scripting.ScriptedState);
-		set('ScriptedSubstate', funkin.scripting.ScriptedSubstate);
-		
-		set("GameOverSubstate", funkin.states.substates.GameOverSubstate);
-		
-		// objects
-		set("Note", funkin.objects.note.Note);
-		set("Bar", funkin.objects.Bar);
-		#if VIDEOS_ALLOWED
-		set("FunkinVideoSprite", funkin.video.FunkinVideoSprite);
-		#end
-		set("HealthIcon", HealthIcon);
-		set("Character", funkin.objects.Character);
-		set("NoteSplash", NoteSplash);
-		set("BGSprite", BGSprite);
-		set("StrumNote", StrumNote);
-		set("Alphabet", Alphabet);
-		set("AttachedSprite", AttachedSprite);
-		set("AttachedAlphabet", AttachedAlphabet);
-		
-		set("CutsceneHandler", funkin.objects.CutsceneHandler);
+		setImport('HScriptState', funkin.scripting.ScriptedState);
+		setImport('HScriptSubstate', funkin.scripting.ScriptedSubstate);
 		
 		set('inGameOver', false);
 		

@@ -13,24 +13,24 @@ class ScriptConstants
 	/**
 	 * If returned in a script function, it's normal behavior will stop
 	 */
-	public static final STOP_FUNC:ScriptDispatch = Stop;
+	public static var STOP_FUNC(default, null):ScriptDispatch = Stop;
 	
 	/**
 	 * If returned in a script function, it's normal behavior will continue
 	 * 
 	 * This is the regular return in a `ScriptGroup`
 	 */
-	public static final CONTINUE_FUNC:ScriptDispatch = Continue;
+	public static var CONTINUE_FUNC(default, null):ScriptDispatch = Continue;
 	
 	/**
 	 * Used in `ScriptGroup`. Stops the propagation of the function to any remaining scripts.
 	 */
-	public static final HALT_FUNC:ScriptDispatch = Halt;
+	public static var HALT_FUNC(default, null):ScriptDispatch = Halt;
 	
 	/**
 	 * Used in `ScriptGroup`. Stops the normal behavior of the function and it's propagation to any remaining scripts.
 	 */
-	public static final CANCEL_FUNC:ScriptDispatch = Cancel;
+	public static var CANCEL_FUNC(default, null):ScriptDispatch = Cancel;
 	
 	/**
 	 * Gets the current state
