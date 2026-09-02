@@ -167,9 +167,11 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	
 	public override dynamic function onParsingError(exception:haxe.Exception):Void {
 		log('$exception', null, ERROR);
+		__garbage = true;
 	}
 	public override dynamic function onProgramError(exception:haxe.Exception):Void {
 		log('$exception', interp.posInfos(), ERROR);
+		__garbage = true;
 	}
 	
 	// kept for notescript stuff
