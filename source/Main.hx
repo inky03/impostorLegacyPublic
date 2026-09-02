@@ -46,6 +46,8 @@ class Main extends Sprite
 		funkin.backend.CrashHandler.init();
 		#end
 		
+		funkin.scripts.FunkinScript.init();
+		
 		initHaxeUI();
 		
 		#if (windows && cpp)

@@ -42,7 +42,8 @@ class InterpEx extends insanity.backend.Interp
 	public function setParent(value:Dynamic)
 	{
 		parents.resize(0);
-		parents.push(value);
+		
+		if (value != null) parents.push(value);
 		
 		updateParentFields();
 		
@@ -66,6 +67,8 @@ class InterpEx extends insanity.backend.Interp
 	
 	public function addParent(parent:Dynamic):Dynamic
 	{
+		if (parent == null) return null;
+		
 		if (!parents.contains(parent))
 		{
 			parents.insert(0, parent);
