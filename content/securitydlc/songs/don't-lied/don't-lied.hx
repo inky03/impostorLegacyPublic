@@ -1,5 +1,8 @@
 import funkin.backend.FunkinShader.FunkinRuntimeShader;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+
 var lightsShader:FunkinRuntimeShader;
 public var dimShader = (ClientPrefs.shaders ? new funkin.game.shaders.ColorMatrixShader() : null);
 public var hudDarkShader:ExtraDropShadowShader;
@@ -12,8 +15,6 @@ var isDark:Bool = false;
 var fakeIcon:FlxSprite;
 var variant = boyfriend.getFlag('variants')?.stabbed;
 var noshader:Bool = false;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 
 function onLoad()
 {
