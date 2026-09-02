@@ -424,20 +424,33 @@ class Paths
 	/**
 	 * Lists all files found within a given directory
 	 */
-	public static function listAllFilesInDirectory(directory:String, mode:PathsTestMode = NORMAL) // based of psychs Mods.directoriesWithFile
+	public static inline function listAllFilesInDirectory(directory:String, mode:PathsTestMode = NORMAL)
 	{
 		// todo maybe make this recursive ?
-		var folders:Array<String> = [];
 		var files:Array<String> = [];
 		
+		for (folder in listPath(directory, mode))
+		{
+			for (file in FunkinAssets.readDirectory(folder)) files.push(Path.join([folder, file]));
+		}
+		
+		return files;
+	}
+	
+	/**
+	 * Lists all instances of a file within assets and content folders
+	 * 
+	 * Moved from `Mods.directoriesWithFile`
+	 */
+	public static inline function listPath(file:String, mode:PathsTestMode = NORMAL):Array<String>
+	{
+		var folders:Array<String> = [];
+		
 		#if MODS_ALLOWED
+		if (Paths.overrideMode != null) mode = Paths.overrideMode;
+		
 		if (mode != NONE)
 		{
-			final path:String = mods(directory);
-			if (FileSystem.exists(path)) folders.push(path);
-			
-			if (overrideMode != null) mode = overrideMode;
-			
 			for (mod in Mods.enabled)
 			{
 				if (Mods.globalMods.contains(mod))
@@ -449,20 +462,15 @@ class Paths
 					continue;
 				}
 				
-				final path:String = mods('$mod/$directory');
+				final path:String = mods('$mod/$file');
 				if (FunkinAssets.exists(path) && !folders.contains(path)) folders.push(path);
 			}
 		}
 		#end
 		
-		if (FunkinAssets.exists(getCorePath(directory))) folders.push(getCorePath(directory));
+		if (FunkinAssets.exists(getCorePath(file))) folders.push(getCorePath(file));
 		
-		for (folder in folders)
-		{
-			for (file in FunkinAssets.readDirectory(folder)) files.push(Path.join([folder, file]));
-		}
-		
-		return files;
+		return folders;
 	}
 	
 	#if MODS_ALLOWED

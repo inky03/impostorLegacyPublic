@@ -183,34 +183,9 @@ class Mods
 		return mergedList;
 	}
 	
-	public static inline function directoriesWithFile(path:String, fileToFind:String, mods:Bool = true)
+	public static inline function directoriesWithFile(_:String, fileToFind:String, mode:Paths.PathsTestMode = NORMAL)
 	{
-		var foldersToCheck:Array<String> = [];
-		if (FileSystem.exists(path + fileToFind)) foldersToCheck.push(path + fileToFind);
-		
-		#if MODS_ALLOWED
-		if (mods)
-		{
-			// Global mods first
-			for (mod in globalMods)
-			{
-				var folder:String = Paths.mods(mod + '/' + fileToFind);
-				if (FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
-			}
-			
-			// Then "content/" main folder
-			var folder:String = Paths.mods(fileToFind);
-			if (FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(Paths.mods(fileToFind));
-			
-			// And lastly, the loaded mod's folder
-			if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			{
-				var folder:String = Paths.mods(Mods.currentModDirectory + '/' + fileToFind);
-				if (FileSystem.exists(folder) && !foldersToCheck.contains(folder)) foldersToCheck.push(folder);
-			}
-		}
-		#end
-		return foldersToCheck;
+		return Paths.listPath(fileToFind, mode);
 	}
 	
 	public static function getPack(?folder:String):ModMeta
