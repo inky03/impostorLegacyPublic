@@ -81,6 +81,8 @@ class FunkinGame extends flixel.FlxGame
 		
 		if (_gameJustStarted) FlxG.signals.preGameStart.dispatch();
 		
+		funkin.scripts.FunkinModuleCollection.refresh();
+		
 		DebugDisplay.instance?.plugins.resize(0);
 		
 		FlxG.signals.preStateCreate.dispatch(_state);

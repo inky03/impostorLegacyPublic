@@ -88,6 +88,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		}
 		
 		Config.globalImports.set('openfl.utils.Assets', IAsName('OpenFlAssets')); // lpwkey why is the one with the alias and not lime's
+		Config.globalImports.set('funkin.scripts.ScriptClasses.ScriptedFlxColor', IAsName('FlxColor')); // wil be removed eventually
 		Config.globalImports.set('funkin.scripts.ScriptClasses.ScriptedFlxRandom', IAsName('Random'));
 		Config.globalImports.set('funkin.backend.FunkinShader.FunkinRuntimeShader', IAsName('FlxRuntimeShader'));
 		
@@ -131,7 +132,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	
 	public function new(script:String, ?name:String = "Script", ?additionalVars:Map<String, Any>, ?shareables:Sharables, ?modFolder:String, autoExecute:Bool = true, ?env:insanity.Environment)
 	{
-		super('', name, env); // evil
+		super('', name, env ?? FunkinModuleCollection.instance); // evil
 		
 		parser = new extensions.hscript.ParserEx();
 		parser.allowTypes = parser.allowJSON = parser.allowMetadata = true;
@@ -166,7 +167,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	}
 	
 	public override dynamic function onParsingError(exception:haxe.Exception):Void {
-		log('$exception', null, ERROR);
+		log('$exception', cast {fileName: name, lineNumber: parser.line}, ERROR);
 		__garbage = true;
 	}
 	public override dynamic function onProgramError(exception:haxe.Exception):Void {
@@ -206,7 +207,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	}
 	
 	@:inheritDoc
-	override function setDefaults()
+	public override function setDefaults():Void
 	{
 		super.setDefaults();
 		
@@ -224,10 +225,6 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		setImport('FlxAxes', funkin.utils.MacroUtil.buildAbstract(flixel.util.FlxAxes));
 		setImport("FlxKey", funkin.utils.MacroUtil.buildAbstract(flixel.input.keyboard.FlxKey));
 		setImport('BlendMode', funkin.utils.MacroUtil.buildAbstract(openfl.display.BlendMode));
-		
-		// custom
-		setImport('FlxColor', funkin.scripts.ScriptClasses.ScriptedFlxColor);
-		setImport('Random', funkin.scripts.ScriptClasses.ScriptedFlxRandom);
 		
 		set("keyToString", (key:Int) -> {
 			return flixel.input.keyboard.FlxKey.toStringMap.get(key);

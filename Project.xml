@@ -109,6 +109,10 @@
 	<haxeflag name="--macro" value="include('funkin')" />
 	<haxeflag name="--macro" value="include('animate')" />
 	<haxeflag name="--macro" value="include('flixel', true, ['flixel.addons.nape.*','flixel.addons.editors.*','flixel.addons.tile.FlxRayCastTilemap','flixel.system.macros'])" />
+	
+	<haxeflag name="--macro" value="addGlobalMetadata('flixel', '@:build(insanity.backend.macro.Patcher.patch())')" />
+	<haxeflag name="--macro" value="addGlobalMetadata('flixel.group', '@:build(insanity.backend.macro.Patcher.patch(true))')" />
+	<haxeflag name="--macro" value="addGlobalMetadata('flixel.effects', '@:build(insanity.backend.macro.Patcher.patch(true))')" />
 
 	<haxeflag name="-dce no" />
 

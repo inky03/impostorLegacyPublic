@@ -46,19 +46,29 @@ class HotReloadPlugin extends FlxBasic
 				FunkinAssets.cache.clearStoredMemory();
 				FunkinAssets.cache.clearUnusedMemory();
 			});
-			funkin.scripting.PluginsManager.populate();
-			funkin.data.GameFlags.getAwards(true);
-			funkin.data.Lang.reloadLangFile();
-			FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-			FlxG.resetState();
 			
 			funkin.Mods.currentModConfig = funkin.Mods.loadTopModConfig();
+			
+			reloadData();
+			quickResetState();
 		}
+		
 		if (FlxG.keys.justPressed.F7)
 		{
-			funkin.data.Lang.reloadLangFile();
-			FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-			FlxG.resetState();
+			reloadData();
+			quickResetState();
 		}
+	}
+	
+	inline function reloadData():Void {
+		funkin.scripts.FunkinModuleCollection.refresh(true);
+		funkin.scripting.PluginsManager.populate();
+		funkin.data.GameFlags.getAwards(true);
+		funkin.data.Lang.reloadLangFile();
+	}
+	
+	inline function quickResetState():Void {
+		FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
+		FlxG.resetState();
 	}
 }
