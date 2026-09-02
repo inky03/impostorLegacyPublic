@@ -32,8 +32,6 @@ class InterpEx extends insanity.backend.Interp
 		var v = args.shift();
 		if (args.length > 0) inf.customParams = args;
 		
-		trace(Std.string(v));
-		trace(inf);
 		funkin.scripts.FunkinScript.log(Std.string(v), inf);
 	}
 	

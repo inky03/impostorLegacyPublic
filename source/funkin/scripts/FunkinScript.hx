@@ -360,7 +360,6 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		try {
 			return Reflect.callMethod(interp, get(funcToRun), args ?? []);
 		} catch (e:haxe.Exception) {
-			trace(e.details());
 			log(e, interp.posInfos(), ERROR);
 		}
 		
