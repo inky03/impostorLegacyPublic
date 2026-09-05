@@ -33,7 +33,6 @@ function onCreatePost()
 	playbackBG.resize(440, 50);
 	playbackBG.active = false;
 	
-	#if (!hl)
 	playbackSlider = dbGroup.add(new flixel.addons.ui.FlxSlider(game, 'playbackRate', GAYLINE + 6, 644, .25, 4, 413, 16, 6, 0xff333333, 0xff333333));
 	playbackSlider.minLabel.alpha = playbackSlider.maxLabel.alpha = playbackSlider.body.alpha = .5;
 	playbackSlider.minLabel.x += 4;
@@ -42,11 +41,6 @@ function onCreatePost()
 	playbackSlider.minLabel.y = playbackSlider.maxLabel.y = playbackSlider.valueLabel.y -= 5;
 	playbackSlider.nameLabel.text = 'Playback Rate';
 	playbackSlider.nameLabel.y += 5;
-	#else
-	var text = dbGroup.add(new FlxText(GAYLINE + 6, 660, 428, 'i blame HashLink'));
-	text.alignment = FlxTextAlign.CENTER;
-	text.color = 0xff333333;
-	#end
 }
 
 var warping:Bool = false;
