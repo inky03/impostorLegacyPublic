@@ -122,14 +122,16 @@ class InterpEx extends insanity.backend.Interp
 	
 	override function resolve(id:String):Dynamic
 	{
+		if (sharedFields?.exists(id)) return sharedFields.get(id);
+		
+		if (variables.exists(id) || imports.exists(id)) return super.resolve(id);
+		
 		for (parent => fields in parentFields)
 		{
 			if (fields.exists(id) || fields.exists('get_$id')) return Reflect.getProperty(parent, id);
 		}
 		
-		if (sharedFields?.exists(id)) return sharedFields.get(id);
-		
-		return super.resolve(id);
+		return error(EUnknownVariable(id));
 	}
 	
 	override function isResolvable(id:String):Bool {
