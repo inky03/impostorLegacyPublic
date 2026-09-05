@@ -111,13 +111,13 @@ class Logger
 	{
 		return switch (severity)
 		{
-			case FATAL: 0xffbb0000;
+			case FATAL: 0xffdb0941;
 			
-			case ERROR: FlxColor.RED;
+			case ERROR: 0xffff4040;
 			
-			case WARN: FlxColor.YELLOW;
+			case WARN: 0xffffc421;
 			
-			case NOTICE: FlxColor.LIME;
+			case NOTICE: 0xff3ae8a5;
 			
 			default: FlxColor.WHITE;
 		}

@@ -12,6 +12,7 @@ import funkin.objects.note.*;
 using funkin.backend.Logger;
 
 @:access(funkin.states.PlayState)
+@:access(insanity.backend.Interp)
 class FunkinScript extends insanity.Script implements IFlxDestroyable
 {
 	/**
@@ -295,7 +296,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	public static function log(x:Dynamic, pos:haxe.PosInfos, severity:Severity = PRINT):Void // hey its me severity
 	{
 		final prefix:String = severity.scriptPrefix;
-		var out:String = formatPosInfos(pos.fileName, pos.lineNumber, x, prefix.length == 0 ? '' : '$prefix:');
+		var out:String = formatPosInfos(pos.fileName, pos.lineNumber, Std.string(x), prefix.length == 0 ? '' : '$prefix:');
 		
 		DebugTextPlugin.addText(out, Logger.getHexColourFromSeverity(severity));
 		
@@ -317,13 +318,15 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 			return null;
 		}
 		
+		var r:Dynamic = null;
+		
 		try {
-			return Reflect.callMethod(interp, get(funcToRun), args ?? []);
+			r = Reflect.callMethod(interp, get(funcToRun), args ?? []);
 		} catch (e:haxe.Exception) {
 			log(e, interp.posInfos(), ERROR);
 		}
 		
-		return null;
+		return r;
 	}
 	
 	static function newShader(?fragFile:String, ?vertFile:String)
@@ -344,6 +347,19 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		return new funkin.backend.FunkinShader.FunkinRuntimeShader(fragPath, vertPath);
 	}
 	
+	public override function start():Any
+	{
+		if (program == null)
+		{
+			__garbage = true;
+			return null;
+		}
+		
+		interp.inTry = true;
+		
+		return super.start();
+	}
+	
 	public function destroy():Void
 	{
 		program = null;
@@ -352,7 +368,8 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	}
 	
 	// compattttt
-	public function tryExecute():Void {
+	public function tryExecute():Void
+	{
 		start();
 	}
 	

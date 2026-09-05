@@ -79,6 +79,8 @@ class DebugTextPlugin extends FlxTypedGroup<DebugText>
 
 class DebugText extends FlxText
 {
+	final UNDERLAY_PADDING = 2;
+	
 	public var disableTime:Float = 4;
 	public var traceCount(default, set):Int = 0;
 	
@@ -87,16 +89,23 @@ class DebugText extends FlxText
 	
 	var _dirty:Bool = false;
 	
+	var _underlay:FlxSprite;
+	
 	public function new(text:String, color:FlxColor = FlxColor.WHITE)
 	{
-		super(10, 10, FlxG.width, text, 16);
+		super(17, 25, FlxG.width, text, 16);
 		
-		setFormat(Paths.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		setFormat(Paths.font('consolas.ttf'), 16, color, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scrollFactor.set();
-		borderSize = 1;
-		this.color = color;
+		borderSize = .75;
+		borderColor = 0x80000000;
 		
 		setText(text);
+		
+		_underlay = new FlxSprite().makeGraphic(1, 1, FlxColor.WHITE);
+		_underlay.color = FlxColor.BLACK;
+		_underlay.alpha = 0;
+		_underlay.scrollFactor.set();
 	}
 	
 	public function setText(input:String)
@@ -128,15 +137,28 @@ class DebugText extends FlxText
 	
 	override function draw()
 	{
-		camera = CameraUtil.lastCamera;
-		
 		if (_dirty)
 		{
-			final traceCounter = traceCount > 1 ? '[' + '$traceCount' + ']' + ' - ' : '';
-			
-			this.text = '$traceCounter$_trace';
 			_dirty = false;
+			camera = CameraUtil.lastCamera;
+			
+			this.text = '${traceCount > 1 ? '[$traceCount] - ' : ''}$_trace';
+			this.fieldWidth = (FlxG.width - x * 2);
+			this.regenGraphic();
 		}
+		
+		if (_underlay.exists)
+		{
+			_underlay.scale.set(this.textField.textWidth + 4 + UNDERLAY_PADDING * 2 /*FlxG.width - x * 2 + UNDERLAY_PADDING*/, height);
+			_underlay.updateHitbox();
+			
+			_underlay.setPosition(x - UNDERLAY_PADDING, y);
+			_underlay.camera = this.camera;
+			_underlay.alpha = (this.alpha * .4);
+			
+			_underlay.draw();
+		}
+		
 		super.draw();
 	}
 	
