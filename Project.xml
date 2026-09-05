@@ -94,25 +94,9 @@
 	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" version="1.2.4"/>
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
 
-	<!-- _______________ macros ... oh theres so many ... save me ... _______________ -->
+	<!-- _______________ macros ... oh theres Only one_______________ -->
 
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxSprite())', 'flixel.FlxSprite')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxCamera())', 'flixel.FlxCamera')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxText())', 'flixel.text.FlxText')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxGraphic())', 'flixel.graphics.FlxGraphic')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxDrawBaseItem())', 'flixel.graphics.tile.FlxDrawBaseItem')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxDrawItem())', 'flixel.graphics.tile.FlxDrawQuadsItem')" />
-	<haxeflag name="--macro" value="addMetadata('@:build(funkin.backend.macro.FlxMacro.buildFlxDrawItem())', 'flixel.graphics.tile.FlxDrawTrianglesItem')" />
-	
-	<haxeflag name="--macro" value="addMetadata('@:nullSafety(Off)', 'hxvlc.openfl.Video')" if="VIDEOS_ALLOWED"/>
-
-	<haxeflag name="--macro" value="include('funkin')" />
-	<haxeflag name="--macro" value="include('animate')" />
-	<haxeflag name="--macro" value="include('flixel', true, ['flixel.addons.nape.*','flixel.addons.editors.*','flixel.addons.tile.FlxRayCastTilemap','flixel.system.macros'])" />
-	
-	<haxeflag name="--macro" value="addGlobalMetadata('flixel', '@:build(insanity.backend.macro.Patcher.patch())')" />
-	<haxeflag name="--macro" value="addGlobalMetadata('flixel.group', '@:build(insanity.backend.macro.Patcher.patch(true))')" />
-	<haxeflag name="--macro" value="addGlobalMetadata('flixel.effects', '@:build(insanity.backend.macro.Patcher.patch(true))')" />
+	<haxeflag name="--macro" value="funkin.backend.macro.InitMacro.init()" />
 
 	<haxeflag name="-dce no" />
 
