@@ -176,7 +176,9 @@ function postModifierRegister():Void
 		iconP2.changeIcon('fabs');
 		iconP1.changeIcon('biddle');
 		
-		healthBar.setColors(gf.healthColour, biddle.healthColour);
+		FlxG.signals.postUpdate.addOnce(function() {
+			healthBar.setColors(gf.healthColour, biddle.healthColour);
+		});
 	}
 	
 	if (PlayState.attackCharacter == 1 || PlayState.attackCharacter == 2)
