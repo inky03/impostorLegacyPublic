@@ -782,12 +782,6 @@ class PlayState extends MusicBeatState
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
 		
-		playHUD = new funkin.game.huds.PsychHUD(this);
-		insert(members.indexOf(playFields), playHUD); // Data told me to do this
-		playHUD.cameras = [camHUD];
-		
-		playHUD.insert(playHUD.underlayOrder, underlays);
-		
 		meta = Metadata.getSong();
 		
 		modManager = new ModManager(this);
@@ -825,6 +819,12 @@ class PlayState extends MusicBeatState
 		addSongScripts('songs/${Paths.sanitize(SONG.song)}/scripts/');
 		
 		scripts.call('preNoteGeneration', []);
+		
+		playHUD ??= new funkin.game.huds.PsychHUD(this);
+		insert(members.indexOf(playFields), playHUD); // Data told me to do this
+		playHUD.cameras = [camHUD];
+		
+		playHUD.insert(playHUD.underlayOrder, underlays);
 		
 		if (genNotesBeforeCountdown) generatePlayfields();
 		generateSong(SONG.song);
