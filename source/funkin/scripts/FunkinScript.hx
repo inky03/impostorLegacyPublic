@@ -9,6 +9,8 @@ import funkin.backend.plugins.DebugTextPlugin;
 import funkin.objects.*;
 import funkin.objects.note.*;
 
+using funkin.backend.Logger;
+
 @:access(funkin.states.PlayState)
 class FunkinScript extends insanity.Script implements IFlxDestroyable
 {
@@ -167,11 +169,11 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	}
 	
 	public override dynamic function onParsingError(exception:haxe.Exception):Void {
-		log('$exception', cast {fileName: name, lineNumber: parser.line}, ERROR);
+		log('$exception', cast {fileName: name, lineNumber: parser.line}, FATAL);
 		__garbage = true;
 	}
 	public override dynamic function onProgramError(exception:haxe.Exception):Void {
-		log('$exception', interp.posInfos(), ERROR);
+		log('$exception', interp.posInfos(), FATAL);
 		__garbage = true;
 	}
 	
@@ -279,11 +281,35 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		set("newShader", newShader);
 	}
 	
-	public static function log(x:Dynamic, pos:haxe.PosInfos, severity:Severity = PRINT) { // hey its me severity
-		Logger.log(Std.string(x), severity, true, pos);
+	static inline function formatPosInfos(fileName:String = 'hscript', lineNumber:Int = 0, x:String = '', prefix:String = '')
+	{
+		var prefix = '[$prefix$fileName:$lineNumber]';
+		
+		final modPath:String = Paths.mods(Mods.currentModDirectory + '/');
+		if (fileName.startsWith(modPath)) prefix = prefix.replace(modPath, '');
+		#if ASSET_REDIRECT else if (fileName.startsWith(Paths.trail)) prefix = prefix.replace(Paths.trail, ''); #end
+		
+		return '$prefix $x';
 	}
 	
-	override function call(funcToRun:String, ?args:Array<Dynamic>):Any {
+	public static function log(x:Dynamic, pos:haxe.PosInfos, severity:Severity = PRINT):Void // hey its me severity
+	{
+		final prefix:String = severity.scriptPrefix;
+		var out:String = formatPosInfos(pos.fileName, pos.lineNumber, x, prefix.length == 0 ? '' : '$prefix:');
+		
+		DebugTextPlugin.addText(out, Logger.getHexColourFromSeverity(severity));
+		
+		if (prefix.length > 0)
+		{
+			out = out.fg(Logger.getAnsiColourFromSeverity(severity)).reset();
+			if (severity == FATAL) out = out.attr(INTENSITY_BOLD);
+		}
+		
+		haxe.Log.trace(out, null);
+	}
+	
+	override function call(funcToRun:String, ?args:Array<Dynamic>):Any
+	{
 		if (funcToRun == null || interp == null) return null;
 		
 		if (!exists(funcToRun)) {
@@ -300,7 +326,8 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		return null;
 	}
 	
-	static function newShader(?fragFile:String, ?vertFile:String) {
+	static function newShader(?fragFile:String, ?vertFile:String)
+	{
 		var fragPath = fragFile != null ? Paths.fragment(fragFile) : null;
 		var vertPath = vertFile != null ? Paths.vertex(vertFile) : null;
 		
@@ -329,14 +356,17 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		start();
 	}
 	
-	public function get(field:String):Dynamic {
+	public function get(field:String):Dynamic
+	{
 		return variables.get(field);
 	}
-	public function set(field:String, v:Dynamic):Dynamic {
+	public function set(field:String, v:Dynamic):Dynamic
+	{
 		variables.set(field, v);
 		return v;
 	}
-	public function exists(field:String):Bool {
+	public function exists(field:String):Bool
+	{
 		return variables.exists(field);
 	}
 }

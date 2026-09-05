@@ -11,7 +11,10 @@ enum abstract Severity(Int) to Int
 	var PRINT;
 	var WARN;
 	var ERROR;
+	var FATAL;
 	var NOTICE;
+	
+	public var scriptPrefix(get, never):String;
 	
 	public function toString():String
 	{
@@ -20,7 +23,19 @@ enum abstract Severity(Int) to Int
 			default: '[LOG] ';
 			case WARN: '[WARN] ';
 			case ERROR: '[ERROR] ';
+			case FATAL: '[FATAL] ';
 			case NOTICE: '[NOTICE] ';
+		}
+	}
+	
+	public function get_scriptPrefix():String
+	{
+		return switch (this)
+		{
+			default: '';
+			case WARN: 'WARN';
+			case ERROR: 'ERROR';
+			case FATAL: 'FATAL';
 		}
 	}
 }
@@ -43,7 +58,7 @@ class Logger
 		#if FLX_DEBUG
 		switch (severity)
 		{
-			case ERROR:
+			case ERROR | FATAL:
 				FlxG.log.error(data, pos);
 				
 			case WARN:
@@ -76,10 +91,12 @@ class Logger
 		#end
 	}
 	
-	static function getAnsiColourFromSeverity(severity:Severity)
+	public static function getAnsiColourFromSeverity(severity:Severity)
 	{
 		return switch (severity)
 		{
+			case FATAL: AnsiColor.RED;
+			
 			case ERROR: AnsiColor.RED;
 			
 			case WARN: AnsiColor.YELLOW;
@@ -94,6 +111,8 @@ class Logger
 	{
 		return switch (severity)
 		{
+			case FATAL: 0xffbb0000;
+			
 			case ERROR: FlxColor.RED;
 			
 			case WARN: FlxColor.YELLOW;
