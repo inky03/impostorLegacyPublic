@@ -183,12 +183,6 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 	{
 		if (!exists(func)) return null;
 		
-		var daFunc = get(func);
-		// if (!Reflect.isFunction(daFunc)) return null; Well unsafety is ok
-		
-		var returnVal:Dynamic = null;
-		var defaultShit:Map<String, Dynamic> = [];
-		
 		if (theObject != null)
 		{
 			extraVars ??= [];
@@ -198,15 +192,10 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		if (extraVars != null)
 		{
 			for (key => val in extraVars)
-				defaultShit.set(key, val);
+				set(key, val);
 		}
 		
-		returnVal = call(daFunc, parameters ?? []);
-		
-		for (key => val in defaultShit)
-			set(key, val);
-		
-		return returnVal;
+		return call(func, parameters ?? []);
 	}
 	
 	@:inheritDoc
