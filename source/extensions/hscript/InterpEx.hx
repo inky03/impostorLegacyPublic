@@ -43,6 +43,7 @@ class InterpEx extends insanity.backend.Interp
 	{
 		parents.resize(0);
 		
+		parent = value;
 		if (value != null) parents.push(value);
 		
 		updateParentFields();

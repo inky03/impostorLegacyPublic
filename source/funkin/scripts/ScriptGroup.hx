@@ -31,7 +31,7 @@ class ScriptGroup implements IFlxDestroyable
 			final interp:InterpEx = cast i.interp;
 			if (interp.parent != parent)
 			{
-				interp.parent = parent;
+				interp.setParent(parent);
 				interp.sharedFields = scriptShareables;
 			}
 		}
@@ -65,7 +65,7 @@ class ScriptGroup implements IFlxDestroyable
 		
 		@:privateAccess
 		final interp:InterpEx = cast script.interp;
-		if (interp.parent != parent) interp.parent = parent;
+		if (interp.parent != parent) interp.setParent(parent);
 		interp.sharedFields = scriptShareables;
 		members.push(script);
 		return true;

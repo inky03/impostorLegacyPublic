@@ -43,7 +43,7 @@ class ScriptedModifier extends Modifier
 			script.set('DEFAULT', DEFAULT);
 			script.set('LAST', LAST);
 			
-			@:privateAccess (cast script.interp : extensions.hscript.InterpEx).parent = this;
+			@:privateAccess (cast script.interp : extensions.hscript.InterpEx).setParent(this);
 			
 			modName = (script.executeFunc('getName', this) ?? modName);
 			
