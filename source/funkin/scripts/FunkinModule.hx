@@ -19,7 +19,7 @@ class FunkinModule extends insanity.Module implements IFunkinModule
 	public override function start(?environment:insanity.Environment):Void {
 		if (decls.length == 0) return;
 		
-		return super.start();
+		return super.start(environment);
 	}
 	
 	public override function startType(?environment:insanity.Environment, type:IInsanityType):IInsanityType
