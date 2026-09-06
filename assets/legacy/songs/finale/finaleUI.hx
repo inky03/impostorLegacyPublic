@@ -121,7 +121,7 @@ function initRGBPalette(character:Character)
 		var hsb = [FlxColor.getHue(color), FlxColor.getSaturation(color), FlxColor.getBrightness(color)];
 		newRGB.setColors([ // the dazzen formula.
 			color,
-			FlxColor.fromHSB(FlxMath.mod(hsb[0] - 30 + FlxColor.getYellow(color) * 80, 360), Math.min(hsb[1] * .75, 1), Math.min(hsb[2] * 2, 1.5))
+			FlxColor.fromHSB(FlxMath.mod(hsb[0] - 30 + FlxColor.getYellow(color) * 80, 360), Math.min(hsb[1] * .75, 1), Math.min(hsb[2] * 2, 1.5)),
 			FlxColor.subtract(
 				FlxColor.fromHSB(
 					FlxMath.mod(hsb[0] - 70 + 90 * (FlxColor.getCyan(color) - FlxColor.getYellow(color) * .6 + FlxColor.getMagenta(color) * .6) + 100 * (FlxColor.getGreenFloat(color) - FlxColor.getCyan(color) * .5), 360),
