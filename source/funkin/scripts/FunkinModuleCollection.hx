@@ -45,7 +45,7 @@ class FunkinModuleCollection extends insanity.Environment
 			{
 				var path:String = '$dir/$file';
 				
-				if (FileSystem.isDirectory(file))
+				if (FileSystem.isDirectory(path))
 				{
 					var newPath:Array<String> = pack.path.copy(); newPath.push(file);
 					
