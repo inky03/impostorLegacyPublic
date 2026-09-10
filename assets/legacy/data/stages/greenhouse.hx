@@ -25,15 +25,6 @@ var cloud3:FlxSprite;
 var cloud4:FlxSprite;
 var cloudbig:FlxSprite;
 
-function onUpdate(elapsed)
-{
-	cloud1.x = FlxMath.lerp(cloud1.x, cloud1.x - 1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud2.x = FlxMath.lerp(cloud2.x, cloud2.x - 3, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud3.x = FlxMath.lerp(cloud3.x, cloud3.x - 2, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud4.x = FlxMath.lerp(cloud4.x, cloud4.x - 0.1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloudbig.x = FlxMath.lerp(cloudbig.x, cloudbig.x - 0.5, FlxMath.bound(elapsed * 9, 0, 1));
-}
-
 function onLoad()
 {
 	heartColorShader = new ColorSwap();
@@ -79,22 +70,27 @@ function onLoad()
 	
 	cloud1 = new FlxBackdrop(Paths.image(ext + 'cloud 1'));
 	cloud1.setPosition(0, -1000);
+	cloud1.velocity.x = -9;
 	add(cloud1);
 	
 	cloud2 = new FlxBackdrop(Paths.image(ext + 'cloud 2'));
 	cloud2.setPosition(0, -1200);
+	cloud2.velocity.x = (-9 * 3);
 	add(cloud2);
 	
 	cloud3 = new FlxBackdrop(Paths.image(ext + 'cloud 3'));
 	cloud3.setPosition(0, -1400);
+	cloud3.velocity.x = (-9 * 2);
 	add(cloud3);
 	
 	cloud4 = new FlxBackdrop(Paths.image(ext + 'cloud 4'));
 	cloud4.setPosition(0, -1600);
+	cloud4.velocity.x = (-9 * .1);
 	add(cloud4);
 	
 	cloudbig = new FlxBackdrop(Paths.image(ext + 'bigcloud'));
 	cloudbig.setPosition(0, -1200);
+	cloudbig.velocity.x = (-9 * .5);
 	add(cloudbig);
 	
 	var bg:FlxSprite = new FlxSprite(-1200, -750).loadGraphic(Paths.image(ext + 'glasses'));

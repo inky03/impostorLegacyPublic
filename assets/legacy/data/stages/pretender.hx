@@ -29,32 +29,27 @@ function onLoad()
 	
 	cloud1 = new FlxBackdrop(Paths.image(ext + 'cloud 1'));
 	cloud1.setPosition(0, -1200);
-	cloud1.updateHitbox();
-	cloud1.antialiasing = ClientPrefs.globalAntialiasing;
+	cloud1.velocity.x = -9;
 	add(cloud1);
 	
 	cloud2 = new FlxBackdrop(Paths.image(ext + 'cloud 2'));
 	cloud2.setPosition(0, -1300);
-	cloud2.updateHitbox();
-	cloud2.antialiasing = ClientPrefs.globalAntialiasing;
+	cloud2.velocity.x = (-9 * 3);
 	add(cloud2);
 	
 	cloud3 = new FlxBackdrop(Paths.image(ext + 'cloud 3'));
 	cloud3.setPosition(0, -1500);
-	cloud3.updateHitbox();
-	cloud3.antialiasing = ClientPrefs.globalAntialiasing;
+	cloud3.velocity.x = (-9 * 2);
 	add(cloud3);
 	
 	cloud4 = new FlxBackdrop(Paths.image(ext + 'cloud 4'));
 	cloud4.setPosition(0, -1800);
-	cloud4.updateHitbox();
-	cloud4.antialiasing = ClientPrefs.globalAntialiasing;
+	cloud4.velocity.x = (-9 * .1);
 	add(cloud4);
 	
 	cloudbig = new FlxBackdrop(Paths.image(ext + 'bigcloud'));
 	cloudbig.setPosition(0, -1300);
-	cloudbig.updateHitbox();
-	cloudbig.antialiasing = ClientPrefs.globalAntialiasing;
+	cloudbig.velocity.x = (-9 * .5);
 	add(cloudbig);
 	
 	var ground:FlxSprite = new FlxSprite(-1200, -750).loadGraphic(Paths.image(ext + 'ground'));
@@ -94,15 +89,6 @@ function onLoad()
 	bluemira.animation.play('bop');
 	bluemira.scrollFactor.set(1.2, 1);
 	bluemira.antialiasing = ClientPrefs.globalAntialiasing;
-}
-
-function onUpdate(elapsed)
-{
-	cloud1.x = FlxMath.lerp(cloud1.x, cloud1.x - 1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud2.x = FlxMath.lerp(cloud2.x, cloud2.x - 3, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud3.x = FlxMath.lerp(cloud3.x, cloud3.x - 2, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud4.x = FlxMath.lerp(cloud4.x, cloud4.x - 0.1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloudbig.x = FlxMath.lerp(cloudbig.x, cloudbig.x - 0.5, FlxMath.bound(elapsed * 9, 0, 1));
 }
 
 function onBeatHit()
