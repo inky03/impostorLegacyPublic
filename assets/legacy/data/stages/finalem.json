@@ -11,7 +11,8 @@
 	"pet": [1700, 1350],
 	
 	"flags": {
-		"defeat": true
+		"defeat": true,
+		"defeatScared": true
 	}
 }
 

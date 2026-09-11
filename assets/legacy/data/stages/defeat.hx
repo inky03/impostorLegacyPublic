@@ -19,6 +19,7 @@ var defeatScaleTween:Dynamic = null;
 var ext:String = 'stages/void/';
 var bf:String;
 var defeatRetro:Null<String> = null;
+var defeatScared:Null<String> = null;
 public var redscreen:FlxSprite;
 
 var bfRim:DropShadowShader;
@@ -118,6 +119,9 @@ function onCreatePost()
 	
 	defeatRetro = (boyfriend.getFlag('variants')?.retro ?? boyfriend.getFlag('defeatRetro'));
 	if (defeatRetro != null) addCharacterToList(defeatRetro, 0);
+	
+	defeatScared = boyfriend.getFlag('variants')?.defeatScared;
+	if (defeatScared != null) addCharacterToList(defeatScared, 0);
 	
 	addCharacterToList('blackold', 1);
 	
@@ -394,7 +398,6 @@ function onEvent(eventName, value1, value2)
 				case 1:
 					changeCharacter(bf, 0);
 					changeCharacter('black', 1);
-					checkStageFlag(boyfriend);
 					
 					boyfriend.ghostsEnabled = prevAfterimages;
 					
@@ -419,6 +422,18 @@ function onEvent(eventName, value1, value2)
 			{
 				case 0:
 					if (boyfriend.curCharacter == 'bf-defeat-normal') changeCharacter('bf-defeat-scared', 0);
+
+					if (defeatScared != null)
+					{
+						changeCharacter(defeatScared, 0);
+					}
+					else
+					{
+						direction = boyfriend.getAnimName().split('-');
+						anim = (boyfriend.getAnimName().contains('idle') ? 'singLEFTmiss' : (boyfriend.getAnimName().contains('miss') ? boyfriend.getAnimName() : (direction[1] == null ? boyfriend.getAnimName() + 'miss' : direction[0] + 'miss' + direction[1])));
+						if (boyfriend.hasAnim(anim)) boyfriend.playAnimForDuration(anim, 0.6, true);
+					}
+
 					FlxTween.tween(bodies, {alpha: 1}, 0.7, {ease: FlxEase.quadInOut});
 					FlxTween.tween(bodies2, {alpha: 1}, 0.7, {ease: FlxEase.quadInOut});
 					FlxTween.tween(bodiesfront, {alpha: 1}, 0.7, {ease: FlxEase.quadInOut});
