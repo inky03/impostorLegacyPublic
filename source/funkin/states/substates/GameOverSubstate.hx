@@ -6,6 +6,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.system.FlxAssets.FlxSoundAsset;
 
 import funkin.backend.MusicBeatSubstate;
 import funkin.states.PlayState;
@@ -57,6 +58,8 @@ class GameOverSubstate extends MusicBeatSubstate
 	 */
 	var startedDeath:Bool = false;
 	
+	var confirmTimer:FlxTimer;
+	var gameOverSfx:FlxSound;
 	var camCTRL:FlxCamera;
 	
 	/**
@@ -93,7 +96,9 @@ class GameOverSubstate extends MusicBeatSubstate
 			camFollow = new FlxObject(boyfriend.getMidpoint()
 				.x - boyfriend.cameraPosition[0] - 100, boyfriend.getMidpoint().y + boyfriend.cameraPosition[1] - 100);
 				
-			if (deathSoundName != null) FlxG.sound.play(Paths.sound(deathSoundName, LOOSE));
+			confirmTimer = new FlxTimer();
+			
+			if (deathSoundName != null) playSfx(Paths.sound(deathSoundName));
 			FlxG.camera.scroll.set();
 			FlxG.camera.target = null;
 			
@@ -151,9 +156,9 @@ class GameOverSubstate extends MusicBeatSubstate
 		PlayState.instance?.scripts.call('onUpdate', [elapsed]);
 		super.update(elapsed);
 		
-		if ((controls.ACCEPT || FlxG.mouse.justPressed) && !isEnding)
+		if (controls.ACCEPT || FlxG.mouse.justPressed)
 		{
-			if (PlayState.instance?.scripts.call('onGameOverConfirm', []) != ScriptConstants.STOP_FUNC) endBullshit();
+			endBullshit();
 		}
 		
 		if (controls.BACK)
@@ -213,22 +218,52 @@ class GameOverSubstate extends MusicBeatSubstate
 	 */
 	function endBullshit():Void
 	{
-		isEnding = true;
-		boyfriend.playAnim('deathConfirm', true);
-		FlxG.sound.music.stop();
-		if (endSoundName != null) FlxG.sound.play(Paths.music(endSoundName, LOOSE));
-		new FlxTimer().start(0.7, function(tmr:FlxTimer) {
-			FlxG.camera.fade(FlxColor.BLACK, 2, false, function() {
-				FlxG.resetState();
+		if (!isEnding)
+		{
+			final value:Dynamic = PlayState.instance?.scripts.call('onGameOverConfirm', []);
+			if (value == ScriptConstants.STOP_FUNC) return;
+			
+			isEnding = true;
+			boyfriend.playAnim('deathConfirm', true);
+			FlxG.sound.music.stop();
+			if (endSoundName != null) playSfx(Paths.music(endSoundName, LOOSE));
+			confirmTimer.start(0.7, function(tmr:FlxTimer) {
+				FlxG.camera.fade(FlxColor.BLACK, 2, false);
+				camCTRL.fade(FlxColor.BLACK, 2, false);
+				confirmTimer.start(2, function(tmr:FlxTimer) {
+					FlxG.resetState();
+				});
 			});
-			camCTRL.fade(FlxColor.BLACK, 2, false);
-		});
-		// PlayState.instance?.scripts.call('onGameOverConfirm', [true]); Commented bc i don't get the point of this call also makes things fucky
+			
+			// PlayState.instance?.scripts.call('onGameOverConfirm', [true]); Commented bc i don't get the point of this call also makes things fucky
+		}
+		else
+		{
+			confirmTimer.cancel();
+			destroySfx();
+			FlxG.resetState();
+		}
 	}
 	
 	override function destroy()
 	{
 		instance = null;
 		super.destroy();
+	}
+	
+	function playSfx(path:FlxSoundAsset):Void
+	{
+		destroySfx();
+		
+		gameOverSfx = FlxG.sound.play(path);
+		gameOverSfx.onComplete = destroySfx;
+	}
+	
+	function destroySfx():Void
+	{
+		if (gameOverSfx == null) return;
+		
+		gameOverSfx.destroy();
+		gameOverSfx = null;
 	}
 }
