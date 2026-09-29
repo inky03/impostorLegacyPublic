@@ -172,7 +172,10 @@
 		"variants": {
 			"dark": "bf-dark",
 			"stabbed": "bfweird-stabbed",
-			"windy": "bfweird-windy"
+			"windy": "bfweird-windy",
+			"falling": "bfweird-fall",
+			"running": "bfweird-running",
+			"pixel": "bfweird-pixel"
 		}
 	},
 	"scalableOffsets": false,
