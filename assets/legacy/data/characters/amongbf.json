@@ -178,10 +178,8 @@
 	"vslice_sustains": false,
 	"flip_x": true,
     "flags": {
-		"variants":{
-			"weird": "amongbfweird",
-			"sheriff": "amongbfweirdsheriff"
-		}
+		"weird": "amongbfweird",
+		"defeatRetro": "bf-drip"
 	},
 	"healthbar_colour": -13520687,
 	"camera_position": [
