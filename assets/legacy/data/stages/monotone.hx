@@ -1,4 +1,5 @@
 import funkin.data.ClientPrefs;
+import funkin.FunkinAssets;
 import flixel.FlxSprite;
 import Reflect;
 
@@ -261,6 +262,24 @@ function onCreatePost()
 	add(speedlines);
 	
 	pauseOverwrite = 'monotone';
+
+	startMonotoneCharacterScript(dad.curCharacter, dad);
+}
+
+function startMonotoneCharacterScript(name:String, char:Character):Void
+{
+	var hscriptPath = FunkinScript.getPath('data/characters/$name', PathsTestMode.LOOSE);
+
+	if (!FunkinAssets.exists(hscriptPath, 'TEXT')) hscriptPath = FunkinScript.getPath('characters/$name', PathsTestMode.LOOSE);
+
+	if (FunkinAssets.exists(hscriptPath, 'TEXT'))
+	{
+		var script = initFunkinScript(hscriptPath, false, false);
+
+		script?.set('parent', char);
+
+		if (script?.exists('onLoad')) script.call('onLoad');
+	}
 }
 
 function onSongStart()

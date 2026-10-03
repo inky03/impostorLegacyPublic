@@ -2,9 +2,8 @@ import funkin.utils.MathUtil;
 
 function onLoad()
 {
-	mom = new Character(1110, 200, isStoryMode ? 'bf' : ClientPrefs.equipment.get('playerSkin') ?? 'bf', true);
-	startCharacterPos(mom);
-	stage.add(mom);
+	skin = (isStoryMode ? 'bf' : (ClientPrefs.equipment.get('playerSkin') == 'default' ? 'bf' : ClientPrefs.equipment.get('playerSkin') ?? 'bf'));
+	addMomChar(skin, [1110, 200], [boyfriendGroup, 1], true);
 }
 
 function onStartCountdown()
@@ -41,13 +40,13 @@ function onEvent(name, v1, v2)
 		case 'bf':
 			playHUD.iconP1.changeIcon('henry');
 			playHUD.iconP2.changeIcon(mom.healthIcon);
-			playHUD.healthBar.setColors(mom.healthColour, 0xFFbdd7d8);
+			playHUD.healthBar.setColors(mom.healthColour, boyfriend.healthColour);
 			if (hasColor) playHUD.scoreTxt.color = boyfriend.healthColour;
 			// healthBar.createColoredEmptyBar(0xFF31b0d1);
 		
 		case 'charles':
 			playHUD.iconP2.changeIcon('charles');
-			playHUD.healthBar.setColors(0xFFff3333, 0xFFbdd7d8);
+			playHUD.healthBar.setColors(dad.healthColour, boyfriend.healthColour);
 			if (hasColor) playHUD.scoreTxt.color = dad.healthColour;
 			// healthBar.createColoredEmptyBar(0xFFff3333);
 		
