@@ -3,22 +3,22 @@ package extensions.funkin.graphics.shaders;
 import openfl.display.BitmapData;
 import openfl.display.BlendMode;
 
-class RuntimeBlendShader extends RuntimePostEffectShader // fuck ur swag
+class BlendShader extends funkin.game.shaders.PostEffectShader // fuck ur swag
 {
-	public var src(default, set):BitmapData;
+	public var source(default, set):BitmapData;
 	
-	function set_src(value:BitmapData):BitmapData
+	function set_source(value:BitmapData):BitmapData
 	{
 		this.setBitmapData('src', value);
-		return src = value;
+		return source = value;
 	}
 	
-	public var dest(default, set):BitmapData;
+	public var destination(default, set):BitmapData;
 	
-	function set_dest(value:BitmapData):BitmapData
+	function set_destination(value:BitmapData):BitmapData
 	{
-		this.setBitmapData('dest', value);
-		return dest = value;
+		this.setBitmapData('dst', value);
+		return destination = value;
 	}
 	
 	public var blendMode(default, set):BlendMode;
@@ -35,7 +35,7 @@ class RuntimeBlendShader extends RuntimePostEffectShader // fuck ur swag
 #pragma header
 
 uniform sampler2D src;
-uniform sampler2D dest;
+uniform sampler2D dst;
 uniform int blendMode;
 
 // The functions below are needed for the following blend modes:
@@ -308,7 +308,7 @@ vec3 blend(vec3 bg, vec3 src)
 
 void main()
 {
-	vec4 bg = flixel_texture2D(dest, openfl_TextureCoordv);
+	vec4 bg = flixel_texture2D(dst, openfl_TextureCoordv);
 	vec4 src = flixel_texture2D(src, screenCoord);
 
 	// Un-premultiply the alpha before blending

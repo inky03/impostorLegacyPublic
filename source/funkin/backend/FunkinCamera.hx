@@ -13,7 +13,7 @@ import flixel.util.FlxDestroyUtil;
 import flixel.system.FlxAssets.FlxShader;
 
 import extensions.funkin.graphics.framebuffer.FixedBitmapData;
-import extensions.funkin.graphics.shaders.RuntimeBlendShader;
+import extensions.funkin.graphics.shaders.BlendShader;
 
 import openfl.display.OpenGLRenderer;
 import openfl.Lib;
@@ -119,7 +119,7 @@ class FunkinCamera extends FlxCamera
 	 */
 	public var crossCameraBlending:Bool;
 	
-	var _blendShader:RuntimeBlendShader;
+	var _blendShader:BlendShader;
 	var _backgroundFrame:FlxFrame;
 	var _blendRenderTexture:RenderTexture;
 	var _backgroundRenderTexture:RenderTexture;
@@ -134,7 +134,7 @@ class FunkinCamera extends FlxCamera
 		_backgroundFrame = new FlxFrame(new FlxGraphic('', null));
 		_backgroundFrame.frame = new FlxRect();
 		
-		_blendShader = new RuntimeBlendShader();
+		_blendShader = new BlendShader();
 		
 		_backgroundRenderTexture = new RenderTexture(this.width, this.height);
 		_blendRenderTexture = new RenderTexture(this.width, this.height);
@@ -151,7 +151,7 @@ class FunkinCamera extends FlxCamera
 		
 		// Fallback to the shader implementation if the device doesn't support `KHR_blend_equation_advanced`, or if
 		// the specified blend mode requires the shader.
-		if (shouldUseShader)
+		if (shouldUseShader || (blend == SHADER && shader is funkin.game.shaders.PostEffectShader))
 		{
 			if (crossCameraBlending)
 			{
@@ -194,15 +194,27 @@ class FunkinCamera extends FlxCamera
 				frameMatrix.translate(-pivotX, -pivotY);
 				frameMatrix.scale(this.scaleX, this.scaleY);
 				frameMatrix.translate(pivotX, pivotY);
-				camera.drawPixels(frame, pixels, frameMatrix, transform, null, smoothing, shader);
+				camera.drawPixels(frame, pixels, frameMatrix, transform, null, smoothing, blend == SHADER ? null : shader);
 			});
 			_blendRenderTexture.render();
 			
-			_blendShader.src = _blendRenderTexture.graphic.bitmap;
-			_blendShader.dest = _cameraTexture;
-			
-			_blendShader.blendMode = blend;
-			_blendShader.updateViewInfo(width, height, this);
+			if (blend == SHADER)
+			{
+				final shader:funkin.game.shaders.PostEffectShader = cast shader;
+				
+				shader.setBitmapData('src', _blendRenderTexture.graphic.bitmap);
+				shader.setBitmapData('dst', _cameraTexture);
+				
+				shader.updateViewInfo(width, height, this);
+			}
+			else
+			{
+				_blendShader.source = _blendRenderTexture.graphic.bitmap;
+				_blendShader.destination = _cameraTexture;
+				
+				_blendShader.blendMode = blend;
+				_blendShader.updateViewInfo(width, height, this);
+			}
 			
 			_backgroundFrame.parent.bitmap = _blendRenderTexture.graphic.bitmap;
 			
@@ -214,7 +226,7 @@ class FunkinCamera extends FlxCamera
 			_backgroundRenderTexture.drawToCamera((camera, matrix) -> {
 				camera.zoom = this.zoom;
 				matrix.scale(clampedScale, clampedScale);
-				camera.drawPixels(_backgroundFrame, null, matrix, canvas.transform.colorTransform, null, false, _blendShader);
+				camera.drawPixels(_backgroundFrame, null, matrix, canvas.transform.colorTransform, null, false, blend == SHADER ? shader : _blendShader);
 			});
 			
 			_backgroundRenderTexture.render();
@@ -298,7 +310,7 @@ class FunkinCamera extends FlxCamera
 	{
 		super.destroy();
 		
-		_blendShader.src = _blendShader.dest = null;
+		_blendShader.source = _blendShader.destination = null;
 		_blendShader = null;
 		
 		_blendRenderTexture = FlxDestroyUtil.destroy(_blendRenderTexture);

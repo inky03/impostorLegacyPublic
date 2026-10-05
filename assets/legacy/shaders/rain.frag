@@ -12,47 +12,6 @@
 //               https://github.com/stegu/webgl-noise
 //
 
-// ALL UNUSED THINGS WERE DELETED FROM ORIGINAL SHADER!!!
-// things people keep crying about idk lol, do note that this was supposed to be in pragma header
-
-#define screenCoord openfl_TextureCoordv
-uniform vec2 uScreenResolution;
-uniform vec4 uCameraBounds;
-
-vec2 screenToWorld(vec2 screenCoord)
-{
-	vec2 scale = vec2(uCameraBounds.z - uCameraBounds.x, uCameraBounds.w - uCameraBounds.y);
-	vec2 offset = vec2(uCameraBounds.x, uCameraBounds.y);
-	return screenCoord * scale + offset;
-}
-
-vec2 worldToScreen(vec2 worldCoord)
-{
-	vec2 scale = vec2(uCameraBounds.z - uCameraBounds.x, uCameraBounds.w - uCameraBounds.y);
-	vec2 offset = vec2(uCameraBounds.x, uCameraBounds.y);
-	return (worldCoord - offset) / scale;
-}
-
-vec2 bitmapCoordScale()
-{
-	return openfl_TextureCoordv / screenCoord;
-}
-
-vec2 screenToBitmap(vec2 screenCoord)
-{
-	return screenCoord * bitmapCoordScale();
-}
-
-vec4 sampleBitmapScreen(vec2 screenCoord)
-{
-	return texture2D(bitmap, screenToBitmap(screenCoord));
-}
-
-vec4 sampleBitmapWorld(vec2 worldCoord)
-{
-	return sampleBitmapScreen(worldToScreen(worldCoord));
-}
-
 // common
 vec3 mod289(vec3 x) {
 	return x - floor(x * (1.0 / 289.0)) * 289.0;

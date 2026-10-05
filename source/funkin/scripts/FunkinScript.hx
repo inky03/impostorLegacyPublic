@@ -313,19 +313,22 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		return Reflect.callMethod(interp, get(funcToRun), args ?? []);
 	}
 	
-	static function newShader(?fragFile:String, ?vertFile:String)
+	static function newShader(?fragFile:String, ?vertFile:String, ?mode:PathsTestMode)
 	{
-		var fragPath = fragFile != null ? Paths.fragment(fragFile) : null;
-		var vertPath = vertFile != null ? Paths.vertex(vertFile) : null;
+		var fragPath = (fragFile != null ? Paths.fragment(fragFile, mode) : null);
+		var vertPath = (vertFile != null ? Paths.vertex(vertFile, mode) : null);
 		
 		if (fragPath != null)
 		{
 			if (FunkinAssets.exists(fragPath)) fragPath = FunkinAssets.getContent(fragPath);
 		}
-		
-		if (vertPath != null)
+		else if (vertPath != null)
 		{
 			if (FunkinAssets.exists(vertPath)) vertPath = FunkinAssets.getContent(vertPath);
+		}
+		else
+		{
+			throw new haxe.Exception('$fragPath${vertFile != null ? ' and $vertPath' : ''} not found');
 		}
 		
 		return new funkin.backend.FunkinShader.FunkinRuntimeShader(fragPath, vertPath);

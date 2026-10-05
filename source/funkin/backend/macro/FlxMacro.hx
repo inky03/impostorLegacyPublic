@@ -16,9 +16,7 @@ class FlxMacro
 	 */
 	public static macro function buildFlxSprite():Array<Field>
 	{
-		var fields:Array<Field> = Context.getBuildFields();
-		
-		fields.push(
+		return Context.getBuildFields().concat([
 			{
 				name: "loadFromSheet",
 				access: [APublic],
@@ -44,9 +42,7 @@ class FlxMacro
 						}
 					}),
 				pos: Context.currentPos(),
-			});
-			
-		fields.push(
+			},
 			{
 				doc: "sets frames to the given collection.\nReturns `this` for chaining.",
 				name: "loadAtlasFrames",
@@ -63,9 +59,7 @@ class FlxMacro
 						}
 					}),
 				pos: Context.currentPos(),
-			});
-			
-		fields.push(
+			},
 			{
 				doc: "creates a 1x1 graphic and scales it to the given width and height.",
 				name: "makeScaledGraphic",
@@ -91,9 +85,7 @@ class FlxMacro
 						}
 					}),
 				pos: Context.currentPos(),
-			});
-			
-		fields.push(
+			},
 			{
 				doc: "centers the sprite onto a FlxObject by their hitboxes.",
 				name: "centerOnObject",
@@ -116,9 +108,8 @@ class FlxMacro
 						}
 					}),
 				pos: Context.currentPos(),
-			});
-			
-		return fields;
+			}
+		]);
 	}
 	
 	public static macro function buildFlxCamera():Array<Field>

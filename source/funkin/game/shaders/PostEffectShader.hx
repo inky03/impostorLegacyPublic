@@ -1,14 +1,9 @@
-package extensions.funkin.graphics.shaders;
+package funkin.game.shaders;
 
-import flixel.FlxCamera;
-import flixel.FlxG;
 import flixel.graphics.frames.FlxFrame;
-import flixel.addons.display.FlxRuntimeShader;
 
-import lime.graphics.opengl.GLProgram;
-import lime.utils.Log;
-
-class RuntimePostEffectShader extends FlxRuntimeShader
+// from FunkinCrew RuntimePostEffectShader
+class PostEffectShader extends flixel.addons.display.FlxRuntimeShader
 {
 	@:glVertexHeader('
 		// normalized screen coord
@@ -98,9 +93,10 @@ class RuntimePostEffectShader extends FlxRuntimeShader
 			return sampleBitmapScreen(worldToScreen(worldCoord));
 		}
 	', true)
-	public function new(fragmentSource:String = null, glVersion:String = null)
+	
+	public function new(?fragmentSource:String, ?vertexSource:String, ?glVersion:String)
 	{
-		super(fragmentSource, null, glVersion);
+		super(fragmentSource, vertexSource, glVersion);
 		uScreenResolution.value = [FlxG.width, FlxG.height];
 		uCameraBounds.value = [0, 0, FlxG.width, FlxG.height];
 		uFrameBounds.value = [0, 0, FlxG.width, FlxG.height];
@@ -118,19 +114,5 @@ class RuntimePostEffectShader extends FlxRuntimeShader
 	{
 		// NOTE: uv.right is actually the right pos and uv.bottom is the bottom pos
 		uFrameBounds.value = [frame.uv.left, frame.uv.top, frame.uv.right, frame.uv.bottom];
-	}
-	
-	override function __createGLProgram(vertexSource:String, fragmentSource:String):GLProgram
-	{
-		try
-		{
-			final res = super.__createGLProgram(vertexSource, fragmentSource);
-			return res;
-		}
-		catch (error)
-		{
-			Log.warn(error); // prevent the app from dying immediately
-			return null;
-		}
 	}
 }
