@@ -12,15 +12,14 @@ function onLoad()
 		armedGuy.visible = false;
 		songEndCallback = iSeeYouEnry;
 	}
-	
-	mom = new Character(-60, 210, 'ellie');
-	startCharacterPos(mom);
-	stage.add(mom);
-	mom.zIndex = 1;
-	mom.visible = false;
 }
 
-function onCreatePost() pauseOverwrite = 'henry';
+function onCreatePost()
+{
+	pauseOverwrite = 'henry';
+	addMomChar('ellie', [-60, 210], [dadGroup, 1]);
+	mom.visible = false;
+}
 
 function iSeeYouEnry()
 {
