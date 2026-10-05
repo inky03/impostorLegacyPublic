@@ -650,8 +650,8 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		
 		camGame = FlxG.camera;
-		camHUD = new FlxCamera();
-		camOther = new FlxCamera();
+		camHUD = new FunkinCamera();
+		camOther = new FunkinCamera();
 		
 		camHUD.bgColor = 0x0;
 		camOther.bgColor = 0x0;

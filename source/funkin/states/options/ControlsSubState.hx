@@ -52,7 +52,7 @@ class ControlsSubState extends MusicBeatSubstate
 	final topBound:Float = 150;
 	final bottomBound:Float = 630;
 	
-	var fadeCamera:FlxCamera; // erm .. awkward
+	var fadeCamera:FunkinCamera; // erm .. awkward
 	
 	public function new(device:Device)
 	{
@@ -72,10 +72,10 @@ class ControlsSubState extends MusicBeatSubstate
 		titleText.camera = FlxG.camera;
 		add(titleText);
 		
-		(camera = new FlxCamera(panelX, topBound, 676, Std.int(bottomBound - topBound))).bgColor = 0;
+		(camera = new FunkinCamera(panelX, topBound, 676, Std.int(bottomBound - topBound))).bgColor = 0;
 		FlxG.cameras.add(camera, false);
 		
-		FlxG.cameras.add(fadeCamera = new FlxCamera(), false);
+		FlxG.cameras.add(fadeCamera = new FunkinCamera(), false);
 		fadeCamera.bgColor = 0;
 		
 		initStateScript('ControlsSubState');

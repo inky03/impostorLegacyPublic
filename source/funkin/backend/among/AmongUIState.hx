@@ -28,7 +28,7 @@ class AmongUIState extends MusicBeatState
 		
 		var ext:String = 'menu/common';
 		
-		camUpper = new FlxCamera();
+		camUpper = new FunkinCamera();
 		camUpper.bgColor.alpha = 0;
 		FlxG.cameras.add(camUpper, false);
 		

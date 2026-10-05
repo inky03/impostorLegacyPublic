@@ -8,7 +8,7 @@ class AttackCharSelectSubstate extends MusicBeatSubstate
 	var curSelection:Int = 0;
 	var bg:flixel.system.FlxBGSprite;
 	var selectionArrow:FlxSprite;
-	var overlayCamera:FlxCamera;
+	var overlayCamera:FunkinCamera;
 	
 	public var canMove = false;
 	
@@ -25,7 +25,7 @@ class AttackCharSelectSubstate extends MusicBeatSubstate
 		**/
 		canMove = false;
 		
-		overlayCamera = new FlxCamera();
+		overlayCamera = new FunkinCamera();
 		overlayCamera.bgColor = 0x00000000;
 		overlayCamera.antialiasing = ClientPrefs.globalAntialiasing;
 		FlxG.cameras.add(overlayCamera, false);

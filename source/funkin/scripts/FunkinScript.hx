@@ -64,7 +64,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 			
 			'openfl.display.BlendMode',
 			
-			'flixel.FlxG', 'flixel.FlxSprite', 'flixel.FlxCamera',
+			'flixel.FlxG', 'flixel.FlxSprite',
 			'flixel.group.FlxGroup.FlxTypedGroup', 'flixel.group.FlxSpriteGroup',
 			'flixel.math.FlxMath', 'flixel.util.FlxTimer', 'flixel.tweens.FlxTween', 'flixel.tweens.FlxEase',
 			'flixel.sound.FlxSound', 'flixel.text.FlxText', 'flixel.effects.FlxFlicker', 'flixel.util.FlxSpriteUtil', 'flixel.ui.FlxBar',
@@ -97,6 +97,7 @@ class FunkinScript extends insanity.Script implements IFlxDestroyable
 		Config.globalImports.set('funkin.scripts.ScriptClasses.ScriptedFlxColor', IAsName('FlxColor')); // wil be removed eventually
 		Config.globalImports.set('funkin.scripts.ScriptClasses.ScriptedFlxRandom', IAsName('Random'));
 		Config.globalImports.set('funkin.backend.FunkinShader.FunkinRuntimeShader', IAsName('FlxRuntimeShader'));
+		Config.globalImports.set('funkin.backend.FunkinCamera', IAsName('FlxCamera'));
 		
 		for (f in ['Cancel', 'Halt', 'Stop', 'Continue']) // work around for NOW because its messed up  !?!?!??!?!?!?
 			Config.globalVariables.set('Function_$f', insanity.backend.Expr.Mirror.MProperty(funkin.scripting.ScriptConstants, '${f.toUpperCase()}_FUNC'));

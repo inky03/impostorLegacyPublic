@@ -124,7 +124,7 @@ class CharacterEditorState extends UIState // MUST EXTEND UI STATE needed for ac
 		super.create();
 		
 		FlxG.cameras.reset();
-		FlxG.cameras.add(camHUD = new FlxCamera(), false);
+		FlxG.cameras.add(camHUD = new FunkinCamera(), false);
 		camHUD.bgColor = 0x0;
 		
 		FlxG.mouse.visible = true;

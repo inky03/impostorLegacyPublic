@@ -7,7 +7,7 @@ class CreditsRollSubState extends funkin.backend.MusicBeatSubstate
 	public var onSkip:Void->Void = null;
 	public var onFinish:Void->Void = null;
 	
-	public var camCredits:FlxCamera;
+	public var camCredits:FunkinCamera;
 	
 	public function new(skippable:Bool = false, ?onFinish:Void->Void, ?onSkip:Void->Void)
 	{
@@ -24,7 +24,7 @@ class CreditsRollSubState extends funkin.backend.MusicBeatSubstate
 	{
 		super.create();
 		
-		FlxG.cameras.add(camera = camCredits = new FlxCamera(), false);
+		FlxG.cameras.add(camera = camCredits = new FunkinCamera(), false);
 		camCredits.bgColor = 0;
 		
 		initStateScript();

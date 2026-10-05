@@ -145,7 +145,7 @@ class ChartEditorState extends MusicBeatState
 	
 	public var ignoreWarnings = false;
 	
-	public static var camHUD:FlxCamera;
+	public static var camHUD:FunkinCamera;
 	
 	var undos = [];
 	var redos = [];
@@ -335,7 +335,7 @@ class ChartEditorState extends MusicBeatState
 		
 		DiscordClient.changePresence("Chart Editor" /* sorry that was boring */);
 		
-		camHUD = new FlxCamera();
+		camHUD = new FunkinCamera();
 		camHUD.bgColor = 0x0;
 		FlxG.cameras.add(camHUD, false);
 		

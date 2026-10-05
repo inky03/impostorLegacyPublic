@@ -81,13 +81,13 @@ class CosmicubeSubState extends MusicBeatSubstate
 		
 		Mods.currentModDirectory = (meta.mod == null || meta.mod.length == 0 ? null : meta.mod);
 		
-		(overlayCamera = new FlxCamera()).bgColor = 0;
+		(overlayCamera = new FunkinCamera()).bgColor = 0;
 		FlxG.cameras.add(overlayCamera, false);
 		
-		(cubeCamera = new FlxCamera(50, 110, 860, 560)).bgColor = FlxColor.BLACK;
+		(cubeCamera = new FunkinCamera(50, 110, 860, 560)).bgColor = FlxColor.BLACK;
 		FlxG.cameras.add(cubeCamera, false);
 		
-		(awardCamera = new FlxCamera()).bgColor = 0;
+		(awardCamera = new FunkinCamera()).bgColor = 0;
 		FlxG.cameras.add(awardCamera, false);
 		
 		add(black = new flixel.system.FlxBGSprite());

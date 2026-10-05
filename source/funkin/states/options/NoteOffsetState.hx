@@ -26,8 +26,8 @@ class NoteOffsetState extends MusicBeatState
 	var boyfriend:Character;
 	var gf:Character;
 	
-	public var camHUD:FlxCamera;
-	public var camGame:FlxCamera;
+	public var camHUD:FunkinCamera;
+	public var camGame:FunkinCamera;
 	
 	var barPercent:Float = 0;
 	var delayMin:Int = 0;
@@ -41,8 +41,8 @@ class NoteOffsetState extends MusicBeatState
 	override public function create()
 	{
 		// Cameras
-		camGame = new FlxCamera();
-		camHUD = new FlxCamera();
+		camGame = new FunkinCamera();
+		camHUD = new FunkinCamera();
 		camHUD.bgColor.alpha = 0;
 		
 		FlxG.cameras.reset(camGame);

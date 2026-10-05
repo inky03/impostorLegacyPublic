@@ -60,6 +60,8 @@ class Main extends Sprite
 		ClientPrefs.loadDefaultKeys();
 		ClientPrefs.tryBindingSave('funkin');
 		
+		untyped FlxG.cameras = new funkin.backend.FunkinCameraFrontEnd(); // frontend... but its in backend... hmm ....
+		
 		final game = new funkin.backend.FunkinGame(startMeta.width, startMeta.height, Init, startMeta.fps, startMeta.fps, true, startMeta.startFullScreen);
 		
 		// btw game has to be a variable for this to work ig - Orbyy

@@ -15,7 +15,7 @@ class FNAFState extends MusicBeatState
 	
 	// room
 	var camTarget:FlxSprite;
-	var hudCam:FlxCamera;
+	var hudCam:FunkinCamera;
 	var camDrag:Float = 0.06;
 	var camRangeX:Float = 200;
 	var camRangeY:Float = 30;
@@ -168,7 +168,7 @@ class FNAFState extends MusicBeatState
 		}
 		
 		// hud camera
-		hudCam = new FlxCamera();
+		hudCam = new FunkinCamera();
 		hudCam.bgColor = 0x00000000;
 		FlxG.cameras.add(hudCam, false);
 		applyCameraFilters();

@@ -38,6 +38,7 @@ import funkin.states.*;
 import funkin.objects.BGSprite;
 import funkin.objects.FunkinSprite;
 import funkin.backend.MusicBeatState;
+import funkin.backend.FunkinCamera;
 
 using flixel.util.FlxArrayUtil;
 

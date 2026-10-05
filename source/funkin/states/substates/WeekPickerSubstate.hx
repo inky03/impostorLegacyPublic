@@ -54,7 +54,7 @@ class WeekPickerSubstate extends MusicBeatSubstate
 		bgThing = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/resetPrompt'));
 		bgThing.screenCenter();
 		add(bgThing);
-		(cubeCamera = new FlxCamera(bgThing.x + 6, bgThing.y + 67, 620, 234)).bgColor = FlxColor.BLACK;
+		(cubeCamera = new FunkinCamera(bgThing.x + 6, bgThing.y + 67, 620, 234)).bgColor = FlxColor.BLACK;
 		FlxG.cameras.add(cubeCamera, false);
 		
 		otherTitleText = new FlxText(340, 205, 0, Lang.str('freeplay'), 50);

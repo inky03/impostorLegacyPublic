@@ -15,9 +15,9 @@ class CameraUtil
 		returns the last camera in FlxG.cameras.list
 		equivalent to `FlxG.cameras.list[FlxG.cameras.list.length - 1]`
 	**/
-	public static var lastCamera(get, never):FlxCamera;
+	public static var lastCamera(get, never):flixel.FlxCamera;
 	
-	static function get_lastCamera():FlxCamera return FlxG.cameras.list[FlxG.cameras.list.length - 1];
+	static function get_lastCamera():flixel.FlxCamera return FlxG.cameras.list[FlxG.cameras.list.length - 1];
 	
 	/**
 		convenient function to making a camera and adding it to the stack as well

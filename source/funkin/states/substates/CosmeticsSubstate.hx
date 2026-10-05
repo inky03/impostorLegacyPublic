@@ -132,7 +132,7 @@ class CosmeticsSubstate extends MusicBeatSubstate
 		turboGroup.add(controlLEFT);
 		turboGroup.add(controlRIGHT);
 		
-		overlayCamera = new FlxCamera();
+		overlayCamera = new FunkinCamera();
 		overlayCamera.bgColor = 0x00000000;
 		overlayCamera.antialiasing = ClientPrefs.globalAntialiasing;
 		FlxG.cameras.add(overlayCamera, false);
@@ -178,7 +178,7 @@ class CosmeticsSubstate extends MusicBeatSubstate
 		var maskInsetRight:Float = 31;
 		var maskInsetTop:Float = 35;
 		var maskInsetBottom:Float = 32;
-		gridCamera = new FlxCamera();
+		gridCamera = new FunkinCamera();
 		gridCamera.bgColor = 0x00000000;
 		gridCamera.antialiasing = ClientPrefs.globalAntialiasing;
 		gridCamera.setPosition(skinThingBg.x + maskInsetLeft, skinThingBg.y + maskInsetTop);
