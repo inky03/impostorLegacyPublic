@@ -67,7 +67,7 @@
 	"scalableOffsets": false,
 	"gameover_confirm_sound": null,
 	"healthicon": "fabs",
-	"gameover_character": null,
+	"gameover_character": "genericDeath-noMic",
 	"vslice_sustains": false,
 	"flip_x": false,
 	"healthbar_colour": -9391376,

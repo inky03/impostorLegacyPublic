@@ -86,6 +86,10 @@
 	"scale": 1,
 	"_editor_isPlayer": false,
 	"flags": {
-		"lightsDownSpeaker": true
+		"lightsDownSpeaker": true,
+		"variants":{
+			"weird": "amonggfweird",
+			"sheriff": "amonggfsheriff"
+		}
 	}
 }

@@ -154,8 +154,12 @@ function onCreatePost()
 	blackImage.color = FlxColor.BLACK;
 	blackImage.alpha = 0;
 	stage.insert(stage.members.indexOf(dadGroup) + 1, blackImage);
-	
-	copyPet.loadPet(pet.curPet);
+
+	var clonePet = (pet.getFlag('variants')?.monotone ?? pet.getFlag('customMonotone'));
+
+	if (clonePet == null) clonePet = pet.curPet;
+
+	copyPet.loadPet(clonePet);
 	copyPet.flipX = !copyPet.flipX;
 	copyPet.x -= (copyPet._petOffset.x * 2);
 	add(copyPet);

@@ -179,7 +179,8 @@
 	"flip_x": true,
     "flags": {
 		"variants":{
-			"weird": "amongbfweird"
+			"weird": "amongbfweird",
+			"sheriff": "amongbfweirdsheriff"
 		}
 	},
 	"healthbar_colour": -13520687,

@@ -446,6 +446,9 @@ class FreeplayState extends AmongUIState
 			FlxG.sound.play(Paths.sound('hover'), 0.5);
 			smoothSelect = curSelect;
 		}
+
+		cards.members[curSelect].curScript?.executeFunc('onSelect', [], cards.members[curSelect]);
+		cards.members[prevSel].curScript?.executeFunc('onDeselect', [], cards.members[prevSel]);
 		
 		changePortrait(change);
 		
@@ -535,6 +538,8 @@ class FreeplayState extends AmongUIState
 	
 	function acceptSong()
 	{
+		if (ScriptConstants.stopping(cards.members[curSelect].curScript?.executeFunc('onAccept', [], cards.members[curSelect]))) return;
+		
 		var s:SongInformation = week_songs[curSelect];
 		
 		if (ws_lock[curSelect])
@@ -569,17 +574,6 @@ class FreeplayState extends AmongUIState
 		else
 		{
 			lockMovement = true;
-			
-			switch (s.songName)
-			{
-				case 'Defeat':
-					openSubState(new MissCounterSubstate(function(misses:Int) loadSong(week_songs[curSelect][0])));
-					return;
-					
-				case 'Monotone Attack':
-					openSubState(new AttackCharSelectSubstate());
-					return;
-			}
 			
 			FlxG.sound.play(Paths.sound('panelAppear'), .5);
 			loadSong(week_songs[curSelect][0]);

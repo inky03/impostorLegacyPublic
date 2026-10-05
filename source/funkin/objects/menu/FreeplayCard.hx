@@ -3,6 +3,7 @@ package funkin.objects.menu;
 import flixel.group.FlxSpriteGroup;
 
 import funkin.states.FreeplayState;
+import funkin.scripts.FunkinScript;
 
 typedef Rank =
 {
@@ -12,6 +13,8 @@ typedef Rank =
 
 class FreeplayCard extends FlxSpriteGroup
 {
+	public var curScript:FunkinScript;
+	
 	var ext:String = 'menu/freeplay/';
 	
 	public var card:FlxSprite;
@@ -166,6 +169,25 @@ class FreeplayCard extends FlxSpriteGroup
 		
 		credit.visible = !locked;
 		icon.setPosition(card.x - 13, card.y - 23);
+
+		var scriptPath:String = FunkinScript.getPath('scripts/freeplayCards/${Paths.sanitize(song.songName)}');
+		
+		if (FunkinAssets.exists(scriptPath)) {
+			curScript = FunkinScript.fromFile(scriptPath, false);
+			
+			if (curScript.__garbage)
+			{
+				curScript = null;
+			}
+			else
+			{
+				curScript.set('price', price);
+				curScript.addParent(this);
+				
+				curScript.tryExecute();
+				curScript.executeFunc('onLoad', [], this);
+			}
+		}
 	}
 	
 	public function unlockCard()
@@ -180,6 +202,7 @@ class FreeplayCard extends FlxSpriteGroup
 		rank.visible = true;
 		name.text = songName;
 		if (shuffleTimer != null) shuffleTimer.cancel();
+		curScript?.executeFunc('onUnlock', [], this);
 	}
 	
 	function getRank(acc:Float, misses:Int = 0):Rank
@@ -211,6 +234,8 @@ class FreeplayCard extends FlxSpriteGroup
 	{
 		super.update(elapsed);
 		
+		curScript?.executeFunc('onUpdate', [elapsed], this);
+		curScript?.executeFunc('onUpdatePost', [elapsed], this);
 		// refreshPriceTxt(); // maybe dont make this on update // make it manually called after the effect, someone else can do that if they think its better
 	}
 	
@@ -222,5 +247,15 @@ class FreeplayCard extends FlxSpriteGroup
 			final beans = (cast FlxG.state : funkin.states.FreeplayState).localBeans;
 			priceText.color = beans < price ? 0xFFFF6767 : FlxColor.WHITE;
 		}
+
+		curScript?.executeFunc('onRefreshPriceText', [], this);
+	}
+	
+	public override function destroy():Void
+	{
+		curScript?.executeFunc('onDestroy', [], this);
+		curScript?.destroy();
+		
+		super.destroy();
 	}
 }

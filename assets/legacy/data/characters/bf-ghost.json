@@ -270,7 +270,9 @@
 		"ghost": true,
 		"floating": true,
 		"seeThrough": true,
-		"customMonotone": "bf-monotone",
-		"defeatRetro": "bf-ghost-retro"
+		"variants": {
+			"retro": "bf-ghost-retro",
+			"monotone": "bf-monotone"
+		}
 	}
 }

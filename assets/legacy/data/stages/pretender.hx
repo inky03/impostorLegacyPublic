@@ -11,7 +11,9 @@ var super2Tween:FlxTween;
 function onLoad()
 {
 	var sky:FlxSprite = new FlxSprite(-1500, -800).loadGraphic(Paths.image(ext + 'bg sky'));
-	sky.antialiasing = ClientPrefs.globalAntialiasing;
+	sky.antialiasing = true;
+	sky.scale.set(10, 10);
+	sky.updateHitbox();
 	add(sky);
 	
 	var sun:FlxSprite = new FlxSprite(0, -140).loadGraphic(Paths.image(ext + 'the sun'));
@@ -27,35 +29,25 @@ function onLoad()
 	cloudfront.antialiasing = ClientPrefs.globalAntialiasing;
 	add(cloudfront);
 	
-	cloud1 = new FlxBackdrop(Paths.image(ext + 'cloud 1'));
-	cloud1.setPosition(0, -1200);
-	cloud1.updateHitbox();
-	cloud1.antialiasing = ClientPrefs.globalAntialiasing;
-	add(cloud1);
+	cloud1 = add(new FlxBackdrop(Paths.image(ext + 'cloud 1'), FlxAxes.X, 2209));
+	cloud1.setPosition(1196, -1000 + 904);
+	cloud1.velocity.x = -9;
 	
-	cloud2 = new FlxBackdrop(Paths.image(ext + 'cloud 2'));
-	cloud2.setPosition(0, -1300);
-	cloud2.updateHitbox();
-	cloud2.antialiasing = ClientPrefs.globalAntialiasing;
-	add(cloud2);
+	cloud2 = add(new FlxBackdrop(Paths.image(ext + 'cloud 2'), FlxAxes.X, 2209));
+	cloud2.setPosition(100, -1200 + 1052);
+	cloud2.velocity.x = (-9 * 3);
 	
-	cloud3 = new FlxBackdrop(Paths.image(ext + 'cloud 3'));
-	cloud3.setPosition(0, -1500);
-	cloud3.updateHitbox();
-	cloud3.antialiasing = ClientPrefs.globalAntialiasing;
-	add(cloud3);
+	cloud3 = add(new FlxBackdrop(Paths.image(ext + 'cloud 3'), FlxAxes.X, 2209));
+	cloud3.setPosition(794, -1400 + 1354);
+	cloud3.velocity.x = (-9 * 2);
 	
-	cloud4 = new FlxBackdrop(Paths.image(ext + 'cloud 4'));
-	cloud4.setPosition(0, -1800);
-	cloud4.updateHitbox();
-	cloud4.antialiasing = ClientPrefs.globalAntialiasing;
-	add(cloud4);
+	cloud4 = add(new FlxBackdrop(Paths.image(ext + 'cloud 4'), FlxAxes.X, 2209));
+	cloud4.setPosition(1772, -1600 + 1150);
+	cloud4.velocity.x = (-9 * .1);
 	
-	cloudbig = new FlxBackdrop(Paths.image(ext + 'bigcloud'));
-	cloudbig.setPosition(0, -1300);
-	cloudbig.updateHitbox();
-	cloudbig.antialiasing = ClientPrefs.globalAntialiasing;
-	add(cloudbig);
+	cloudbig = add(new FlxBackdrop(Paths.image(ext + 'bigcloud'), FlxAxes.X, 2209));
+	cloudbig.setPosition(1356, -1200 + 1192);
+	cloudbig.velocity.x = (-9 * .5);
 	
 	var ground:FlxSprite = new FlxSprite(-1200, -750).loadGraphic(Paths.image(ext + 'ground'));
 	ground.antialiasing = ClientPrefs.globalAntialiasing;
@@ -94,15 +86,6 @@ function onLoad()
 	bluemira.animation.play('bop');
 	bluemira.scrollFactor.set(1.2, 1);
 	bluemira.antialiasing = ClientPrefs.globalAntialiasing;
-}
-
-function onUpdate(elapsed)
-{
-	cloud1.x = FlxMath.lerp(cloud1.x, cloud1.x - 1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud2.x = FlxMath.lerp(cloud2.x, cloud2.x - 3, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud3.x = FlxMath.lerp(cloud3.x, cloud3.x - 2, FlxMath.bound(elapsed * 9, 0, 1));
-	cloud4.x = FlxMath.lerp(cloud4.x, cloud4.x - 0.1, FlxMath.bound(elapsed * 9, 0, 1));
-	cloudbig.x = FlxMath.lerp(cloudbig.x, cloudbig.x - 0.5, FlxMath.bound(elapsed * 9, 0, 1));
 }
 
 function onBeatHit()
@@ -194,21 +177,26 @@ function onCreatePost()
 	
 	var vines = new FlxSprite(-1450, -700).loadGraphic(Paths.image(ext + 'green'));
 	vines.scrollFactor.set(1.2, 1);
-	vines.antialiasing = ClientPrefs.globalAntialiasing;
 	
 	var super1:FlxSprite = new FlxSprite(-1270, -700).loadGraphic(Paths.image(ext + 'overlay1'));
-	super1.antialiasing = ClientPrefs.globalAntialiasing;
 	super1.blend = BlendMode.ADD;
+	super1.antialiasing = true;
 	super1.alpha = 0.6;
+	super1.scale.set(4, 4);
+	super1.updateHitbox();
 	
 	super2 = new FlxSprite(-1270, -700).loadGraphic(Paths.image(ext + 'overlay2'));
-	super2.antialiasing = ClientPrefs.globalAntialiasing;
 	super2.blend = BlendMode.SUBTRACT;
+	super2.antialiasing = true;
 	super2.alpha = 0.8;
+	super2.scale.set(4, 4);
+	super2.updateHitbox();
 	
 	var pretenderLighting:FlxSprite = new FlxSprite(-1670, -700).loadGraphic(Paths.image(ext + 'lightingpretender'));
+	pretenderLighting.antialiasing = true;
 	pretenderLighting.alpha = 0.35;
-	pretenderLighting.antialiasing = ClientPrefs.globalAntialiasing;
+	pretenderLighting.scale.set(4, 4);
+	pretenderLighting.updateHitbox();
 	
 	add(bluemira);
 	add(pot);

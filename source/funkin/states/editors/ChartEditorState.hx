@@ -3098,7 +3098,7 @@ class ChartEditorState extends MusicBeatState
 			updateCurStep();
 		}
 		
-		Conductor.bpm = (Conductor.getBPMFromSeconds(sectionStartTime())?.bpm ?? _song.bpm);
+		Conductor.bpm = (Conductor.getBPMFromSeconds(sectionStartTime() + 3)?.bpm ?? _song.bpm);
 		
 		var blah1:Float = getSectionBeats();
 		var blah2:Float = getSectionBeats(curSec + 1);
@@ -3320,7 +3320,7 @@ class ChartEditorState extends MusicBeatState
 			}
 		}
 		
-		var note:EditorNote = renderedNotes.recycle(EditorNote, function() return new EditorNote(null, null, null, null, true));
+		var note:EditorNote = renderedNotes.recycle(EditorNote, function() return new EditorNote(0, 0, null, false, true));
 		note._reset();
 		note.chartData = i;
 		note.sustainLength = 0;

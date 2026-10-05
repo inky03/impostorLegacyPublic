@@ -35,6 +35,10 @@ Current version: **1.1.2**
 - Fixed health bar color not changing during a section in Don't Lied.
 - Triple Threat stage made windy.
 - Weird BF given a windy variant.
+- Weird BF stabbed and scared animations fixed.
+- A couple charts were fixed. (GitHub contribution)
+- Crew GF was given a Weird variant. (GitHub contribution)
+- Both Crew BF and Crew GF were given a Weird Sheriff variant. (GitHub contribution)
 
 ## 1.1.2 (july 23 2026)
 
