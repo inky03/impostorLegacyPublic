@@ -1,89 +1,108 @@
 {
+	"pausePortrait": "",
 	"animations": [
 		{
+			"loop": false,
+			"flipY": false,
 			"offsets": [
 				0,
 				80
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "idle",
+			"fps": 24,
+			"name": "pip animations/piple",
 			"indices": [],
-			"name": "piple"
+			"flipX": false
 		},
 		{
+			"loop": false,
+			"flipY": false,
 			"offsets": [
-				19,
+				11,
+				81
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "pip animations/pip down",
+			"indices": [],
+			"flipX": false
+		},
+		{
+			"loop": false,
+			"flipY": false,
+			"offsets": [
+				55,
 				71
 			],
-			"loop": false,
+			"anim": "singLEFT",
 			"fps": 24,
-			"anim": "singDOWN",
+			"name": "pip animations/pip lef",
 			"indices": [],
-			"name": "pip down"
+			"flipX": false
 		},
 		{
-			"offsets": [
-				23,
-				112
-			],
 			"loop": false,
-			"fps": 24,
-			"anim": "singUP",
-			"indices": [],
-			"name": "pip up"
-		},
-		{
+			"flipY": false,
 			"offsets": [
-				-8,
-				86
+				-60,
+				65
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "pip animations/pip righ",
 			"indices": [],
-			"name": "pip righ"
+			"flipX": false
 		},
 		{
+			"loop": false,
+			"flipY": false,
 			"offsets": [
-				56,
+				35,
 				89
 			],
-			"loop": false,
+			"anim": "singUP",
 			"fps": 24,
-			"anim": "singLEFT",
+			"name": "pip animations/pip up",
 			"indices": [],
-			"name": "pip lef"
+			"flipX": false
 		},
 		{
-			"offsets": [
-				10,
-				121
-			],
-			"indices": [],
-			"fps": 24,
-			"anim": "rozebud?",
 			"loop": false,
-			"name": "piprozebud"
+			"flipY": false,
+			"offsets": [
+				-8,
+				88
+			],
+			"anim": "rozebud?",
+			"fps": 24,
+			"name": "pip animations/piple rozebud",
+			"indices": [],
+			"flipX": false
 		}
 	],
 	"no_antialiasing": false,
 	"image": "characters/misc/cvp/piptorture",
 	"position": [
-		-200,
-		95
+		-253,
+		43
 	],
+	"dance_every": 2,
+	"gameover_intial_sound": null,
+	"flags": {},
+	"scalableOffsets": false,
+	"gameover_confirm_sound": null,
 	"healthicon": "pip",
+	"afterimages": true,
+	"gameover_character": null,
+	"vslice_sustains": false,
 	"flip_x": false,
-	"healthbar_colors": [
-		254,
-		170,
-		71
-	],
+	"healthbar_colour": -87481,
 	"camera_position": [
 		-610,
 		90
 	],
+	"gameover_loop_sound": null,
 	"sing_duration": 6,
-	"scale": 1
+	"scale": 1,
+	"_editor_isPlayer": false
 }

@@ -178,6 +178,7 @@
 		170
 	],
 	"healthicon": "ziffy",
+	"gameover_character": "genericDeath-noMic",
 	"flip_x": true,
 	"healthbar_colors": [
 		255,

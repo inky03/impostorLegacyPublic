@@ -3098,7 +3098,7 @@ class ChartEditorState extends MusicBeatState
 			updateCurStep();
 		}
 		
-		Conductor.bpm = (Conductor.getBPMFromSeconds(sectionStartTime())?.bpm ?? _song.bpm);
+		Conductor.bpm = (Conductor.getBPMFromSeconds(sectionStartTime() + 3)?.bpm ?? _song.bpm);
 		
 		var blah1:Float = getSectionBeats();
 		var blah2:Float = getSectionBeats(curSec + 1);

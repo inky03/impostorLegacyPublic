@@ -1,0 +1,96 @@
+{
+	"pausePortrait": "",
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"flipY": false,
+			"loop": false,
+			"fps": 24,
+			"anim": "danceLeft",
+			"flipX": false,
+			"indices": [],
+			"name": "dance left"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"flipY": false,
+			"loop": false,
+			"fps": 24,
+			"anim": "danceRight",
+			"flipX": false,
+			"indices": [],
+			"name": "dance right"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"flipY": false,
+			"loop": false,
+			"fps": 24,
+			"anim": "sad",
+			"flipX": false,
+			"indices": [],
+			"name": "cry"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"flipY": false,
+			"loop": true,
+			"fps": 24,
+			"anim": "sad-loop",
+			"flipX": false,
+			"indices": [
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "cry"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/gf/cosmicube/weirdamonggf",
+	"position": [
+		-1,
+		-77
+	],
+	"dance_every": 1,
+	"gameover_intial_sound": null,
+	"flags": {
+		"variants": {
+			"weird": "amonggfweird"
+		},
+		"lightsDownSpeaker": true
+	},
+	"scalableOffsets": false,
+	"gameover_confirm_sound": null,
+	"healthicon": "gfweird",
+	"afterimages": true,
+	"gameover_character": null,
+	"vslice_sustains": false,
+	"flip_x": false,
+	"healthbar_colour": -16748887,
+	"camera_position": [
+		0,
+		0
+	],
+	"gameover_loop_sound": null,
+	"sing_duration": 6,
+	"scale": 1,
+	"_editor_isPlayer": false
+}

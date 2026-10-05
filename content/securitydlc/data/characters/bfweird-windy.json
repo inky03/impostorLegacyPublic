@@ -249,6 +249,22 @@
 			"anim": "hey-loop",
 			"loop": true,
 			"name": "Blow-BF HEY!!"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "singUP-loop",
+			"indices": [
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "Blow-BF NOTE UP0"
 		}
 	],
 	"no_antialiasing": false,

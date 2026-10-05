@@ -121,7 +121,7 @@
 	"scalableOffsets": false,
 	"gameover_confirm_sound": null,
 	"healthicon": "pip",
-	"gameover_character": null,
+	"gameover_character": "genericDeath-pink",
 	"vslice_sustains": false,
 	"flip_x": false,
 	"healthbar_colour": -87481,
