@@ -280,6 +280,8 @@ class PauseSubState extends funkin.backend.MusicBeatSubstate
 	
 	function acceptChoice():Void
 	{
+		scriptGroup.call('onSelect', [options[curSelect]]);
+		
 		switch (options[curSelect])
 		{
 			case 'resumesong':
