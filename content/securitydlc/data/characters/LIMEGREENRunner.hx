@@ -3,10 +3,8 @@ var baseX:Float = boyfriend.scale.x;
 var baseY:Float = boyfriend.scale.y;
 var scaleTween:FlxTween;
 var dragging:Bool = false;
-var draggingpet:Bool = false;
 var dragOffsetX:Float = 0;
 var dragOffsetY:Float = 0;
-
 var velX:Float = 0;
 var velY:Float = 0;
 var lastMX:Float = 0;
@@ -34,9 +32,8 @@ function onCreatePost()
 
 function onUpdate(elapsed:Float)
 {
-
     if (FlxG.mouse.justPressed && FlxG.mouse.overlaps(boyfriend))
-    {
+    { 
 		boyfriend.animation.play('ou', true);
         boyfriend.specialAnim = true;
 
@@ -61,26 +58,9 @@ function onUpdate(elapsed:Float)
         lastMY = FlxG.mouse.y;
     }
 
-    if (FlxG.mouse.justPressed && FlxG.mouse.overlaps(pet))
-    {
-        draggingpet = true;
-
-        dragOffsetX = pet.x - FlxG.mouse.x;
-        dragOffsetY = pet.y - FlxG.mouse.y;
-
-        if (scaleTween != null) scaleTween.cancel();
-
-        pet.scale.set(1.5, 0.75);
-
-        scaleTween = FlxTween.tween(pet.scale, {x: 1, y: 1}, 1, {
-            ease: FlxEase.elasticOut
-        });
-    }
     if (FlxG.mouse.justReleased)
     {
         dragging = false;
-        draggingdad = false;
-        draggingpet = false;
     }
 
     if (dragging)
@@ -104,16 +84,18 @@ function onUpdate(elapsed:Float)
         velY += 3200 * elapsed;
         boyfriend.x += velX * elapsed;
         boyfriend.y += velY * elapsed;
-        var leftWall:Float = -900;
-        var rightWall:Float = 2000;
+        var leftWall:Float = -600;
+        var rightWall:Float = 4000;
 
         if (boyfriend.x < leftWall)
         {
+            FlxG.sound.play(Paths.sound('effects/boing', null, PathsTestMode.LOOSE));
             boyfriend.x = leftWall;
             velX *= -0.8;
         }
         if (boyfriend.x > rightWall)
         {
+            FlxG.sound.play(Paths.sound('effects/boing', null, PathsTestMode.LOOSE));
             boyfriend.x = rightWall;
             velX *= -0.8;
         }
@@ -122,33 +104,10 @@ function onUpdate(elapsed:Float)
         velY *= 1;
         if (boyfriend.y > floorY)
         {
+            
             boyfriend.y = floorY;
             velY *= -0.75;
             velX *= 0.95;
         }
-    }
-
-    if (draggingpet)
-    {
-        pet.x = FlxG.mouse.x + dragOffsetX;
-        pet.y = FlxG.mouse.y + dragOffsetY;
-    }
-
-    if (FlxG.mouse.justPressedRight && FlxG.mouse.overlaps(boyfriend))
-    {
-		boyfriend.animation.play('ou', true);
-        boyfriend.specialAnim = true;
-
-        var baseX:Float = boyfriend.scale.x;
-        var baseY:Float = boyfriend.scale.y;
-        
-        if (scaleTween != null) scaleTween.cancel();
-
-        boyfriend.scale.set(baseX * 1.5, baseY * 0.75);
-
-        scaleTween = FlxTween.tween(boyfriend.scale, {x: baseX, y: baseY}, 1, {
-            ease: FlxEase.elasticOut
-        });
-        boyfriend.flipX = !boyfriend.flipX;
     }
 }

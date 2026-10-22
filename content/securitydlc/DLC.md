@@ -38,7 +38,7 @@ Current version: **1.1.2**
 - Weird BF stabbed and scared animations fixed.
 - A couple charts were fixed. (GitHub contribution)
 - Crew GF was given a Weird variant. (GitHub contribution)
-- Both Crew BF and Crew GF were given a Weird Sheriff variant. (GitHub contribution)
+- Playable JADS was cleaned up and most of his features were commented out.
 
 ## 1.1.2 (july 23 2026)
 
