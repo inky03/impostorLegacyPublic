@@ -1,5 +1,4 @@
 {
-	"pausePortrait": "",
 	"animations": [
 		{
 			"offsets": [
@@ -14,8 +13,8 @@
 		},
 		{
 			"offsets": [
-				-27,
-				67
+				-21,
+				63
 			],
 			"loop": false,
 			"fps": 24,
@@ -37,7 +36,7 @@
 		{
 			"offsets": [
 				-2,
-				71
+				65
 			],
 			"flipY": false,
 			"loop": false,
@@ -49,8 +48,8 @@
 		},
 		{
 			"offsets": [
-				-1,
-				72
+				-3,
+				64
 			],
 			"flipY": false,
 			"loop": false,
@@ -63,7 +62,7 @@
 		{
 			"offsets": [
 				-3,
-				70
+				64
 			],
 			"flipY": false,
 			"loop": false,
@@ -75,8 +74,8 @@
 		},
 		{
 			"offsets": [
-				-6,
-				72
+				-14,
+				63
 			],
 			"flipY": false,
 			"loop": false,
@@ -88,8 +87,8 @@
 		},
 		{
 			"offsets": [
-				-5,
-				74
+				-14,
+				63
 			],
 			"flipY": false,
 			"loop": false,
@@ -101,8 +100,8 @@
 		},
 		{
 			"offsets": [
-				-8,
-				71
+				-2,
+				64
 			],
 			"flipY": false,
 			"loop": false,
@@ -115,7 +114,7 @@
 		{
 			"offsets": [
 				-2,
-				70
+				64
 			],
 			"flipY": false,
 			"loop": false,
@@ -128,14 +127,21 @@
 		{
 			"offsets": [
 				-2,
-				71
+				64
 			],
 			"flipY": false,
 			"loop": false,
 			"fps": 24,
 			"anim": "scared",
 			"flipX": false,
-			"indices": [],
+			"indices": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5
+			],
 			"name": "Scared"
 		},
 		{
@@ -143,9 +149,9 @@
 			"flipY": false,
 			"offsets": [
 				-2,
-				71
+				64
 			],
-			"anim": "idle-scared",
+			"anim": "scared-loop",
 			"fps": 24,
 			"name": "Scared",
 			"indices": [
@@ -165,26 +171,26 @@
 	],
 	"dance_every": 2,
 	"gameover_intial_sound": null,
-	"flags": {
-		"variants": {
-			"dark": "bf-dark",
-			"falling": "bf-fall"
-		}
-	},
 	"scalableOffsets": false,
 	"gameover_confirm_sound": null,
 	"healthicon": "bf",
-	"afterimages": true,
 	"gameover_character": "bf-dead",
 	"vslice_sustains": false,
 	"flip_x": true,
 	"healthbar_colour": -13520687,
 	"camera_position": [
-		68,
-		-75
+		0,
+		0
 	],
 	"gameover_loop_sound": null,
-	"sing_duration": 3,
-	"scale": 1.1,
+	"sing_duration": 6,
+	"scale": 1,
+    "flags": {
+        "variants": {
+        	"falling": "bf-fall",
+			"dark": "bf-dark",
+			"windy": "bf-windy"
+        }
+    },
 	"_editor_isPlayer": true
 }
