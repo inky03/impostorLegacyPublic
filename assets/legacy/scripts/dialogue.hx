@@ -543,6 +543,7 @@ function dialogueUpdate(elapsed:Float)
 
 function goodBialogue()
 {
+	PlayState.instance?.scripts.call("onDialogueComplete");
 	hasDialogue = false;
 	FlxG.sound.music.stop(); // fadeOut(1.5, 0);
 	FlxG.sound.play(Paths.sound('panelDisappear'), 0.5);
