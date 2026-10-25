@@ -55,6 +55,7 @@ function onLoad()
 	var bgScale = 1.3;
 	
 	var bg1:FlxSprite = new FlxSprite(800, -270).loadFromSheet(ext + 'props', 'dead');
+	bg1.updateHitbox();
 	bg1.scrollFactor.set(0.8, 0.8);
 	bg1.scale.set(bgScale, bgScale);
 	

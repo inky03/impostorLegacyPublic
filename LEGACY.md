@@ -59,6 +59,7 @@ Current version: **1.1.2**
 - A couple charts were fixed. (GitHub contribution)
 - Some stages were optimized.
 - Windy Polus BF variant was fixed.
+- Fixed missing prop in Finale stage.
 
 ### Changes
 - Some more characters have been turned into atlases.
