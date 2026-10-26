@@ -1,3 +1,4 @@
 Functionality: global
 subtitles
 - value1: the line from your lang file, leave empty to hide caption
+- value2: y,color, leave null for default

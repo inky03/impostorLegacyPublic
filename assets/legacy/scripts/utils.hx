@@ -341,7 +341,11 @@ function onEvent(eventName, value1, value2)
 		case 'Optional Captions':
 			if (nullBlank(value1) || value1 == '0') return hideCaption();
 			
-			showCaption(value1, nullBlank(value2) ? null : Std.parseInt(value2));
+			var captionV2 = value2.split(',');
+			var captionY = captionV2.length > 0 && !nullBlank(captionV2[0]) && captionV2[0].trim() != 'null' ? Std.parseFloat(captionV2[0]) : null;
+			var captionColor = captionV2.length > 1 && !nullBlank(captionV2[1]) ? FlxColor.fromString(captionV2[1].trim()) : FlxColor.WHITE;
+			showCaption(value1, captionY);
+			caption.color = captionColor;
 		case 'Set Cams':
 			var coords = value1.split(',');
 			var zoomy = Std.parseFloat(value2);
