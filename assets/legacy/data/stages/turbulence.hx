@@ -383,9 +383,14 @@ function onGameOverPost()
 	bf.angle = -90;
 	
 	FlxTween.tween(bf, {x: bf.x + 2000, angle: 90}, .55, {ease: FlxEase.quadIn, startDelay: .35});
-	FlxTween.tween(bf, {y: bf.y + 1800}, .55, {ease: FlxEase.quartIn, startDelay: .33, onComplete: () -> bf.visible = false});
+	FlxTween.tween(bf, {y: bf.y + 1800}, .55, {ease: FlxEase.quartIn, startDelay: .33, onComplete: () -> {
+		new FlxTimer().start(.4, (_) -> bf.finishAnim());
+		bf.kill();
+	}});
 	
 	FlxG.camera.followLerp = 0.02;
+	
+	if (subState.gameOverSfx != null) FlxTween.tween(subState.gameOverSfx, {volume: 0}, .75, {ease: FlxEase.sineIn, startDelay: .35});
 }
 
 function goodNoteHit(note)
