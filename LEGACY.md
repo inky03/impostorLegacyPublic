@@ -46,6 +46,7 @@ Current version: **1.1.2**
 	- Custom item requirements can now be scripted.
 
 ### Changes
+- Game has been buffed.
 - Cosmicube node image loading now only happens when on screen.
 	- Entering the menu should now be less memory intensive.
 

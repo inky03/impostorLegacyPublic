@@ -54,7 +54,8 @@ class PlayField extends FlxTypedContainer<StrumNote>
 	
 	public var onNoteHit:NoteSignal = new NoteSignal();
 	public var onNoteMiss:NoteSignal = new NoteSignal();
-	public var onMissPress:FlxTypedSignal<(Int, PlayField) -> Void> = new FlxTypedSignal<(Int, PlayField) -> Void>();
+	public var onGhostTap:FlxTypedSignal<(Int, PlayField) -> Void> = new FlxTypedSignal();
+	public var onMissPress:FlxTypedSignal<(Int, PlayField) -> Void> = new FlxTypedSignal();
 	
 	public var playAnims:Bool = true;
 	public var noteSplashes:Bool = false;
@@ -88,6 +89,9 @@ class PlayField extends FlxTypedContainer<StrumNote>
 	public var alpha(default, set):Float = 1;
 	
 	public var holdDropLeniency:Float = (1 / 3);
+	public var antiMashMax:Float = 50;
+	
+	public var antiMash:Float = 0;
 	
 	public function set_alpha(value:Float)
 	{
@@ -172,7 +176,15 @@ class PlayField extends FlxTypedContainer<StrumNote>
 		
 		this.onNoteHit.add(noteHit);
 		this.onNoteMiss.add(noteMiss);
+		this.onGhostTap.add(ghostTap);
 		this.onMissPress.add(noteMissPress);
+	}
+	
+	public override function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+		
+		antiMash = MathUtil.decayLerp(antiMash, 0, 5 / (antiMash / antiMashMax + 1), elapsed);
 	}
 	
 	public function clearReceptors()
@@ -323,6 +335,8 @@ class PlayField extends FlxTypedContainer<StrumNote>
 		{
 			if (note.wasGoodHit || field.autoPlayed && (note.ignoreNote || note.hitCausesMiss || note.canMiss)) return;
 			
+			if (!note.isSustainNote) note.ratingData = (Rating.judgeNote(note, Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset) / PlayState.instance.playbackRate));
+			
 			if (ClientPrefs.hitsoundVolume > 0 && !note.hitsoundDisabled) FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
 			
 			if (note.hitCausesMiss)
@@ -338,7 +352,7 @@ class PlayField extends FlxTypedContainer<StrumNote>
 			
 			final susMult:Float = (note.isSustainNote ? 1 / PlayState.instance.holdSubdivisions : 1);
 			
-			PlayState.instance.health += note.hitHealth * PlayState.instance.healthGain * susMult;
+			PlayState.instance.health += (note.hitHealth * PlayState.instance.healthGain * susMult * (note.ratingData?.healthMod ?? 1));
 			PlayState.instance.missCombo = 0;
 		}
 		
@@ -350,13 +364,7 @@ class PlayField extends FlxTypedContainer<StrumNote>
 			
 		note.wasGoodHit = true;
 		
-		var shouldSplash:Bool = true;
-		if (field.playerControls)
-		{
-			shouldSplash = ((note.ratingData = Rating.judgeNote(note, Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset) / PlayState.instance?.playbackRate)).ratingMod >= 1);
-		}
-		
-		if (field.noteSplashes && shouldSplash) field.spawnSplash(note);
+		if (field.noteSplashes && (!field.playerControls || note.ratingData?.noteSplash)) field.spawnSplash(note);
 		field.spawnSusSplash(note, field.playerControls);
 		
 		final globalScript = PlayState.instance.callNoteTypeScript(note.noteType, 'hit', scriptArgs);
@@ -426,6 +434,11 @@ class PlayField extends FlxTypedContainer<StrumNote>
 				sustain.alpha = 0.3;
 			}
 		}
+	}
+	
+	public static function ghostTap(key:Int, field:PlayField):Void
+	{
+		field.antiMash = Math.min(field.antiMash + field.notes.length * 5, field.antiMashMax);
 	}
 	
 	public static function noteMissPress(key:Int, field:PlayField):Void

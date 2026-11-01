@@ -40,26 +40,25 @@ class Rating
 	
 	public var name:String = '';
 	public var image:String = '';
-	public var counter:String = '';
 	public var hitWindow:Null<Float> = 0; // ms
-	public var ratingMod:Float = 1;
-	public var score:Int = 350;
 	public var noteSplash:Bool = true;
+	public var ratingMod:Float = 1;
+	public var healthMod:Float = 1;
+	public var score:Int = 350;
 	
 	public function new(name:String)
 	{
 		this.name = name;
 		this.image = name;
-		this.counter = name + 's';
 		this.hitWindow = Reflect.field(ClientPrefs, name + 'Window');
 		if (hitWindow == null) hitWindow = 0;
 		
 		setup();
 	}
 	
-	public function increase(blah:Int = 1)
+	public function increase(map:Map<String, Int>, mod:Int = 1):Void
 	{
-		Reflect.setField(PlayState.instance, counter, Reflect.field(PlayState.instance, counter) + blah);
+		map.set(name, (map.get(name) ?? 0) + mod);
 	}
 	
 	function setup()
@@ -67,27 +66,30 @@ class Rating
 		switch (name)
 		{
 			case 'epic':
-				ratingMod = 1;
 				score = 350;
+				ratingMod = 1;
 				noteSplash = true;
+				
 			case 'sick':
-				ratingMod = 1;
 				score = 350;
+				ratingMod = 1;
 				noteSplash = true;
 				
 			case 'good':
-				ratingMod = 0.7;
 				score = 200;
+				ratingMod = .7;
 				noteSplash = false;
 				
 			case 'bad':
-				ratingMod = 0.4;
 				score = 100;
+				ratingMod = .4;
+				healthMod = -.5;
 				noteSplash = false;
 				
 			case 'shit':
-				ratingMod = 0;
 				score = 50;
+				ratingMod = 0;
+				healthMod = -3;
 				noteSplash = false;
 		}
 	}

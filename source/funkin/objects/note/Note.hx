@@ -195,7 +195,7 @@ class Note extends funkin.game.modchart.ModchartNote
 	public var copyAlpha:Bool = true;
 	
 	public var hitHealth:Float = 0.023;
-	public var missHealth:Float = 0.0475;
+	public var missHealth:Float = 0.1;
 	public var rating:String = 'unknown';
 	public var ratingData:Null<funkin.game.Rating> = null;
 	public var ratingMod:Float = 0; // 0 = unknown, 0.25 = shit, 0.5 = bad, 0.75 = good, 1 = sick
@@ -581,7 +581,7 @@ class Note extends funkin.game.modchart.ModchartNote
 	
 	public inline function get_canBeHit():Bool
 	{
-		return (Math.abs(noteDiff) <= (hitbox * earlyHitMult));
+		return (Math.abs(noteDiff) <= (hitbox * earlyHitMult + (playField?.antiMash ?? 0)));
 	}
 	
 	public inline function isLate():Bool

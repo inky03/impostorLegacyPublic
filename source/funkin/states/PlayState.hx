@@ -360,11 +360,12 @@ class PlayState extends MusicBeatState
 		new Rating('shit')
 	];
 	
-	public var epics:Int = 0;
-	public var sicks:Int = 0;
-	public var goods:Int = 0;
-	public var bads:Int = 0;
-	public var shits:Int = 0;
+	public var ratingHits:Map<String, Int> = [];
+	@:deprecated public var epics(get, never):Int; inline function get_epics():Int { return getRatingHits('epic'); } // kys
+	@:deprecated public var sicks(get, never):Int; inline function get_sicks():Int { return getRatingHits('sick'); }
+	@:deprecated public var goods(get, never):Int; inline function get_goods():Int { return getRatingHits('good'); }
+	@:deprecated public var bads(get, never):Int; inline function get_bads():Int { return getRatingHits('bad'); }
+	@:deprecated public var shits(get, never):Int; inline function get_shits():Int { return getRatingHits('shit'); }
 	
 	var generatedMusic:Bool = false;
 	
@@ -3088,7 +3089,7 @@ class PlayState extends MusicBeatState
 				songHits++;
 				totalPlayed++;
 				totalNotesHit += (note.ratingMod = rating.ratingMod);
-				rating.increase();
+				rating.increase(ratingHits);
 				
 				RecalculateRating(false);
 			}
@@ -3170,13 +3171,15 @@ class PlayState extends MusicBeatState
 			{
 				scripts.call('onGhostTap', [key]);
 				
+				for (field in playFields)
+				{
+					field.onGhostTap.dispatch(key, field);
+					
+					if (!ClientPrefs.ghostTapping && field.canInput()) field.onMissPress.dispatch(key, field);
+				}
+				
 				if (!ClientPrefs.ghostTapping)
 				{
-					for (field in playFields.members)
-					{
-						if (field.canInput()) field.onMissPress.dispatch(key, field);
-					}
-					
 					if (!ScriptConstants.stopping(scripts.call('noteMissPress', [key])))
 					{
 						health -= (healthLoss * pressMissDamage * (++missCombo + 1) / 2);
@@ -3480,14 +3483,21 @@ class PlayState extends MusicBeatState
 		updateScoreBar(badHit);
 	}
 	
+	public inline function getRatingHits(rating:String):Int
+	{
+		return (ratingHits.get(rating) ?? 0);
+	}
+	
 	public dynamic function getRatingFC():String
 	{
 		if (songMisses >= 10) return 'Clear';
 		if (songMisses > 0) return 'SDCB';
-		if (bads + shits > 0) return 'FC';
-		if (goods > 0) return 'GFC';
-		if (sicks > 0) return 'SFC';
-		if (epics > 0) return 'KFC';
+		
+		if (ratingHits.exists('shit') || ratingHits.exists('bad')) return 'FC';
+		if (ratingHits.exists('good')) return 'GFC';
+		if (ratingHits.exists('sick')) return 'SFC';
+		if (ratingHits.exists('epic')) return 'KFC';
+		
 		return '';
 	}
 	
