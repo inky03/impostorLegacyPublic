@@ -446,9 +446,9 @@ class FreeplayState extends AmongUIState
 			FlxG.sound.play(Paths.sound('hover'), 0.5);
 			smoothSelect = curSelect;
 		}
-
-		cards.members[curSelect].curScript?.executeFunc('onSelect', [], cards.members[curSelect]);
+		
 		cards.members[prevSel].curScript?.executeFunc('onDeselect', [], cards.members[prevSel]);
+		cards.members[curSelect].curScript?.executeFunc('onSelect', [], cards.members[curSelect]);
 		
 		changePortrait(change);
 		
@@ -685,7 +685,7 @@ class FreeplayState extends AmongUIState
 		{
 			moveCard(c, smoothSelect);
 			
-			if (FlxG.mouse.y >= (upperBar.y + upperBar.height) && FlxG.mouse.overlaps(c) && FlxG.mouse.justPressed && !lockMovement && cutscenePhase == NONE)
+			if (FlxG.mouse.y >= (upperBar.y + upperBar.height) && FlxG.mouse.justPressed && FlxG.mouse.overlaps(c) && !lockMovement && cutscenePhase == NONE)
 			{
 				if (curSelect != c.ID)
 				{

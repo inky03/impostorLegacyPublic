@@ -64,7 +64,6 @@ class GameFlags
 			if (awardsData == null) continue;
 			
 			final mod:String = Paths.getModFolder(path);
-			
 			final awards:Array<AwardEntry> = [for (i => award in awardsData.awards) {
 				final awardID:String = (award.id ?? award.img ?? Paths.sanitize(Std.string(award.name ?? 'award_$i').toLowerCase()));
 				

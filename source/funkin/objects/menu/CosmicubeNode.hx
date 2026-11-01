@@ -392,9 +392,9 @@ class CosmicubeNode extends BaseNode
 		
 		insert(members.indexOf(overlay), portrait);
 		
-		var nodeIcon:Dynamic = (meta.icon ?? info?.healthicon);
+		var nodeIcon:Null<String> = (info != null && Reflect.hasField(info, 'healthicon') ? info.healthicon : meta.icon);
 		
-		if (nodeIcon != null)
+		if (nodeIcon != null || nodeIcon.trim().length == 0)
 		{
 			icon ??= new HealthIcon();
 			icon.updateOffset = false;

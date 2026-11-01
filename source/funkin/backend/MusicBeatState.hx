@@ -168,6 +168,7 @@ class MusicBeatState extends FlxUIState
 		
 		super.create();
 		bindPTH();
+		updateSectionStep();
 		beginPlayTimeTracking();
 		
 		if (!FlxTransitionableState.skipNextTransOut)
