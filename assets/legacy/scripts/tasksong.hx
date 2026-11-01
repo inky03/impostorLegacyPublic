@@ -1,7 +1,7 @@
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 
-public var taskGroup:FlxSpriteGroup;
+public var taskGroup:FlxSpriteGroup = new FlxSpriteGroup(0, 200);
 var whiteBox:FlxSprite;
 var bg:FlxSprite;
 var text:FlxText;
@@ -11,7 +11,6 @@ var hasTaskSong:Bool = true;
 
 function onCreatePost()
 {
-	taskGroup = new FlxSpriteGroup(0, 200);
 	taskGroup.camera = camOther;
 	add(taskGroup);
 	
