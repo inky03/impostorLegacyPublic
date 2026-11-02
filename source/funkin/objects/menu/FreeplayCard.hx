@@ -251,12 +251,16 @@ class FreeplayCard extends FlxSpriteGroup
 		curScript?.executeFunc('onRefreshPriceText', [], this);
 	}
 	
-	public override function kill():Void
+	public function unload():Void
 	{
 		curScript?.executeFunc('onDestroy', [], this);
 		curScript?.destroy();
 		curScript = null;
-		
-		super.kill();
+	}
+	
+	public override function destroy():Void
+	{
+		unload();
+		super.destroy();
 	}
 }

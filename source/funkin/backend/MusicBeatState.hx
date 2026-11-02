@@ -60,14 +60,7 @@ class MusicBeatState extends FlxUIState
 	
 	public function initStateScript(?scriptName:String, callOnLoad:Bool = true):Bool
 	{
-		if (scriptName == null)
-		{
-			final stateName = InsanityType.getClassName(InsanityType.getClass(this)).split('.').pop();
-			scriptName = stateName ?? '???';
-		}
-		
-		scriptGroup.scriptShareables.set('parent', this);
-		
+		scriptName ??= (InsanityType.getClassName(InsanityType.getClass(this)).split('.').pop() ?? '???');
 		this.scriptName = scriptName;
 		
 		final scriptFile = FunkinScript.getPath('scripts/states/$scriptName');
@@ -164,6 +157,8 @@ class MusicBeatState extends FlxUIState
 	
 	override function create()
 	{
+		scriptGroup.scriptShareables.set('parent', this);
+		
 		updateMods();
 		
 		super.create();
