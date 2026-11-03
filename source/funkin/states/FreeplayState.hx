@@ -447,7 +447,7 @@ class FreeplayState extends AmongUIState
 			moveCard(card, selection, true);
 	}
 	
-	function changeSong(by:Int = 0, change = false)
+	function changeSong(by:Int = 0, change:Bool = false)
 	{
 		var nextSelect:Int = FlxMath.wrap(curSelect + by, 0, week_songs.length - 1);
 		
@@ -649,12 +649,12 @@ class FreeplayState extends AmongUIState
 				}
 				else if (FlxG.mouse.y >= (upperBar.y + upperBar.height))
 				{
-					changeSong(FlxG.mouse.wheel < 0 ? 1 : -1, false);
+					changeSong(FlxG.mouse.wheel < 0 ? 1 : -1);
 				}
 			}
 			
-			if (controlUP.PRESSED) changeSong(-1, false);
-			else if (controlDOWN.PRESSED) changeSong(1, false);
+			if (controlUP.PRESSED) changeSong(-1);
+			else if (controlDOWN.PRESSED) changeSong(1);
 			
 			if (controls.ACCEPT) acceptSong();
 			
@@ -714,13 +714,7 @@ class FreeplayState extends AmongUIState
 			
 			if (FlxG.mouse.y >= (upperBar.y + upperBar.height) && FlxG.mouse.justPressed && FlxG.mouse.overlaps(c) && !lockMovement && cutscenePhase == NONE)
 			{
-				if (curSelect != c.ID)
-				{
-					curSelect = c.ID;
-					smoothSelect = curSelect;
-					changeSong(0, false);
-					FlxG.sound.play(Paths.sound('hover'), 0.5);
-				}
+				if (curSelect != c.ID) changeSong(c.ID - curSelect);
 				else acceptSong();
 			}
 		}
