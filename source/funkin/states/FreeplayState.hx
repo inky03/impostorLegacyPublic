@@ -101,7 +101,6 @@ class FreeplayState extends AmongUIState
 	var ext:String = 'menu/freeplay/';
 	var prevPort:String = '';
 	
-	var prevSel:Int = 0;
 	var lerpScore:Float;
 	var lerpRating:Float;
 	var intendedScore:Float;
