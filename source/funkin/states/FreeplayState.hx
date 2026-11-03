@@ -471,7 +471,7 @@ class FreeplayState extends AmongUIState
 			smoothSelect = curSelect;
 		}
 		
-		cards.members[prevSel].curScript?.executeFunc('onDeselect', [], cards.members[prevSelect]);
+		cards.members[prevSelect].curScript?.executeFunc('onDeselect', [], cards.members[prevSelect]);
 		cards.members[curSelect].curScript?.executeFunc('onSelect', [], cards.members[curSelect]);
 		
 		changePortrait(change);
