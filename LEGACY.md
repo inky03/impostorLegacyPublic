@@ -39,7 +39,7 @@ WEBSITE: https://vsimpostor.com/
 # CHANGELOG
 Current version: **1.1.2**
 
-## 1.1.2b (? 2026)
+## 1.1.3 (? 2026)
 
 ### Additions
 - Chef BF given a Monotone variant.
@@ -58,6 +58,8 @@ Current version: **1.1.2**
 - Fixed Maroon's stage BF position.
 - A couple charts were fixed. (GitHub contribution)
 - Some stages were optimized.
+- Windy Polus BF variant was fixed.
+- Fixed missing prop in Finale stage.
 
 ### Changes
 - Some more characters have been turned into atlases.

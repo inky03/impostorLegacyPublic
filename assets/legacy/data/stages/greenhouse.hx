@@ -9,7 +9,8 @@ public var tomato:FlxSprite;
 public var ventNotSus:FlxSprite;
 var bluemira:FlxSprite;
 var pot:FlxSprite;
-var vines:FlxSprite;
+var vineLeft:FlxSkewedSprite;
+var vineRight:FlxSkewedSprite;
 var pretenderDark:FlxSprite;
 var heartEmitter:FlxEmitter;
 var heartsImage:FlxSprite;
@@ -31,6 +32,8 @@ function onLoad()
 	
 	var bg:FlxSprite = new FlxSprite(-1500, -800).loadGraphic(Paths.image(ext + 'bg sky'));
 	bg.antialiasing = true;
+	bg.scale.set(10, 10);
+	bg.updateHitbox();
 	add(bg);
 	
 	var sun:FlxSprite = new FlxSprite(-400, -1100).loadGraphic(Paths.image(ext + 'the sun'));
@@ -41,13 +44,17 @@ function onLoad()
 	pinkVignette = new FlxSprite(0, 0).loadGraphic(Paths.image(ext + 'vignette'));
 	pinkVignette.camera = camHUD;
 	pinkVignette.alpha = 0.0001;
+	pinkVignette.scale.set(4, 4);
+	pinkVignette.updateHitbox();
 	pinkVignette.antialiasing = true;
 	pinkVignette.blend = BlendMode.ADD;
 	
 	pinkVignette2 = new FlxSprite(0, 0).loadGraphic(Paths.image(ext + 'vignette2'));
 	pinkVignette2.cameras = camHUD;
-	pinkVignette2.antialiasing = true;
 	pinkVignette2.alpha = 0.0001;
+	pinkVignette.scale.set(4, 4);
+	pinkVignette.updateHitbox();
+	pinkVignette2.antialiasing = true;
 	
 	add(pinkVignette2);
 	add(pinkVignette);
@@ -62,36 +69,33 @@ function onLoad()
 	heartsImage.shader = heartColorShader.shader;
 	add(heartsImage);
 	
-	var bg:FlxSprite = new FlxSprite(-1300, -100).loadGraphic(Paths.image(ext + 'cloud fathest'));
-	add(bg);
+	var cloudBack:FlxSprite = add(new FlxSprite(-1300, -100).loadGraphic(Paths.image(ext + 'cloud fathest')));
 	
-	var bg:FlxSprite = new FlxSprite(-1300, 0).loadGraphic(Paths.image(ext + 'cloud front'));
-	add(bg);
+	var thing:FlxSprite = add(new FlxSprite(-1300, cloudBack.y + cloudBack.height).makeGraphic(1, 1, 0xffc0dbff));
+	thing.setGraphicSize(cloudBack.width, 200);
+	thing.updateHitbox();
 	
-	cloud1 = new FlxBackdrop(Paths.image(ext + 'cloud 1'));
-	cloud1.setPosition(0, -1000);
+	var cloudFront:FlxSprite = add(new FlxSprite(-1300, 0).loadGraphic(Paths.image(ext + 'cloud front')));
+	
+	cloud1 = add(new FlxBackdrop(Paths.image(ext + 'cloud 1'), FlxAxes.X, 2209));
+	cloud1.setPosition(1196, -1000 + 904);
 	cloud1.velocity.x = -9;
-	add(cloud1);
 	
-	cloud2 = new FlxBackdrop(Paths.image(ext + 'cloud 2'));
-	cloud2.setPosition(0, -1200);
+	cloud2 = add(new FlxBackdrop(Paths.image(ext + 'cloud 2'), FlxAxes.X, 2209));
+	cloud2.setPosition(100, -1200 + 1052);
 	cloud2.velocity.x = (-9 * 3);
-	add(cloud2);
 	
-	cloud3 = new FlxBackdrop(Paths.image(ext + 'cloud 3'));
-	cloud3.setPosition(0, -1400);
+	cloud3 = add(new FlxBackdrop(Paths.image(ext + 'cloud 3'), FlxAxes.X, 2209));
+	cloud3.setPosition(792, -1400 + 1364);
 	cloud3.velocity.x = (-9 * 2);
-	add(cloud3);
 	
-	cloud4 = new FlxBackdrop(Paths.image(ext + 'cloud 4'));
-	cloud4.setPosition(0, -1600);
+	cloud4 = add(new FlxBackdrop(Paths.image(ext + 'cloud 4'), FlxAxes.X, 2209));
+	cloud4.setPosition(1750, -1600 + 1167);
 	cloud4.velocity.x = (-9 * .1);
-	add(cloud4);
 	
-	cloudbig = new FlxBackdrop(Paths.image(ext + 'bigcloud'));
-	cloudbig.setPosition(0, -1200);
+	cloudbig = add(new FlxBackdrop(Paths.image(ext + 'bigcloud'), FlxAxes.X, 2209));
+	cloudbig.setPosition(1356, -1200 + 1192);
 	cloudbig.velocity.x = (-9 * .5);
-	add(cloudbig);
 	
 	var bg:FlxSprite = new FlxSprite(-1200, -750).loadGraphic(Paths.image(ext + 'glasses'));
 	add(bg);
@@ -169,12 +173,10 @@ function onLoad()
 	pot.setGraphicSize(Std.int(pot.width * 1));
 	pot.scrollFactor.set(1.2, 1);
 	
-	vines = new FlxSprite(-1200, -1200);
-	vines.frames = Paths.getSparrowAtlas(ext + 'vines');
-	vines.animation.addByPrefix('bop', 'green', 24, true);
-	vines.animation.play('bop');
-	vines.antialiasing = true;
-	vines.scrollFactor.set(1.4, 1);
+	vineLeft = new flixel.addons.effects.FlxSkewedSprite(-1200, -1200 + 13, Paths.image(ext + 'vineLeft'));
+	vineLeft.scrollFactor.set(1.4, 1);
+	vineRight = new flixel.addons.effects.FlxSkewedSprite(-1200 + 1755, -1200, Paths.image(ext + 'vineRight'));
+	vineRight.scrollFactor.set(1.4, 1);
 	
 	heartEmitter = new FlxEmitter(-1200, 1000);
 	
@@ -206,7 +208,8 @@ function onCreatePost()
 	add(bluemira);
 	add(rhmmira);
 	add(pot);
-	add(vines);
+	add(vineLeft);
+	add(vineRight);
 	add(heartEmitter);
 }
 
@@ -222,6 +225,11 @@ function onStartCountdown()
 		}
 		if (tmr.loopsLeft % 1 == 0) bluemira.animation.play('bop', true);
 	}, 5);
+}
+
+function onUpdate(elapsed:Float):Void
+{
+	vineLeft.skew.x = vineRight.skew.x = (Math.sin(Math.floor(Conductor.songPosition / 1000 * 12) / 12 * 2) + 1);
 }
 
 function onBeatHit()

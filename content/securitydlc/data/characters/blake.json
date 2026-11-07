@@ -141,7 +141,7 @@
 	"scalableOffsets": false,
 	"gameover_confirm_sound": null,
 	"healthicon": "blake",
-	"gameover_character": "genericDeath",
+	"gameover_character": "genericDeath-noMic",
 	"vslice_sustains": false,
 	"flip_x": true,
 	"healthbar_colour": -12969137,

@@ -10,7 +10,7 @@
 			],
 			"anim": "hey",
 			"fps": 24,
-			"name": "Blow-Hey",
+			"name": "wind-hey",
 			"indices": [],
 			"flipX": false
 		},
@@ -23,7 +23,7 @@
 			],
 			"anim": "singLEFT",
 			"fps": 24,
-			"name": "Blow-Left",
+			"name": "wind-left",
 			"indices": [],
 			"flipX": false
 		},
@@ -36,7 +36,7 @@
 			],
 			"anim": "singDOWN",
 			"fps": 24,
-			"name": "Blow-Down",
+			"name": "wind-down",
 			"indices": [],
 			"flipX": false
 		},
@@ -49,7 +49,7 @@
 			],
 			"anim": "singUP",
 			"fps": 24,
-			"name": "Blow-Up",
+			"name": "wind-up",
 			"indices": [],
 			"flipX": false
 		},
@@ -62,7 +62,7 @@
 			],
 			"anim": "singRIGHT",
 			"fps": 24,
-			"name": "Blow-Right",
+			"name": "wind-right",
 			"indices": [],
 			"flipX": false
 		},
@@ -82,7 +82,7 @@
 				24,
 				25
 			],
-			"name": "Blow-Hey"
+			"name": "wind-hey"
 		},
 		{
 			"loop": false,
@@ -93,7 +93,7 @@
 			],
 			"anim": "idle",
 			"fps": 24,
-			"name": "Blow-Idle",
+			"name": "wind-idle",
 			"indices": [],
 			"flipX": false
 		},
@@ -113,7 +113,7 @@
 			"flipY": false,
 			"anim": "idle-loop",
 			"loop": true,
-			"name": "Blow-Idle"
+			"name": "wind-idle"
 		},
 		{
 			"offsets": [
@@ -131,7 +131,7 @@
 			"flipY": false,
 			"anim": "singDOWN-loop",
 			"loop": true,
-			"name": "Blow-Down"
+			"name": "wind-down"
 		},
 		{
 			"offsets": [
@@ -149,7 +149,7 @@
 			"flipY": false,
 			"anim": "singLEFT-loop",
 			"loop": true,
-			"name": "Blow-Left"
+			"name": "wind-left"
 		},
 		{
 			"offsets": [
@@ -167,7 +167,7 @@
 			"flipY": false,
 			"anim": "singRIGHT-loop",
 			"loop": true,
-			"name": "Blow-Right"
+			"name": "wind-right"
 		},
 		{
 			"offsets": [
@@ -185,7 +185,7 @@
 			"flipY": false,
 			"anim": "singUP-loop",
 			"loop": true,
-			"name": "Blow-Up"
+			"name": "wind-up"
 		},
 		{
 			"offsets": [
