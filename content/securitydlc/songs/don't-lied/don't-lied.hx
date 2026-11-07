@@ -229,6 +229,7 @@ function onEvent(name, v1, v2)
             guy2.alpha = 1;
             guy3.alpha = 1;
 			playHUD.healthBar.bg.setColorTransform();
+			playHUD.healthBar.setColors(dad.healthColour, boyfriend.healthColour);
 			
 			if (!ClientPrefs.hideHud)
 			{
