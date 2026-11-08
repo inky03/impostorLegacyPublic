@@ -26,34 +26,25 @@ function onLoad()
 	loBlack.alpha = 0.001;
 	loBlack.screenCenter();
 	add(loBlack);
-	
-}
-function onUpdatePost() {
-    if (ClientPrefs.shaders) { var uv = dad.frame.uv;
-    rimlight.setFloatArray('uFrameBounds', [uv.x, uv.y, uv.width, uv.height]);
-    rimlight.setFloat('angOffset', dad.frame.angle * Math.PI / 180); }
-
-	//if (ClientPrefs.shaders) checks for user settings if they have shaders enabled or not
 }
 
 function onCreatePost()
 {
-    if (ClientPrefs.shaders) {dad.shader = rimlight = newShader('rimlight1');
-    dad.useRenderTexture = true;
-
-    rimlight.setFloatArray('dropColor', [255, 0, 0]);
-    
-    rimlight.setBool('useMask', false);
-    rimlight.setFloat('AA_STAGES', 100);
-    rimlight.setFloat('thr', 0.01);
-    
-    rimlight.setFloat('hue', -10);
-    rimlight.setFloat('saturation', -20);
-    rimlight.setFloat('brightness', -10);
-    
-    rimlight.setFloat('str', 1);
-    rimlight.setFloat('dist', 14);
-    rimlight.setFloat('ang', 150 * Math.PI / 180);}
+	if (ClientPrefs.shaders)
+	{
+		rimlight = new funkin.game.shaders.ExtraDropShadowShader();
+		
+		rimlight.setColorMatrix(animate.internal.filters.AdjustColorFilter.getColorMatrix(-10, -10, 0, -20));
+		rimlight.addLayer([
+			1, 0, 0, 0, 255,
+			0, 1, 0, 0, 0,
+			0, 0, 1, 0, 0,
+			0, 0, 0, 1, 0
+		], 150, 14);
+		
+		rimlight.attachedSprite = dad;
+		dad.useRenderTexture = true;
+	}
 
 	blooodfuckkk = new FlxSprite().makeGraphic(FlxG.width * 4, FlxG.height + 700, FlxColor.RED);
 	blooodfuckkk.alpha = 0.001;

@@ -221,7 +221,15 @@ function onEvent(name, v1, v2)
 			isDark = false;
             loBlack.alpha = 0.001;
 			
-			if (noshader) changeCharacter(hasBfSkin ? ClientPrefs.bfSkin : PlayState.SONG.player1, 0);
+			if (noshader)
+			{
+				changeCharacter(hasBfSkin ? ClientPrefs.bfSkin : PlayState.SONG.player1, 0);
+			}
+			else
+			{
+				playHUD.reloadHealthBarColors();
+			}
+			
 			boyfriend.shader = null;
 			dad.alpha = 1;
 			gf.alpha = 1;
