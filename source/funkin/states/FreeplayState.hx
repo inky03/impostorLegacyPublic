@@ -856,9 +856,11 @@ class FreeplayState extends AmongUIState
 		
 		function fetchWeekSongs(weekData:WeekData):Array<Array<Dynamic>>
 		{
-			var songs:Array<Array<Dynamic>> = [];
+			final songs:Array<Array<Dynamic>> = [];
 			
 			if (weekData == null) return songs;
+			
+			final story:Bool = (weekData.hideStoryMode != true);
 			
 			// maybe should just rewrite the way the song stuff is read instead of mangling it to match lol
 			for (song in weekData.songs)
@@ -868,7 +870,7 @@ class FreeplayState extends AmongUIState
 				var rgb:Array<Int> = song[2];
 				var data:Array<Dynamic> = [
 					song[0], song[1], song[3], FlxColor.fromRGB(rgb[0], rgb[1], rgb[2]),
-					(cost > 0 ? 'shop' : (song[7] == true ? 'special' : 'story')), song[5] ?? [Paths.sanitize(song[0])], cost,
+					(cost > 0 ? 'shop' : (song[7] == true ? 'special' : 'story')), song[5] ?? (story ? [Paths.sanitize(song[0])] : []), cost,
 					song[4], weekData.currency, shouldHideUntilDoubleTrouble, weekData.folder
 				];
 				
