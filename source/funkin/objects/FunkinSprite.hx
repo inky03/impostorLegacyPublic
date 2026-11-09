@@ -384,16 +384,14 @@ class FunkinSprite extends FlxAnimate
 		
 		point.set(spriteOffset.x + animOffset.x, spriteOffset.y + animOffset.y);
 		
-		if (scalableOffsets && (Math.abs(scale.x - baseScale.x) > FlxMath.EPSILON || Math.abs(scale.y - baseScale.y) > FlxMath.EPSILON)) point.scale(scale.x / baseScale.x, scale.y / baseScale.y);
+		if (scalableOffsets && (Math.abs(scale.x - baseScale.x) > 0 || Math.abs(scale.y - baseScale.y) > 0)) point.scale(scale.x / baseScale.x, scale.y / baseScale.y);
 		
-		if (rotatableOffsets && Math.abs(angle) > FlxMath.EPSILON) point.rotateByDegrees(angle);
+		if (rotatableOffsets && Math.abs(angle) > 0) point.rotateByDegrees(angle);
 		
-		if (skewableOffsets && (Math.abs(skew.x) > FlxMath.EPSILON || Math.abs(skew.y) > FlxMath.EPSILON))
+		if (skewableOffsets && (Math.abs(skew.x) > 0 || Math.abs(skew.y) > 0))
 		{
-			final pX:Float = point.x, pY:Float = point.y;
-			
-			point.x += (pY * MathUtil.fastTan(skew.x / 180 * Math.PI));
-			point.y += (pX * MathUtil.fastTan(skew.y / 180 * Math.PI));
+			point.x += (point.y * Math.tan(skew.x / 180 * Math.PI));
+			point.y += (point.x * Math.tan(skew.y / 180 * Math.PI));
 		}
 		
 		return point;

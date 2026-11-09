@@ -46,7 +46,7 @@ class PerspectiveModifier extends NoteModifier
 			var shit = curZ - 1;
 			if (shit > 0) shit = 0; // thanks schmovin!!
 			
-			var ta = MathUtil.fastTan(fov / 2);
+			var ta = Math.tan(fov / 2);
 			var x = oX * aspect / ta;
 			var y = oY / ta;
 			var a = (near + far) / (near - far);

@@ -36,6 +36,12 @@ class MusicBeatSubstate extends FlxSubState
 	public var scriptPrefix:String = 'substates';
 	public var scriptGroup:ScriptGroup = new ScriptGroup();
 	
+	override function create()
+	{
+		super.create();
+		updateSectionStep();
+	}
+	
 	public function initStateScript(?scriptName:String, callOnLoad:Bool = true):Bool
 	{
 		if (scriptName == null)

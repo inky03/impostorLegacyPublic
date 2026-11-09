@@ -262,11 +262,6 @@ class PlayState extends MusicBeatState
 	static var prevCamFollow:Null<FlxObject> = null;
 	
 	/**
-	 * List of FlxCameras that follow camFollow
-	**/
-	public var followingCams:Array<FlxCamera> = [];
-	
-	/**
 	 * Container of all strumline underlays
 	 */
 	public var underlays:Null<FlxTypedGroup<LaneUnderlay>> = null;
@@ -2096,12 +2091,15 @@ class PlayState extends MusicBeatState
 			{
 				final id = playField.ID, skin = playField._skin;
 				
-				for (splash in playField.grpSusSplashes) {
+				for (splash in playField.grpSusSplashes)
+				{
 					if (splash?.alive) modchart(splash, id, skin.sustainSplashOffsets);
 				}
 				
-				if (playField.trackNoteSplashes) {
-					for (splash in playField.grpNoteSplashes) {
+				if (playField.trackNoteSplashes)
+				{
+					for (splash in playField.grpNoteSplashes)
+					{
 						if (splash?.alive) modchart(splash, id, skin.splashOffsets);
 					}
 				}
@@ -2131,12 +2129,6 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.camera.zoom = MathUtil.decayLerp(FlxG.camera.zoom, defaultCamZoom + defaultCamZoomAdd, 6.25 * camZoomingDecay, elapsed);
 			camHUD.zoom = MathUtil.decayLerp(camHUD.zoom, defaultHudZoom, 6.25 * camZoomingDecay, elapsed);
-		}
-		
-		for (i in followingCams)
-		{
-			i.zoom = FlxG.camera.zoom;
-			i.scroll.copyFrom(FlxG.camera.scroll);
 		}
 		
 		doDeathCheck();

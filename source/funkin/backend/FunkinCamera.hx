@@ -26,6 +26,20 @@ import flixel.graphics.tile.FlxDrawTrianglesItem;
 using extensions.funkin.graphics.framebuffer.BitmapDataUtil;
 
 /**
+ * One queued `drawPixels` call waiting for a cross-camera shader blend.
+ */
+typedef DeferredBlend =
+{
+	var frame:Null<FlxFrame>;
+	var pixels:Null<BitmapData>;
+	var matrix:FlxMatrix;
+	var transform:Null<ColorTransform>;
+	var blend:Null<BlendMode>;
+	var smoothing:Bool;
+	var shader:Null<FlxShader>;
+}
+
+/**
  * A FlxCamera with additional powerful features:
  * - Added the ability to grab the camera screen as a `BitmapData` and use it as a texture.
  * - Added support for the following blend modes for a sprite through shaders:
@@ -115,6 +129,12 @@ class FunkinCamera extends FlxCamera
 	 * If `true` the blend shader will try to blend with the cameras underneath it.
 	 * This is useful for, say, making a strumline note have a shader-only blend mode like `INVERT`.
 	 *
+	 * The blend is deferred until this camera renders.
+	 * That way, it can see the full camera bitmap below it no matter what order the blend / sprites beneath were created. 
+	 *
+	 * Consecutive draws with the same blend mode and shader (like a sprite made of several tiles) are merged into a single blend pass.
+	 * Useful for spritesheets with blends (i.e. Noise spritesheet with OVERLAY blend)
+	 *
 	 * Defaults to `false` since this can impact performance.
 	 */
 	public var crossCameraBlending:Bool;
@@ -125,6 +145,16 @@ class FunkinCamera extends FlxCamera
 	var _backgroundRenderTexture:RenderTexture;
 	var _cameraTexture:FixedBitmapData;
 	var _cameraMatrix:FlxMatrix;
+	var _chainRenderTexture:RenderTexture;
+	
+	/**
+	 * Cross-camera blends queued during the draw phase, drawn when this camera renders.
+	 * 
+	 * Done this way so ALL objects within a camera can have their blend mode applied, 
+	 * instead of only objects drawn BEFORE the creation of the blend.
+	 * (That is how funkin crew's implementation worked, at least when ported to this engine, which I find stupid)
+	 */
+	var _deferredBlends:Array<DeferredBlend> = [];
 	
 	@:nullSafety(Off)
 	public function new(x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, zoom:Float = 0)
@@ -138,6 +168,7 @@ class FunkinCamera extends FlxCamera
 		
 		_backgroundRenderTexture = new RenderTexture(this.width, this.height);
 		_blendRenderTexture = new RenderTexture(this.width, this.height);
+		_chainRenderTexture = new RenderTexture(this.width, this.height);
 		
 		_cameraMatrix = new FlxMatrix();
 		_cameraTexture = FixedBitmapData.create(this.width, this.height);
@@ -155,93 +186,185 @@ class FunkinCamera extends FlxCamera
 		{
 			if (crossCameraBlending)
 			{
-				var camerasUnderneath:Array<FlxCamera> = FlxG.cameras.list.copy();
+				var matrixCopy:FlxMatrix = new FlxMatrix();
+				matrixCopy.copyFrom(matrix);
 				
-				for (i in camerasUnderneath.length - 1...-1)
-				{
-					if (i > FlxG.cameras.list.indexOf(this))
+				_deferredBlends.push(
 					{
-						camerasUnderneath.remove(camerasUnderneath[i]);
-					}
-				}
-				
-				_cameraTexture.drawCameraScreens(camerasUnderneath);
-				
-				for (camera in camerasUnderneath)
-				{
-					camera.clearDrawStack();
-					camera.canvas.graphics.clear();
-				}
-			}
-			else
-			{
-				_cameraTexture.drawCameraScreen(this);
+						frame: frame,
+						pixels: pixels,
+						matrix: matrixCopy,
+						transform: copyColorTransform(transform),
+						blend: blend,
+						smoothing: smoothing ?? false,
+						shader: shader
+					});
+					
+				return;
 			}
 			
-			_backgroundFrame.frame.set(0, 0, this.width, this.height);
+			_cameraTexture.drawCameraScreen(this);
 			
-			// Clear the camera's graphics
-			// It'll get redrawn anyway
+			// clear this camera's graphics it'll get redrawn anyway
 			this.clearDrawStack();
 			this.canvas.graphics.clear();
 			
-			_blendRenderTexture.init(this.width, this.height);
-			_blendRenderTexture.drawToCamera((camera, frameMatrix) -> {
-				var pivotX:Float = width / 2;
-				var pivotY:Float = height / 2;
-				
-				frameMatrix.copyFrom(matrix);
+			final entry = [
+				{
+					frame: frame,
+					pixels: pixels,
+					matrix: matrix,
+					transform: transform,
+					blend: blend,
+					smoothing: smoothing ?? false,
+					shader: shader
+				}
+			];
+			blendPass(entry, _cameraTexture, _backgroundRenderTexture);
+			queueResult(_backgroundRenderTexture, entry[0].smoothing);
+		}
+		else super.drawPixels(frame, pixels, matrix, transform, blend, smoothing, shader);
+	}
+	
+	/**
+	 * Passes the blend mode to blended objects via _blendShader
+	 * Provided `entries` to allow multiple objects on a camera to have blends and all apply properly.
+	 */
+	inline function blendPass(entries:Array<DeferredBlend>, backdrop:BitmapData, target:RenderTexture):Void
+	{
+		_backgroundFrame.frame.set(0, 0, this.width, this.height);
+		
+		_blendRenderTexture.init(this.width, this.height);
+		_blendRenderTexture.drawToCamera((camera, frameMatrix) -> {
+			var pivotX:Float = width / 2;
+			var pivotY:Float = height / 2;
+			
+			// this way it blends multiple objects instead of the first (or top) one
+			for (entry in entries)
+			{
+				frameMatrix.copyFrom(entry.matrix);
 				frameMatrix.translate(-pivotX, -pivotY);
 				frameMatrix.scale(this.scaleX, this.scaleY);
 				frameMatrix.translate(pivotX, pivotY);
-				camera.drawPixels(frame, pixels, frameMatrix, transform, null, smoothing, blend == SHADER ? null : shader);
-			});
-			_blendRenderTexture.render();
-			
-			if (blend == SHADER)
-			{
-				final shader:funkin.game.shaders.PostEffectShader = cast shader;
-				
-				shader.setBitmapData('src', _blendRenderTexture.graphic.bitmap);
-				shader.setBitmapData('dst', _cameraTexture);
-				
-				shader.updateViewInfo(width, height, this);
+				camera.drawPixels(entry.frame, entry.pixels, frameMatrix, entry.transform, null, entry.smoothing, entry.shader);
 			}
-			else
-			{
-				_blendShader.source = _blendRenderTexture.graphic.bitmap;
-				_blendShader.destination = _cameraTexture;
-				
-				_blendShader.blendMode = blend;
-				_blendShader.updateViewInfo(width, height, this);
-			}
+		});
+		_blendRenderTexture.render();
+		
+		final first:DeferredBlend = entries[0];
+		
+		if (first.blend == SHADER)
+		{
+			final shader:funkin.game.shaders.PostEffectShader = cast first.shader;
 			
-			_backgroundFrame.parent.bitmap = _blendRenderTexture.graphic.bitmap;
+			shader.setBitmapData('src', _blendRenderTexture.graphic.bitmap);
+			shader.setBitmapData('dst', _cameraTexture);
 			
-			// On some displays, the DPI can be less than 1, which causes the blend shader to look bad
-			// We just clamp the scale to 1 to avoid this!
-			var clampedScale:Float = Math.max(1, Lib.current.stage.window.scale);
-			
-			_backgroundRenderTexture.init(Std.int(this.width * clampedScale), Std.int(this.height * clampedScale));
-			_backgroundRenderTexture.drawToCamera((camera, matrix) -> {
-				camera.zoom = this.zoom;
-				matrix.scale(clampedScale, clampedScale);
-				camera.drawPixels(_backgroundFrame, null, matrix, canvas.transform.colorTransform, null, false, blend == SHADER ? shader : _blendShader);
-			});
-			
-			_backgroundRenderTexture.render();
-			
-			// Resize the frame so it always fills the screen
-			_cameraMatrix.identity();
-			_cameraMatrix.scale(1 / (this.scaleX * clampedScale), 1 / (this.scaleY * clampedScale));
-			_cameraMatrix.translate(((width - width / this.scaleX) * 0.5), ((height - height / this.scaleY) * 0.5));
-			
-			super.drawPixels(_backgroundRenderTexture.graphic.imageFrame.frame, null, _cameraMatrix, null, null, smoothing, null);
+			shader.updateViewInfo(width, height, this);
 		}
 		else
 		{
-			super.drawPixels(frame, pixels, matrix, transform, blend, smoothing, shader);
+			_blendShader.source = _blendRenderTexture.graphic.bitmap;
+			_blendShader.destination = _cameraTexture;
+			
+			_blendShader.blendMode = first.blend;
+			_blendShader.updateViewInfo(width, height, this);
 		}
+		
+		_backgroundFrame.parent.bitmap = _blendRenderTexture.graphic.bitmap;
+		
+		// On some displays, the DPI can be less than 1, which causes the blend shader to look bad
+		// We just clamp the scale to 1 to avoid this!
+		var clampedScale:Float = Math.max(1, Lib.current.stage.window.scale);
+		
+		target.init(Std.int(this.width * clampedScale), Std.int(this.height * clampedScale));
+		target.drawToCamera((camera, matrix) -> {
+			camera.zoom = this.zoom;
+			matrix.scale(clampedScale, clampedScale);
+			camera.drawPixels(_backgroundFrame, null, matrix, canvas.transform.colorTransform, null, false, _blendShader);
+		});
+		
+		target.render();
+	}
+	
+	/**
+	 * Resizes the frame so it always fills the screen
+	 */
+	@:nullSafety(Off)
+	function queueResult(result:RenderTexture, smoothing:Bool):Void
+	{
+		var clampedScale:Float = Math.max(1, Lib.current.stage.window.scale);
+		
+		_cameraMatrix.identity();
+		_cameraMatrix.scale(1 / (this.scaleX * clampedScale), 1 / (this.scaleY * clampedScale));
+		_cameraMatrix.translate(((width - width / this.scaleX) * 0.5), ((height - height / this.scaleY) * 0.5));
+		
+		super.drawPixels(result.graphic.imageFrame.frame, null, _cameraMatrix, null, null, smoothing, null);
+	}
+	
+	/**
+	 * Flushes deferred cross-camera blends right before this camera draws its queue.
+	 * Cameras render in list order, so cameras underneath are already complete here.
+	 *
+	 * Blend groups are chained, meaning  the first one blends against the cameras underneath and each later one blends against the previous group's result. 
+	 * Only the final composite is queued, so blends stack instead of covering each other.
+	 */
+	override function render():Void
+	{
+		if (_deferredBlends.length > 0)
+		{
+			var pending = _deferredBlends;
+			_deferredBlends = [];
+			
+			var thisIndex:Int = FlxG.cameras.list.indexOf(this);
+			var camerasUnderneath = FlxG.cameras.list.slice(0, thisIndex);
+			
+			var backdrop:BitmapData = _cameraTexture;
+			var last:Null<RenderTexture> = null;
+			
+			var i:Int = 0;
+			while (i < pending.length)
+			{
+				var group:Array<DeferredBlend> = [pending[i]];
+				var j:Int = i + 1;
+				
+				while (j < pending.length && pending[j].blend == pending[i].blend && pending[j].shader == pending[i].shader)
+				{
+					group.push(pending[j]);
+					j++;
+				}
+				
+				// fade and flash stopped appearing LOL
+				// they still Dont sometimes but Shhh
+				for (cam in camerasUnderneath)
+					cam.drawFX();
+					
+				if (last == null && camerasUnderneath.length > 0) _cameraTexture.drawCameraScreens(camerasUnderneath);
+				
+				var target:RenderTexture = (last == _backgroundRenderTexture) ? _chainRenderTexture : _backgroundRenderTexture;
+				
+				blendPass(group, backdrop, target);
+				
+				backdrop = target.graphic.bitmap;
+				last = target;
+				
+				i = j;
+			}
+			
+			if (last != null) queueResult(last, pending[0].smoothing);
+		}
+		
+		super.render();
+	}
+	
+	/**
+	 * Returns an exact copy of a provided `ColorTransform`
+	 * Honestly just code declutter
+	**/
+	static inline function copyColorTransform(source:Null<ColorTransform>):Null<ColorTransform>
+	{
+		return (source == null ? null : new ColorTransform(source.redMultiplier, source.greenMultiplier, source.blueMultiplier, source.alphaMultiplier, source.redOffset,
+			source.greenOffset, source.blueOffset, source.alphaOffset));
 	}
 	
 	override function startQuadBatch(graphic:FlxGraphic, colored:Bool, hasColorOffsets:Bool = false, ?blend:BlendMode, smooth:Bool = false, ?shader:FlxShader):FlxDrawQuadsItem
@@ -305,16 +428,28 @@ class FunkinCamera extends FlxCamera
 		return super.startTrianglesBatch(graphic, smoothing, isColored, blend, hasColorOffsets, shader);
 	}
 	
+	/**
+	 * Drops deferred blends juuust in case
+	 */
+	override function clearDrawStack():Void
+	{
+		_deferredBlends.resize(0);
+		super.clearDrawStack();
+	}
+	
 	@:nullSafety(Off)
 	override function destroy():Void
 	{
 		super.destroy();
+		
+		_deferredBlends.resize(0);
 		
 		_blendShader.source = _blendShader.destination = null;
 		_blendShader = null;
 		
 		_blendRenderTexture = FlxDestroyUtil.destroy(_blendRenderTexture);
 		_backgroundRenderTexture = FlxDestroyUtil.destroy(_backgroundRenderTexture);
+		_chainRenderTexture = FlxDestroyUtil.destroy(_chainRenderTexture);
 		_cameraTexture.dispose();
 		_cameraTexture = null;
 		
