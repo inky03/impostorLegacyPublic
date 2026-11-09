@@ -10,7 +10,7 @@
 		["Crewicide", "dave", [0, 0, 255], "dave", "punkett", [], 450],
 		["Monotone Attack", "attack", [255, 255, 255], "attack", "Biddle3", [], 400],
 		["Top 10", "top", [255, 0, 0], "awesome", "Top 10 Awesome", [], 200],
-		["Double Trouble", "double-trouble", [0, 57, 62], "doubletrouble", "Rareblin", [], 0, false, true]
+		["Double Trouble", "double-trouble", [0, 57, 62], "doubletrouble", "Rareblin", null, 0, true]
 	],
 	
 	"section": "bonus",

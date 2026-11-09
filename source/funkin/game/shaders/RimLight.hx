@@ -30,64 +30,32 @@ class RimLight extends FlxBasic
 	public function uvUpdate():Void
 	{
 		if (refSprite.frame == null) return;
-		shader.bounds.value = [refSprite.frame.uv.left, refSprite.frame.uv.top, refSprite.frame.uv.right, refSprite.frame.uv.bottom];
+		shader.setFloatArray('bounds', [refSprite.frame.uv.left, refSprite.frame.uv.top, refSprite.frame.uv.right, refSprite.frame.uv.bottom]);
 	}
 	
 	function set_angle(v:Float):Float
 	{
-		angle = v;
-		shader.angle.value = [angle];
-		return v;
+		shader.setFloat('angle', v);
+		return angle = v;
 	}
 	
 	function set_distance(v:Float):Float
 	{
-		distance = v;
-		shader.distance.value = [distance];
-		return v;
+		shader.setFloat('distance', v);
+		return distance = v;
 	}
 	
 	function set_rimlightColor(v:FlxColor):FlxColor
 	{
-		rimlightColor = v;
-		shader.rimlightColor.value = [rimlightColor.redFloat, rimlightColor.greenFloat, rimlightColor.blueFloat, rimlightColor.alphaFloat];
-		return v;
+		shader.setFloatArray('rimlightColor', [v.redFloat, v.greenFloat, v.blueFloat, v.alphaFloat]);
+		return rimlightColor = v;
 	}
 }
 
-class RimLightShader extends flixel.system.FlxAssets.FlxShader
+class RimLightShader extends funkin.backend.FunkinShader.FunkinRuntimeShader
 {
-	@:glFragmentSource('
-		#pragma header
-		
-		uniform float angle;
-		uniform float distance;
-		uniform vec4 rimlightColor;
-		
-		uniform vec4 bounds;
-		
-		void main() {
-			vec2 pixelSize = (1.0 / openfl_TextureSize);
-			
-			vec4 textureColor = flixel_texture2D(bitmap, openfl_TextureCoordv);
-			float overlapAlpha;
-			
-			vec2 distanceScaled = vec2(cos(radians(angle)) * pixelSize.x * distance, sin(radians(angle)) * pixelSize.y * distance);
-			
-			vec2 overlapCoord = vec2(openfl_TextureCoordv.x + distanceScaled.x, openfl_TextureCoordv.y - distanceScaled.y);
-			if (overlapCoord.x < bounds.x || overlapCoord.x > bounds.z || overlapCoord.y < bounds.y || overlapCoord.y > bounds.w) {
-				overlapAlpha = 0.;
-			} else {
-				overlapAlpha = flixel_texture2D(bitmap, overlapCoord).a;
-			}
-			
-			vec3 outColor = mix(rimlightColor.rgb, textureColor.rgb / textureColor.a, overlapAlpha * rimlightColor.a);
-			
-			gl_FragColor = vec4(outColor.rgb * textureColor.a, textureColor.a);
-		}
-	')
 	public function new()
 	{
-		super();
+		super(FunkinAssets.getContent(Paths.fragment('rimlight')));
 	}
 }

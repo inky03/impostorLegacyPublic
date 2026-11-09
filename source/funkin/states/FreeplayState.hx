@@ -24,7 +24,7 @@ import funkin.objects.menu.AmongControls;
 typedef FreeplayWeek =
 {
 	// JSON variables
-	var songs:Array<Dynamic>;
+	var songs:Array<SongInformation>;
 	var section:String;
 	var ?mod:String;
 	var title:String;
@@ -42,7 +42,6 @@ abstract SongInformation(Array<Dynamic>) to Array<Dynamic>
 	public var cost(get, never):Int;
 	public var credit(get, never):String;
 	public var currency(get, never):String;
-	public var hideUntilDoubleTrouble(get, never):Bool;
 	public var mod(get, never):Null<String>;
 	
 	function get_songName():String return Std.string(this[0] ?? 'UNKNOWN?');
@@ -63,9 +62,7 @@ abstract SongInformation(Array<Dynamic>) to Array<Dynamic>
 	
 	function get_currency():String return Std.string(this[8] ?? 'beans');
 	
-	function get_hideUntilDoubleTrouble():Bool return (this[9] == true);
-	
-	function get_mod():Null<String> return this[10];
+	function get_mod():Null<String> return this[9];
 }
 
 enum UnlockAnimPhase
@@ -90,7 +87,6 @@ class FreeplayState extends AmongUIState
 	
 	// Tween bullshit
 	var portraitTween:FlxTween;
-	var portraitAlphaTween:FlxTween;
 	var colorTween:FlxTween;
 	
 	// Portrait bullshit
@@ -105,7 +101,6 @@ class FreeplayState extends AmongUIState
 	var lerpRating:Float;
 	var intendedScore:Float;
 	var intendedRating:Float;
-	var localWeeks:Array<String> = [''];
 	
 	public var cachedCards:FlxTypedGroup<FreeplayCard>;
 	
@@ -190,7 +185,6 @@ class FreeplayState extends AmongUIState
 		add(beanIcon);
 		add(beanText);
 		
-		localWeeks = ClientPrefs.unlockedSongs;
 		CosmeticsSubstate.preloadForFreeplay();
 		
 		score_rating = [Lang.str('score'), Lang.str('accuracy')];
@@ -238,17 +232,13 @@ class FreeplayState extends AmongUIState
 	{
 		if (cards == null)
 		{
+			cachedCards = new FlxTypedGroup();
 			cards = new FlxTypedGroup();
 			add(cards);
-			
-			cachedCards = new FlxTypedGroup();
 		}
 		
-		var num = 0;
-		
-		week_songs = [];
-		ws_lock = [];
-		var SECTION_SONGS = cast weeks[curMonth].songs;
+		week_songs.resize(0);
+		ws_lock.resize(0);
 		
 		// essentially we put all the cards into a cache and then retrieve however we actually need
 		while (cards.length > 0)
@@ -259,48 +249,47 @@ class FreeplayState extends AmongUIState
 			card.kill();
 		}
 		
-		for (i in 0...SECTION_SONGS.length)
+		for (song in weeks[curMonth].songs)
 		{
-			// trace(SECTION_SONGS[i]); im sorry it was annoying
-			final song:SongInformation = SECTION_SONGS[i];
-			if (song.hideUntilDoubleTrouble && !ClientPrefs.doubletrouble) continue;
-			final isLocked:Bool = checkLock(song);
+			final card:FreeplayCard = cachedCards.recycle(FreeplayCard);
+			card.initCard(song);
+			card.zIndex = 5;
 			
-			var animate:Bool = false;
+			if (!card.alive) {
+				cards.remove(card, true);
+				cachedCards.add(card);
+				
+				continue;
+			}
 			
-			ws_lock.push(isLocked);
+			ws_lock.push(!card.unlocked);
 			week_songs.push(song);
 			
-			if (ClientPrefs.checkoutUnlockedSongs.contains(song.songName) == isLocked)
+			if (!card.unlocked)
 			{
-				if (isLocked)
-				{
-					ClientPrefs.checkoutUnlockedSongs.remove(song.songName);
-				}
-				else
-				{
-					ClientPrefs.checkoutUnlockedSongs.push(song.songName);
-					if (song.lock == 'special') animate = true;
+				ClientPrefs.checkoutUnlockedSongs.remove(song.songName);
+			}
+			else if (!ClientPrefs.checkoutUnlockedSongs.contains(song.songName))
+			{
+				ClientPrefs.checkoutUnlockedSongs.push(song.songName);
+				
+				if (song.lock == 'special') {
+					animateCards.push(card);
+					card.lockCard();
 				}
 			}
 			
-			Mods.currentModDirectory = song.mod;
-			
-			var c = cachedCards.recycle(FreeplayCard);
-			c.initCard(song, ws_lock[num] || animate);
-			c.ID = (num++);
-			cards.add(c);
-			c.zIndex = 5;
-			
-			if (animate) animateCards.push(c);
+			card.ID = cards.length;
+			cards.add(card);
 		}
 		
-		snapCards(curSelect);
-		for (card in cards)
-			card.x -= 700;
-			
-		animateUnlock();
 		refreshZ();
+		snapCards(curSelect);
+		
+		for (card in cards) card.x -= 700;
+		
+		animateUnlock();
+		
 		scriptGroup.call('onSectionChangePost', [curMonth]);
 	}
 	
@@ -473,7 +462,8 @@ class FreeplayState extends AmongUIState
 		cards.members[prevSelect].curScript?.executeFunc('onDeselect', [], cards.members[prevSelect]);
 		cards.members[curSelect].curScript?.executeFunc('onSelect', [], cards.members[curSelect]);
 		
-		changePortrait(change);
+		changePortrait(change || (ws_lock[prevSelect] != ws_lock[curSelect]));
+		localCurrency = (song.lock == 'shop' && ws_lock[curSelect] ? song.currency : CosmicubeData.currentCurrency);
 		
 		intendedScore = Highscore.getScore(song.songName, 1);
 		intendedRating = Highscore.getRating(song.songName, 1);
@@ -484,26 +474,32 @@ class FreeplayState extends AmongUIState
 	{
 		portrait.loadGraphic(Paths.image('${ext}portraits/$image'));
 		portrait.updateHitbox();
-		portrait.offset.x += ((portrait.frameWidth - 1215) * .5 * portrait.scale.x);
-		portrait.offset.y += ((portrait.frameHeight - 1097) * .5 * portrait.scale.y);
+		portrait.offset.x += Math.round((portrait.frameWidth - 1215) * .5 * portrait.scale.x);
+		portrait.offset.y += Math.round((portrait.frameHeight - 1097) * .5 * portrait.scale.y);
+	}
+	
+	public function tweenPortrait(color:FlxColor = FlxColor.WHITE):Void
+	{
+		colorTween?.cancel();
+		portraitTween?.cancel();
+		
+		portrait.x = 505;
+		portrait.alpha = 0;
+		
+		colorTween = FlxTween.color(porGlow, .2, porGlow.color, color);
+		portraitTween = FlxTween.tween(portrait, {x: 305, alpha: 1}, 0.3, {ease: FlxEase.expoOut});
 	}
 	
 	function changePortrait(reset:Bool):Void
 	{
-		var song = week_songs[curSelect];
-		
-		var porty:String = song.portrait;
-		var color:FlxColor = song.color;
-		
-		localCurrency = (song.lock == 'shop' && ws_lock[curSelect] ? song.currency : CosmicubeData.currentCurrency);
+		final song = week_songs[curSelect];
+		final porty:String = song.portrait;
 		
 		if (ScriptConstants.stopping(scriptGroup.call('onPortraitChangePre', [porty, prevPort]))) return;
 		
-		if (prevPort != porty) loadPortrait(porty);
-		
 		if (ws_lock[curSelect])
 		{
-			rimlight.rimlightColor = color;
+			rimlight.rimlightColor = song.color;
 			
 			portrait.color = FlxColor.BLACK;
 			portrait.shader = rimlight.shader;
@@ -514,49 +510,8 @@ class FreeplayState extends AmongUIState
 			portrait.color = FlxColor.WHITE;
 		}
 		
-		if (!reset)
-		{
-			if (prevPort != porty)
-			{
-				if (portraitTween != null)
-				{
-					portraitTween.cancel();
-				}
-				if (portraitAlphaTween != null)
-				{
-					portraitAlphaTween.cancel();
-				}
-				if (colorTween != null)
-				{
-					colorTween.cancel();
-				}
-				portrait.x = 504.65;
-				portrait.alpha = 0;
-				colorTween = FlxTween.color(porGlow, 0.2, porGlow.color, color);
-				portraitTween = FlxTween.tween(portrait, {x: 304.65}, 0.3, {ease: FlxEase.expoOut});
-				portraitAlphaTween = FlxTween.tween(portrait, {alpha: 1}, 0.3, {ease: FlxEase.expoOut});
-			}
-		}
-		else
-		{
-			if (portraitTween != null)
-			{
-				portraitTween.cancel();
-			}
-			if (portraitAlphaTween != null)
-			{
-				portraitAlphaTween.cancel();
-			}
-			if (colorTween != null)
-			{
-				colorTween.cancel();
-			}
-			portrait.x = 504.65;
-			portrait.alpha = 0;
-			colorTween = FlxTween.color(porGlow, 0.2, porGlow.color, color);
-			portraitTween = FlxTween.tween(portrait, {x: 304.65}, 0.3, {ease: FlxEase.expoOut});
-			portraitAlphaTween = FlxTween.tween(portrait, {alpha: 1}, 0.3, {ease: FlxEase.expoOut});
-		}
+		if (prevPort != porty) loadPortrait(porty);
+		if (reset || prevPort != porty) tweenPortrait(song.color);
 		
 		scriptGroup.call('onPortraitChange', [porty, prevPort]);
 		
@@ -579,7 +534,8 @@ class FreeplayState extends AmongUIState
 				ws_lock[curSelect] = false;
 				unlockAnim(cards.members[curSelect]);
 				lockMovement = true;
-				localWeeks.push(s.songName);
+				
+				ClientPrefs.unlockedSongs.push(s.songName);
 				localBeans -= Std.int(s.cost);
 				return;
 			}
@@ -767,26 +723,6 @@ class FreeplayState extends AmongUIState
 		changeSection(sect - curMonth);
 	}
 	
-	function checkLock(song:SongInformation)
-	{
-		if (localWeeks.contains(song.songName)) return false; // we can probably merge these two returns
-		if (ClientPrefs.forceUnlock) return false; // creative mode
-		// trace(song);
-		
-		switch (song.lock)
-		{
-			case 'special' | 'story':
-				for (song in song.requiredSongs)
-				{
-					if (!ProgressionUtil.songIsClear(song)) return true;
-				}
-			case 'shop':
-				return !localWeeks.contains(song.songName);
-		}
-		
-		return false;
-	}
-	
 	public function unlockAnim(c:FreeplayCard, cutscene:Bool = false)
 	{
 		final funnyMembers = [c.lock, c.card, c.icon, c.name, c.bean, c.priceText, c.credit, c.note];
@@ -811,7 +747,7 @@ class FreeplayState extends AmongUIState
 			new FlxTimer().start(1.3, function(tmr:FlxTimer) {
 				if (!cutscene)
 				{
-					changePortrait(true);
+					changeSong(0, true);
 					lockMovement = false;
 				}
 				
@@ -843,7 +779,6 @@ class FreeplayState extends AmongUIState
 	{
 		super.destroy();
 		
-		ClientPrefs.unlockedSongs = localWeeks;
 		ClientPrefs.flush();
 	}
 	
@@ -854,9 +789,9 @@ class FreeplayState extends AmongUIState
 		WeekData.reloadWeekFiles(true);
 		FreeplaySectionData.sort();
 		
-		function fetchWeekSongs(weekData:WeekData):Array<Array<Dynamic>>
+		function fetchWeekSongs(weekData:WeekData):Array<SongInformation>
 		{
-			final songs:Array<Array<Dynamic>> = [];
+			final songs:Array<SongInformation> = [];
 			
 			if (weekData == null) return songs;
 			
@@ -866,12 +801,12 @@ class FreeplayState extends AmongUIState
 			for (song in weekData.songs)
 			{
 				var cost:Float = (song[6] ?? 0);
-				var shouldHideUntilDoubleTrouble:Bool = (song[8] == true);
 				var rgb:Array<Int> = song[2];
-				var data:Array<Dynamic> = [
+				
+				final data:Array<Dynamic> = [
 					song[0], song[1], song[3], FlxColor.fromRGB(rgb[0], rgb[1], rgb[2]),
 					(cost > 0 ? 'shop' : (song[7] == true ? 'special' : 'story')), song[5] ?? (story ? [Paths.sanitize(song[0])] : []), cost,
-					song[4], weekData.currency, shouldHideUntilDoubleTrouble, weekData.folder
+					song[4], weekData.currency, weekData.folder
 				];
 				
 				// Lagspike prevention down below
@@ -879,7 +814,7 @@ class FreeplayState extends AmongUIState
 				final image:String = 'menu/freeplay/portraits/${song[3]}';
 				if (Paths.fileExists('images/$image.png', LOOSE)) Paths.image(image, LOOSE);
 				
-				songs.push(data);
+				songs.push(cast data);
 			}
 			
 			return songs;
