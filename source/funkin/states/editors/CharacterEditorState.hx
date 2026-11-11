@@ -136,7 +136,7 @@ class CharacterEditorState extends UIState // MUST EXTEND UI STATE needed for ac
 		
 		try
 		{
-			var dad = new Character(dadPos.x, dadPos.y, 'dad', false);
+			var dad = new Character(dadPos.x, dadPos.y, 'red', false);
 			var bf = new Character(bfPos.x, bfPos.y, 'bf', true);
 			dad.useRenderTexture = true;
 			bf.useRenderTexture = true;
