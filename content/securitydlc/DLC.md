@@ -29,7 +29,7 @@ The DLC is an example mod made for VS. Impostor Legacy. For a grounded guide to 
 # CHANGELOG
 Current version: **1.1.2**
 
-## 1.1.2b (? 2026)
+## 1.1.5 (? 2026)
 
 ### Changes
 - Fixed health bar color not changing during a section in Don't Lied.

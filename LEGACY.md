@@ -39,7 +39,7 @@ WEBSITE: https://vsimpostor.com/
 # CHANGELOG
 Current version: **1.1.2**
 
-## Modding (? 2026)
+## 1.1.5 (? 2026)
 
 ### For modders
 - Moved Hscript backend from Iris to Insanity
