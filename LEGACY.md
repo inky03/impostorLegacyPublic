@@ -1,5 +1,5 @@
 # INFORMATION
-TWITTER ACCOUNT: @VSIMPOSTOR
+TWITTER ACCOUNT: [@VSIMPOSTOR](https://twitter.com/VSIMPOSTOR)<br>
 WEBSITE: https://vsimpostor.com/
 
 # SUPPORTED LANGUAGES (as of 1.1.1)
@@ -41,44 +41,66 @@ Current version: **1.1.2**
 
 ## Modding (? 2026)
 
+### For modders
+- Moved Hscript backend from Iris to Insanity
+	- Scripted classes / enums / abstracts are now supported
+	- Some missing Haxe syntax features are now supported
+- Additional utility functions are now included in runtime shaders (see `funkin.game.shaders.PostEffectShader`)
+- `taskGroup` is now created on init (song scripts should be able to toy around with it better now)
+- Custom awards can now be added (WIP)
+- FreeplayState mods scripts will now execute when said mods are selected in the Freeplay menu
+- Freeplay cards ([#18](https://github.com/inky03/impostorLegacyPublic/pull/18) by @MC28-Bruv) and cosmicube nodes can now have scripts!
+	- Under `scripts/freeplayCards` and `scripts/cosmicubeNodes` respectively
+	- Custom unlock requirements can now be scripted
+- Updated debug text appearance
+- Updated some `Paths` functions for completion
+- Changed Character Editor opponent silhouette to Red Impostor ([#36](https://github.com/inky03/impostorLegacyPublic/pull/36) by @biomseed)
+- Added support for custom Monotone pets ([#12](https://github.com/inky03/impostorLegacyPublic/pull/12) by @babyMan32)
+- Skins can now have a `defeatScared` variant in Defeat and Finale ([#16](https://github.com/inky03/impostorLegacyPublic/pull/16) by @babyMan32)
+- Mods can now retrieve Discord username with Hscript ([#9](https://github.com/inky03/impostorLegacyPublic/pull/9) by @SilvieCatGirl)
+
 ### Additions
-- Cosmicube nodes can now have scripts.
-	- Custom item requirements can now be scripted.
+- Blend modes
+	- Should be supported in more devices
+	- `SHADER` blend mode is also now supported
+- Chef BF given a Monotone variant.
 
 ### Changes
 - Game has been buffed.
-- Cosmicube node image loading now only happens when on screen.
+- Refactored Freeplay menu code
+- Fixed BPM desync issues in Chart Editor
+- Optimized code and assets for more stages
+- Cosmicube node images are now only loaded when on screen.
 	- Entering the menu should now be less memory intensive.
-
-### Removals
-- Removed `"updogSave"` cosmicube item requirement (obsolete).
-
-## 1.1.2b (? 2026)
-
-### Additions
-- Chef BF given a Monotone variant.
-- Added support for custom Monotone pets. (GitHub contribution)
+- Regular BF has been given a windy variant.
+- Repacked more sprites into texture atlases
+- Game Over sound now fades out in Turbulence
+- Generic Game Over animations are now more consistent for some characters ([#20](https://github.com/inky03/impostorLegacyPublic/pull/20) by @RosalinaFan573)
+- Game Over can now be skipped more quickly ([#14](https://github.com/inky03/impostorLegacyPublic/pull/14) by @TechnikTil)
+- Repacked Torture Pip and Ziffy ([#21](https://github.com/inky03/impostorLegacyPublic/pull/21) by @RosalinaFan573)
+- "WTF" text in O2 now uses the player characters healthbar color. ([#15](https://github.com/inky03/impostorLegacyPublic/pull/15) by @IdksStuff)
 
 ### Bugfixes
+- Icons readded to cosmicube items
+- Fixed camera cutoff when using Camera Twist event
+- Mods with weeks hidden in Story Mode no longer require song completion by default (rendering them inaccessible without dev flags)
 - Fixed a game breaking issue when opening the Credits during a modded song.
+- Fixed section desync when playtesting with Start on Time
 - Fixed current beat being inaccurate in some cases.
-- Readded icons in Cosmicubes.
-- Fixed application title.
 - Fixed skateboard not appearing on Danger.
 - Fixed loop points for some characters.
+- Fixed clipping in Polus BF's jacket.
+- Fixed BF position in Maroon's stage.
+- Fixed Pico icon positioning
 - Pets should be better positioned and scaled in the Cafeteria stage.
-- Polus BF's jacket clipping fixed.
-- Esculent's duped icon is removed.
-- Fixed Maroon's stage BF position.
-- A couple charts were fixed. (GitHub contribution)
-- Some stages were optimized.
+- Fixed some charts:
+	- Added missing notes to Trot Away & Dont Lied ([#13](https://github.com/inky03/impostorLegacyPublic/pull/13) by @IdksStuff)
+	- Added missing notes to Defeat & Drippypop ([#11](https://github.com/inky03/impostorLegacyPublic/pull/11) by @IdksStuff)
+- Fixed deprecated flags in Ghost BF ([#22](https://github.com/inky03/impostorLegacyPublic/pull/22) by @biomseed)
 
-### Changes
-- Some more characters have been turned into atlases.
-- Regular BF has been given a windy variant.
-- Playable characters now have a `defeatScared` variant, used both in Defeat and Finale. (GitHub contribution)
-- "WTF" text in O2 now uses the player characters healthbar color. (GitHub contribution)
-- Mods can now call users Discord username with HScript. (GitHub contribution)
+### Removals
+- Removed "hide until double trouble" week json flag (superseded by scripted freeplay cards).
+- Removed `"updogSave"` cosmicube item requirement type (superseded by scripted cosmicube nodes).
 
 ## 1.1.2 (july 23 2026)
 
