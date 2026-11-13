@@ -62,6 +62,7 @@ Current version: **1.1.2**
 - Fixed missing prop in Finale stage.
 
 ### Changes
+- Corrected quality in Crewicide background
 - Some more characters have been turned into atlases.
 - Regular BF has been given a windy variant.
 - Playable characters now have a `defeatScared` variant, used both in Defeat and Finale. (GitHub contribution)

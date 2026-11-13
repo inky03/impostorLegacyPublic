@@ -3,16 +3,9 @@ var ext:String = 'stages/freeplay/dave/';
 
 function onLoad()
 {
-	var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image(ext + 'DAVE'));
-	
-	daveDIE = new FlxSprite().loadGraphic(Paths.image(ext + 'DAVEdie'));
-	daveDIE.visible = false;
-	for (i in [bg, daveDIE])
-	{
-		i.scale.set(2, 2);
-		i.updateHitbox();
-		add(i);
-	}
+	var bg:FlxSprite = add(new FlxSprite().loadGraphic(Paths.image(ext + 'DAVE')));
+	daveDIE = add(new FlxSprite(0, 455).loadGraphic(Paths.image(ext + 'hole')));
+	daveDIE.alpha = .001;
 	
 	Paths.sound('stage/davewindowsmash');
 }
@@ -30,8 +23,9 @@ function onEvent(eventName, value1, value2)
 		case 'Le Window':
 			dad.playAnim('die');
 			dad.canDance = false;
+			
 		case 'Dave AUGH':
-			daveDIE.visible = true;
+			daveDIE.alpha = 1;
 			dad.alpha = 0;
 			FlxG.sound.play(Paths.sound('stage/davewindowsmash'));
 			if (ClientPrefs.flashing) FlxG.camera.shake(0.02, 0.3, null, true, FlxAxes.XY);
